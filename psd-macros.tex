@@ -1,0 +1,461 @@
+\usepackage{tikz}
+\usepackage[usenames,dvipsnames]{pstricks}
+\usepackage{epsfig}
+
+%\usepackage{palatino}
+\RequirePackage{ifthen}
+\RequirePackage{amsmath}
+\RequirePackage{amssymb}
+\RequirePackage{listings}
+\RequirePackage{mathrsfs}
+\RequirePackage{xspace}
+\RequirePackage{graphics}
+
+% PACKAGES FOR ORGANIZING THE STRUCTE OF DOCUMENT
+%\usepackage{minipage}
+\usepackage{latexsym}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{lscape}  % Useful for wide tables or figures.
+\usepackage{xspace}
+\usepackage{paralist}
+%\usepackage{framed}
+%\usepackage{lipsum}
+% DEFINING THE BOUNDARY --- DONE IN DOCUMENT.
+%\usepackage[left=1.25in,right=1.25in,top=1in,bottom=1.25in]{geometry}
+
+%%% SECTION TITLE APPEARANCE
+% \usepackage{sectsty}
+% \allsectionsfont{\sffamily\mdseries\upshape} % (See the fntguide.pdf for font help)
+% (This matches ConTeXt defaults)
+
+%%% HEADERS & FOOTERS
+% \usepackage{fancyhdr} % This should be set AFTER setting up the page geometry
+% \pagestyle{fancy} % options: empty , plain , fancy
+% \renewcommand{\headrulewidth}{0pt} % customise the layout...
+% \lhead{}\chead{}\rhead{}
+% \lfoot{}\cfoot{\thepage}\rfoot{}
+
+
+% PACKAGES FOR FIGURES
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{subfigure}
+%\usepackage{subfloat}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{wrapfig}
+%\usepackage{pifont}
+%\usepackage{subcaption}
+%\usepackage{subfigure}  % for subfigures
+%\usepackage{setspace}
+%\usepackage[justification=raggedright]{caption}	% makes captions ragged right - thanks to Bryce Lobdell
+
+%AMS AND OTHER MISC PACKAGES
+\usepackage{keyval}
+\usepackage{amsmath,amssymb,amsfonts,url,listings,mathrsfs}
+%reference
+\usepackage{hyperref}
+%\usepackage[pdftex,colorlinks,citecolor=webblue,linkcolor=webblue,urlcolor=webblue]{hyperref}
+
+%ALGORITHM PACKAGE
+%\usepackage{algorithm,algorithmic}
+%
+%\usepackage[pdftex,colorlinks,citecolor=webblue,linkcolor=webred,backref,pagebackref]{hyperref}
+%\usepackage[linesnumbered,lined,commentsnumbered]{algorithm2e}
+%\usepackage[linesnumbered,boxed,lined,commentsnumbered,algochapter]{algorithm2e}
+
+
+%DEFINITIONS FOR MARKING CHANGES AND COMMENTS
+\newcommand{\authcomment}[1]{\textbf{[[#1]]}}
+%\newcommand{\sayan}[1]{\textcolor{blue}{[[#1]]}}
+%\newcommand{\sridhar}[1]{\textcolor{red}{[[#1]]}}
+\newcommand{\sridhar}[1]{\textcolor{brown}{[[#1]]}}
+\newcommand{\stan}[1]{\textcolor{blue}{[[#1]]}}
+
+% DEFINING COLORS
+\definecolor{reddish}{rgb}{1,.8,0.8}
+\definecolor{blueish}{rgb}{0.8,.8,1}
+\definecolor{greenish}{rgb}{.8,1,0.8}
+\definecolor{yellowish}{rgb}{1,1,.20}
+\definecolor{webred}{rgb}{0.5,0,0}
+\definecolor{webblue}{rgb}{0,0,0.8}
+
+% DEFINITIONS FOR TEXT FORMATTING
+\newcommand{\figuresize}{\scriptsize}
+\newcommand{\equationsize}{\footnotesize}
+
+% ADHOC DEFINITIONS FOR EACH AND EVERY PAPER
+\newcommand{\trajmet}{discrepancy function\/}
+\newcommand{\TrajMet}{Trajectory Metric}
+\newcommand{\RT}{{\em reachtubes}}
+\newcommand{\hylaa}{{HyLAA}}
+\newcommand{\valsim}{{\sf valSim}}
+\newcommand{\tool}{C2E2 \/}
+\newcommand{\fulltoolname}{\textbf{C}heck \textbf{E}xecute \textbf{C}ompare \textbf{E}ngine}
+\newcommand{\leftshift}[2]{\relax\ifmmode (#1 \lhd #2) \else $(#1 \lhd #2)$ \fi}
+\newcommand{\mayInt}{\relax\ifmmode \mathit{mayInt} \else $\mathit{mayInt}$ \fi}
+\newcommand{\mustInt}{\relax\ifmmode \mathit{mustInt} \else $\mathit{mustInt}$ \fi}
+\newcommand{\notInt}{\relax\ifmmode \mathit{notInt} \else $\mathit{notInt}$ \fi}
+\newcommand{\alarm}{\relax\ifmmode \mathit{Alert} \else $\mathit{Alert}$ \fi}
+\newcommand{\unsafe}{\relax\ifmmode \mathit{Unsafe} \else $\mathit{Unsafe}$ \fi}
+\newcommand{\xsep}{\relax\ifmmode \mathit{xsep} \else $\mathit{xsep}$\fi}
+\newcommand{\ysep}{\relax\ifmmode \mathit{ysep} \else $\mathit{ysep}$ \fi}
+\newcommand{\etime}{{\sf time}}
+\newcommand{\ub}{{\sf ub}}
+\newcommand{\lb}{{\sf lb}}
+\newcommand{\emode}{{\sf mode}}
+\newcommand{\erange}{{\sf range}}
+\newcommand{\fbls} {functionally bounded linear span}
+\newcommand{\fblsupper} {Functionally bounded linear span}
+
+% COMMANDS USED IN DEFINITIONS
+\newcommand{\meansl}{[\![}
+\newcommand{\meansr}{]\!]}
+\newcommand{\means}[1]{\meansl #1 \meansr}
+\newcommand{\Nset}[1]{[[#1]]}
+
+% ROUTINELY USED COMMANDS
+\newcommand{\refinement}[1]{\relax\ifmmode \mathit{refine}(#1) \else $\mathit{refine}(#1)$ \fi}
+\newcommand{\diff}{{\sf diff}}
+\newcommand{\diameter} {\mathsf{diameter}}
+\newcommand{\cntr} {\mathsf{center}}
+\newcommand{\ball}[1] {B_{#1}}
+\newcommand{\true}{\relax\ifmmode \mathit true \else \em true \/\fi}
+\newcommand{\false}{\relax\ifmmode \mathit false \else \em false \/\fi}
+% \newcommand{\lnot}{\neg} % Already defined
+% \newcommand{\land}{\wedge} % Already defined
+% \newcommand{\lor}{\vee} % Already defined
+\newcommand{\limplies}{\Rightarrow}
+\newcommand{\liff}{\Leftrightarrow}
+%\newcommand{\T}{\mathit{true}}
+%\newcommand{\F}{\mathit{false}}
+% \newcommand{\to}{\relax\ifmmode \rightarrow \else $\rightarrow$\fi} % Already defined
+\newcommand{\fro}{\relax\ifmmode \leftarrow \else $\leftarrow$\fi}
+
+
+% COMMANDS FOR MATH SPECIFIC ITEMS
+\newcommand{\nnt}{{\sf T}^{\geq 0}}             %nonnegative time points
+\newcommand{\post}{{\sf T}^{>0}}                %positive time points
+\newcommand{\Variables}{{\sf V}}                %variables
+
+\newcommand{\num}[1]{\relax\ifmmode \mathbb #1\else $\mathbb #1$\fi}
+\newcommand{\nnnum}[1]{\relax\ifmmode 
+  {\mathbb #1}_{\geq 0} \else ${\mathbb #1}_{\geq 0}$
+  \fi}
+\newcommand{\npnum}[1]{\relax\ifmmode 
+  {\mathbb #1}_{\leq 0} \else ${\mathbb #1}_{\leq 0}$
+  \fi}
+\newcommand{\pnum}[1]{\relax\ifmmode 
+  {\mathbb #1}_{> 0} \else ${\mathbb #1}_{> 0}$
+  \fi}
+\newcommand{\nnum}[1]{\relax\ifmmode 
+  {\mathbb #1}_{< 0} \else ${\mathbb #1}_{< 0}$
+  \fi}
+\newcommand{\plnum}[1]{\relax\ifmmode 
+  {\mathbb #1}_{+} \else ${\mathbb #1}_{+}$
+  \fi}
+\newcommand{\nenum}[1]{\relax\ifmmode 
+  {\mathbb #1}_{-} \else ${\mathbb #1}_{-}$
+  \fi}
+
+\newcommand{\reals}{{\num R}}                    %reals
+\newcommand{\nnreals}{{\nnnum R}}                    %nonnegative reals
+\newcommand{\realsinfty}{{\num R} \cup \{\infty, -\infty\}}                    %nonnegative reals
+\newcommand{\plreals}{{\plnum R}}                    %positive reals
+\newcommand{\naturals}{{\num N}}                      %natural numbers
+\newcommand{\integers}{{\num Z}}                      %integers
+\newcommand{\rationals}{{\num Q}}                      %rationals
+\newcommand{\nnrationals}{{\nnnum Q}}                   % nonnegative rationals
+\newcommand{\Time}{{\num T}}  
+\newcommand{\bools}{{\num B}}  
+\newcommand{\plintegers}{{\plnum Z}}                      %integers
+\newcommand{\deq}{\mathrel{\stackrel{\scriptscriptstyle\Delta}{=}}}
+\newcommand{\intervals}{\relax \ifmmode \mathbb{IR} \else $\mathbb{IR}$ \fi}
+\newcommand{\nnintervals}{\relax \ifmmode \mathbb{IR}^{+} \else $\mathbb{IR}^{+}$ \fi}
+%\setlength{\mathindent}{0pt}
+
+% COMMANDS FOR LABELS
+\renewcommand{\eqref}[1]{Equation~(\ref{eq:#1})}
+\newcommand{\eqlabel}[1]{\label{eq:#1}}
+\newcommand{\figref}[1]{Figure~\ref{fig:#1}}
+\newcommand{\figrefs}[2]{Figures~\ref{fig:#1} and~\ref{fig:#2}}
+\newcommand{\figlabel}[1]{\label{fig:#1}}
+\newcommand{\tabref}[1]{Table~\ref{table:#1}}
+\newcommand{\tablabel}[1]{\label{table:#1}}
+\newcommand{\defref}[1]{Definition~\ref{def:#1}}
+\newcommand{\deflabel}[1]{\label{def:#1}}
+\newcommand{\exref}[1]{Example~\ref{exmp:#1}}
+\newcommand{\exlabel}[1]{\label{exmp:#1}}
+\newcommand{\scref}[1]{Section~\ref{sec:#1}}
+\newcommand{\secreftwo}[2]{Sections~\ref{sec:#1}~and~\ref{sec:#2}}
+\newcommand{\sclabel}[1]{\label{sec:#1}}
+\newcommand{\applabel}[1]{\label{app:#1}}
+\newcommand{\appref}[1]{Appendix~\ref{app:#1}}
+\newcommand{\lnlabel}[1]{\label{line:#1}}
+\newcommand{\lnrngref}[2]{lines~\ref{line:#1}--\ref{line:#2}\xspace}
+\newcommand{\lnref}[1]{line~\ref{line:#1}\xspace}
+\newcommand{\thmref}[1]{Theorem~\ref{thm:#1}\xspace}
+%\newcommand{\seclabel}[1]{\label{sec:#1}}
+%\newcommand{\secref}[1]{Section~\ref{sec:#1}}
+%\newcommand{\figlabel}[1]{\label{fig:#1}}
+%\newcommand{\figref}[1]{Figure~\ref{fig:#1}}
+
+
+% COMMANDS FOR SECTIONS AND ORGANIZATION
+
+\newenvironment{noqedproof}{\pf}{}
+\newcommand{\pf}{\par\noindent{\bf Proof:}~}
+% \newcounter{theorem}
+% \setcounter{theorem}{0}
+% 
+%  \newtheorem{theorem}{Theorem}
+%  \newtheorem{lemma}[theorem]{Lemma}
+%  \newtheorem{corollary}[theorem]{Corollary}
+%  \newtheorem*{claim}{Claim}
+%  \newtheorem{assumption}{Assumption}
+%  \theoremstyle{definition}
+%  \newtheorem{definition}{Definition}
+%  \newcommand{\qed}{\hfill{\rule{2mm}{2mm}}\medskip}
+%  \newenvironment{proof}{\pf}{\qed}
+%  \newtheorem{proposition}[theorem]{Proposition}
+% \newtheorem{inv}[theorem]{Invariant}
+ 
+%    \newcounter{rem}
+%  \setcounter{rem}{0}
+%  
+%   \newenvironment{remark}
+%   {\refstepcounter{rem} \vspace{2ex}\par\noindent
+%    \textbf{Remark}~\textbf{\therem~}}
+ 
+% \newcounter{example}
+%  \setcounter{example}{0}
+
+%   \newtheorem{example}[example]{Example}
+%  \newcounter{example}
+  
+%  \newenvironment{example}
+%  {\refstepcounter{example} \vspace{2ex}\par\noindent
+%  \textbf{Example}~\textbf{\theexample~}}%{\qed}
+% \newexample{example}[example]{Example}
+
+%\theoremstyle{remark}
+%\newcounter{example}
+% \newtheorem{example}{Example}[chapter]
+% {\refstepcounter{theorem} \vspace{2ex}\par\noindent
+% \textbf{Example}~\textbf{\theexampletheorem~}}{\qed}
+ 
+ \def\examplenonum#1#2{
+        \vspace{.15in}
+        \noindent
+        {\bf Example #1}{\em ~(continued)}{\bf .}
+        {#2}{\qed}
+        }
+        
+% \renewcommand{\theequation}{\thesection.\arabic{equation}}
+% \renewcommand{\thefigure}{\thesection.\arabic{figure}}
+% \renewcommand{\thetable}{\thesection.\arabic{table}}
+% \newcommand{\Section}[1]{\section{#1}%
+%    \setcounter{equation}{0}\setcounter{figure}{0}\setcounter{table}{0}%
+%    \setcounter{example}{0}}
+
+
+%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%
+%%%%% TIOA STUFF %%%%%
+%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%
+
+
+
+% EXECUTIONS TRACES and FRAGS
+\newcommand{\extb}[1]{\relax\ifmmode {\sf ExtBeh}_{#1} \else ${\sf ExtBeh}_{#1}$\fi} 
+\newcommand{\tdists}[1]{\relax\ifmmode {\sf Tdists}_{#1} \else ${\sf Tdists}_{#1}$\fi} 
+
+\newcommand{\exec}[1]{\relax\ifmmode {\sf Execs}_{#1} \else ${\sf Exec}_{#1}$\fi} 
+\newcommand{\execf}[1]{\relax\ifmmode {\sf Execs}^*_{#1} \else ${\sf Exec}^*_{#1}$\fi} 
+\newcommand{\execi}[1]{\relax\ifmmode {\sf Execs}^\omega_{#1} \else ${\sf Exec}^\omega_{#1}$\fi} 
+
+\newcommand{\ctrace}[1]{\relax\ifmmode {\sf Ctraces}_{#1} \else ${\sf Ctraces}_{#1}$\fi} 
+
+\newcommand{\trace}[1]{\relax\ifmmode {\sf Traces}_{#1} \else ${\sf Traces}_{#1}$\fi} 
+\newcommand{\tracef}[1]{\relax\ifmmode {\sf Traces}^*_{#1} \else ${\sf Traces}^*_{#1}$\fi} 
+\newcommand{\tracei}[1]{\relax\ifmmode {\sf Traces}^\omega_{#1} \else ${\sf Traces}^\omega_{#1}$\fi} 
+
+\newcommand{\frag}[1]{\relax\ifmmode {\sf Frags}_{#1} \else ${\sf Frags}_{#1}$\fi} 
+\newcommand{\fragf}[1]{\relax\ifmmode {\sf Frags}^*_{#1} \else ${\sf Frags}^*_{#1}$\fi} 
+\newcommand{\fragi}[1]{\relax\ifmmode {\sf Frags}^\omega_{#1} \else ${\sf Frags}^\omega_{#1}$\fi} 
+
+\newcommand{\reach}[1]{\relax\ifmmode {\sf Reach}_{#1} \else ${\sf Reach}_{#1}$\fi} 
+\newcommand{\pair}[2]{\relax\ifmmode \langle #1, #2 \rangle \else $\langle #1, #2 \rangle$\fi} 
+
+\newcommand{\TE}{\relax\ifmmode \mathit{Time} \else $\mathit{Time}$ \fi} 
+\newcommand{\EQ}{\relax\ifmmode \mathit{Enq} \else $\mathit{Enq}$ \fi} 
+\newcommand{\DQ}{\relax\ifmmode \mathit{Deq} \else $\mathit{DeqTime}$ \fi} 
+\newcommand{\E}{\relax\ifmmode \mathsf{E} \else $\mathsf{E}$ \fi}
+
+\newcommand{\loc}{\relax\ifmmode \mathit{loc} \else $\mathit{loc}$ \fi}
+\newcommand{\abs}{\relax\ifmmode \mathit{abs} \else $\mathit{abs}$ \fi}
+
+\newcommand{\execs}{{\exec{}}}
+\newcommand{\traces}{{\trace{}}}
+\newcommand{\fragss}{{\frag{}}}
+\newcommand{\fexecs}{{\execf{}}}
+\newcommand{\ftraces}{{\tracef{}}}
+\newcommand{\ffragss}{{\fragf{}}}
+\newcommand{\iexecs}{{\execi{}}}
+\newcommand{\itraces}{{\tracei{}}}
+\newcommand{\ifragss}{{\fragi{}}}
+\newcommand{\fstate}{{\sf fstate}}  
+\newcommand{\lstate}{{\sf lstate}}  
+\newcommand{\ltime}{{\sf ltime}}  
+\newcommand{\dur}{{\sf dur}}  
+\newcommand{\mode}{{\sf mode}}  
+\newcommand{\ftime}{{\sf ftime}}  
+
+% 
+% \newenvironment{anotation}[1][Nancy]{\begin{quote}\small[[[#1]]]}{\normalsize\end{quote}}
+% \newcommand{\ba}{\begin{anotation}}
+% \newcommand{\ea}{\end{anotation}}
+% 
+% \newcommand{\bcb}{\chgbarbegin}
+% \newcommand{\ecb}{\chgbarend}
+% \chgbarwidth 1pt
+% 
+% \newcommand{\dec}{\ensuremath{{:}}}
+% \newcommand{\eqdef}{\mathbin{::=}}
+% \newcommand{\I}{{\ensuremath{\cap}}}
+
+
+
+% OPERATIONS ON SETS, RELATIONS AND FUNCTIONS
+\newcommand{\pow}[1]{{\bf P}(#1)} % powerset
+\newcommand{\inverse}[1]{#1^{-1}}
+\newcommand{\range}[1]{\ms{range{(#1)}}}
+\newcommand{\domain}[1]{{\it dom}(#1)}
+\newcommand{\type}[1]{\ms{type{(#1)}}}
+\newcommand{\dtype}[1]{\ms{dtype{(#1)}}} % dynamic type
+\newcommand{\restr}{\mathrel{\lceil}}
+\newcommand{\proj}{\matrel{\lceil}}
+\newcommand{\restrrange}{\mathrel{\downarrow}}
+\newcommand{\point}[1]{\wp(#1)}                 %point trajectory
+
+
+
+% HYBRID AUTOMATA
+\def\A{{\cal A}} % HA
+\def\B{{\cal B}} % HA
+\def\C{{\cal C}} % HA
+\def\D{{\cal D}} % set of discrete steps
+\def\E{{\cal E}} % HA
+\def\F{{\cal F}} % HA
+\def\G{{\cal G}} % pieces of SHIOA
+\def\H{{\cal H}} % HA
+\def\I{{\cal I}} % environment sequence
+\def\K{{\cal K}} % environment sequence
+\def\L{{\cal L}} % environment sequence
+\def\M{{\cal M}} % Mode switching transitions
+\def\O{{\cal O}} % outcome function
+\def\P{{\cal P}} % set of modes
+\def\Q{{\cal Q}} % set of modes
+\def\R{{\cal R}} % relation
+\def\S{{\cal S}} % set of trajectories
+\def\T{{\cal T}} % set of trajectories
+\def\V{{\cal V}} % Lyapunov function
+\def\U{{\cal U}} % set of trajectories
+\def\X{{\cal X}} % Lyapunov function
+\def\Y{{\cal Y}} % set of trajectories
+\def\Z{{\cal Z}} % set of trajectories
+
+\def\u{{\mathsf u}} % set of inputs
+
+% more special characters
+
+\newcommand{\col}[1]{\relax\ifmmode \mathscr #1\else $\mathscr #1$\fi}
+\def\statemodels{\col{S}}
+
+
+% Names of actions, automata etc
+\definecolor{HIOAcolor}{rgb}{0.776,0.22,0.07}
+\newcommand{\HIOA}{\textcolor{HIOAcolor}{\tt HIOA\hspace{3pt}}}
+\newcommand{\PVS}{\textcolor{HIOAcolor}{\tt PVS\hspace{3pt}}}
+\newcommand{\PVSnogap}{\textcolor{HIOAcolor}{\tt PVS\hspace{1pt}}}
+\newcommand{\HIOAbiggap}{\textcolor{HIOAcolor}{\tt HIOA\hspace{6pt}}}
+\newcommand{\HIOAnogap}{\textcolor{HIOAcolor}{\tt HIOA}}
+\newcommand{\anyrelation}{\lessgtr}
+
+% Transformation for ADT
+\newcommand{\SC}[2]{\relax\ifmmode {\tt Scount}(#1,#2) \else ${\tt Scount}(#1,#2)$\fi} 
+\newcommand{\SCM}[2]{\relax\ifmmode {\tt Smin}(#1,#2) \else ${\tt Smin}(#1,#2)$\fi} 
+\newcommand{\Aut}[1]{\relax\ifmmode {\tt Aut}(#1) \else ${\tt Aut}(#1)$\fi} 
+
+\newcommand{\auto}[1]{{\operatorname{\mathsf{#1}}}}
+\newcommand{\act}[1]{{\operatorname{\mathsf{#1}}}}
+\newcommand{\smodel}[1]{{\operatorname{\mathsf{#1}}}}
+\newcommand{\pvstheory}[1]{{\operatorname{\mathit{#1}}}}
+%\newcommand{\auto}[1]{\relax\ifmmode \sf #1\else $\sf #1$\fi}
+%\newcommand{\act}[1]{\relax\ifmmode \sf #1\else $\sf #1$\fi}
+
+
+\newcommand{\Automaton}{{\bf automaton}}
+\newcommand{\Asserts}{{\bf asserts}}
+\newcommand{\Assumes}{{\bf assumes}}
+\newcommand{\Backward}{{\bf backward}}
+\newcommand{\By}{{\bf by}}
+\newcommand{\Case}{{\bf case}}
+\newcommand{\Choose}{{\bf  choose}}
+\newcommand{\Components}{{\bf components}}
+\newcommand{\Const}{{\bf const}}
+\newcommand{\Converts}{{\bf converts}}
+\newcommand{\Do}{{\bf do}}
+\newcommand{\Eff}{{\bf eff}}
+\newcommand{\Else}{{\bf else}}
+\newcommand{\Elseif}{{\bf elseif}}
+\newcommand{\Enumeration}{{\bf enumeration}}
+\newcommand{\Ensuring}{{\bf ensuring}}
+\newcommand{\Exempting}{{\bf exempting}}
+\newcommand{\Fi}{{\bf fi}}
+\newcommand{\For}{{\bf for}}
+\newcommand{\Forward}{{\bf forward}}
+\newcommand{\Freely}{{\bf freely}}
+\newcommand{\From}{{\bf from}}
+\newcommand{\Generated}{{\bf generated}}
+\newcommand{\Local}{{\bf local}}
+\newcommand{\Hidden}{{\bf hidden}}
+\newcommand{\If}{{\bf if}}
+\newcommand{\In}{{\bf in}}
+\newcommand{\Implies}{{\bf implies}}
+\newcommand{\Includes}{{\bf includes}}
+\newcommand{\Introduces}{{\bf introduces}}
+\newcommand{\Input}{{\bf input}}
+\newcommand{\Kind}{{\bf kind}}
+\newcommand{\Initially}{{\bf initially}}
+\newcommand{\Internal}{{\bf internal}}
+\newcommand{\Invariant}{{\bf invariant}}
+\newcommand{\Od}{{\bf od}}
+\newcommand{\Of}{{\bf of}}
+\newcommand{\Output}{{\bf output}}
+\newcommand{\Partitioned}{{\bf partitioned}}
+\newcommand{\Pre}{{\bf pre}}
+\newcommand{\Signature}{{\bf signature}}
+\newcommand{\Simulation}{{\bf simulation}}
+\newcommand{\Sort}{{\bf sort}}
+\newcommand{\States}{{\bf states}}
+\newcommand{\Tasks}{{\bf tasks}}
+\newcommand{\Then}{{\bf then}}
+\newcommand{\To}{{\bf to}}
+\newcommand{\Trait}{{\bf trait}}
+\newcommand{\Traits}{{\bf traits}}
+\newcommand{\Transitions}{{\bf transitions}}
+\newcommand{\Tuple}{{\bf tuple}}
+\newcommand{\Type}{{\bf type}}
+\newcommand{\Union}{{\bf union}}
+\newcommand{\Uses}{{\bf uses}}
+\newcommand{\Where}{{\bf where}}
+\newcommand{\While}{{\bf while}}
+\newcommand{\With}{{\bf with}}
+
+% Spacing
+\newcommand{\FFF}{\vspace{0.1in}}
+\newcommand{\BBB}{\hspace{-0.1in}}
+

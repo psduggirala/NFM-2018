@@ -1,0 +1,157 @@
+\section{Preliminaries}
+\label{sec:prelims}
+
+States and vectors are elements in $\reals^n$ are denoted as $x$ and $v$. Given a sequence $seq = s_1, s_2, \ldots$, the $i^{th}$
+element in the sequence is denoted as $seq[i]$. In this work, we use the following mathematical notation of a linear hybrid automata.
+
+\begin{definition}
+\label{def:hybridAutomata}
+ A \emph{linear hybrid automaton} is defined to be a tuple \newline
+ $\tup{Loc, X, Flow, Inv, Trans, Guard}$ where:
+ \vspace{-0.2cm}
+\begin{description}
+\item[$Loc$] is a finite set of locations (also called modes).
+\item[$X$] $\subseteq \reals^n$ is the state space of the behaviors.
+\item[$Flow$] $: Loc \rightarrow \textit{AffineDeq}(X)$ assigns an affine differential equation $\dot{x} = A_l x + B_l$ for location $l$ of the hybrid automaton.
+\item[$Inv$] $: Loc \rightarrow 2^{\reals^n}$ assigns an invariant set for each location of the hybrid automaton.
+\item[$Trans$] $\subseteq Loc \times Loc$ is the set of discrete transitions.
+\item[$Guard$] $: Trans \rightarrow 2^{\reals^n}$ defines the set of states where a discrete transition is enabled.
+\end{description}
+\vspace{-0.2cm}
+For a linear hybrid automaton, the invariants and guards are given as a conjunction of linear constraints.
+\end{definition}
+
+The \textit{set of initial states} $\Theta \deq (loc_0, S_0)$ where $loc_0 \in Loc$ is called the initial location and $S_0$ is given as a conjunction of linear constraints.
+%
+An \textit{initial state} $q_0$ is a pair $(Loc_0, x_0)$, such that $x_0 \in X$, and $(Loc_0, x_0) \in \Theta$.
+%
+Unsafe states $U$ is also given as a conjunction of linear constraints. 
+
+\begin{definition}
+\label{def:hybridExecution}
+Given a hybrid automaton and an initial set of states $\Theta$, an \emph{execution} of the hybrid automaton is a sequence of trajectories and actions $\tau_0 a_1 \tau_1 a_2 \ldots $ such that
+%
+(i) the first state of $\tau_0$ denoted as $q_0$ is in the initial set, i.e., $q_0 = (Loc_0, x_0)\in \Theta$,
+%
+(ii) each $\tau_i$ is the solution of the differential equation of the corresponding location $Loc_i$, 
+%
+(iii) all the states in the trajectory $\tau_i$ respect the invariant of the location $Loc_i$,
+%
+and (iv) the state of the trajectory before each action $a_i$ satisfies $Guard(a_i)$.
+\end{definition}
+%
+The set of states encountered by all executions that conform to the above semantics is called the \emph{reachable set}.
+For linear systems, the closed form expression for the trajectories is given as $\tau_i(t) = e^{A_l t}\tau(0) + \int_{0}^{t}e^{A_l (t-\mu)}B_l d\mu$
+where $A_l$ and $B_l$ define the affine dynamics of the mode.
+%
+Instead of computing the reachable set of states, we compute the set of states which can be reached by a fixed simulation algorithm.
+%
+We call this reachable set as \emph{simulation equivalent reachable set}, defined in~\cite{}. We provide the details here for completeness.
+
+\begin{definition}
+\label{def:stepSim}
+A sequence $\rho_{H}(q_0,h) = q_0, q_1, q_2, \ldots$, where each $q_i = (Loc_i, x_i)$, is a $(q_0, h)$-simulation of the hybrid automaton $H$ with initial set $\Theta$ if and only if $q_0 \in \Theta$ and each pair $(q_i, q_{i+1})$ corresponds to either: 
+%
+(i) a continuous trajectory in location $Loc_i$ with $Loc_i=Loc_{i+1}$ such that a trajectory starting from $x_i$ would reach $x_{i+1}$ after exactly $h$ time units with $x_i \in Inv(Loc_i)$, or 
+%
+(ii) a discrete transition from $Loc_i$ to $Loc_{i+1}$ (with $Loc_{i-1} = Loc_i$) where  $\exists a \in Trans$ such that $x_i = x_{i+1}$, $x_i \in Guard(a)$ and $x_{i+1} \in
+Inv(Loc_{i+1})$.
+%
+Bounded-time variants of these simulations, with time bound $k\times h$, are called $(q_0, h, k)$-simulations.
+\end{definition}
+
+\begin{definition}[Simulation-Equivalent Reachable Set]
+\label{def:simRS}
+Given a hybrid automaton $H$, initial set $\Theta$, bounded time $T$, and simulation step size $h$, the simulation equivalent reachable set $RS$ is the set of all states $y$ such that there exists a simulation $\rho_{H}(q_0, h, k)$ with $q_0 \in \Theta$ that visits $y$.
+\end{definition}
+
+\begin{definition}[Simulation-Equivalent Safety]
+\label{def:simSafe}
+A hybrid automaton $H$ with initial set $\Theta$, time bound $T$, step size $h$, and unsafe set $U$ is said to be Simulation-equivalent safe, if all the simulations $\rho_{H}(q_0, h, k)$ with $q_0$ from $\Theta$ do not visit the unsafe set $U$.
+\end{definition}
+
+
+\subsection{Reachable Set Computation of Linear Dynamical Systems Using Generalized Stars}
+\label{sec:reachStars}
+
+In this section we will outline the reachable set computation of linear dynamical systems that uses a symbolic representation called \emph{Generalized Stars}.
+%
+Reachable set computation using generalized star representation leverages the superposition property of the linear dynamical systems.
+%
+We include the basic details of this representation and the reachable set computation technique in this paper for completeness. For additional details, the readers can refer to~\cite{}.
+
+
+\begin{definition}
+\label{def:genStar}
+A \emph{generalized star} (or simply star) $\Theta$ is a tuple $\tup{c,V,P}$ where $c \in \reals^n$ is called the \emph{center}, $V = \{v_1,v_2,\ldots, v_m\}$ is a set of $m$ ($\leq n$) vectors in $\reals^n$ called the \emph{basis vectors}, and $P: \reals^n \rightarrow \{\top, \bot\}$ is a predicate.
+
+A generalized star $\Theta$ defines a subset of $\reals^n$ as follows.
+\begin{eqnarray*}
+\means{\Theta} = \{ x\: |\: \exists \bar{\alpha} = [\alpha_1, \ldots, \alpha_m]^T \mbox{ such that } x = c + \Sigma_{i=1}^n \alpha_i v_i \mbox{ and } P(\bar{\alpha}) = \top \}
+\end{eqnarray*}
+Sometimes we will refer to both $\Theta$ and $\means{\Theta}$ as $\Theta$.
+\end{definition}
+
+The generalized stars that we encounter in our analysis have predicate $P$ defined as a conjunction of linear constraints.
+
+Given an initial set $\Theta \deq \tup{c, V, P}$ with $V = \{v_1, v_2, \ldots, v_m\} (m \leq n)$, we compute the reachable set for a linear dynamical system $\dot{x} = Ax + B$ using simulations.
+%
+We generate simulations starting from $c$ (denoted as $\rho(c, h, k)$), and $c+v_j$ $\forall 1\leq j \leq n$ (denoted as $\rho(c+v_j, h, k)$). 
+%
+For a given time instance $i\cdot h$, the reachable set denoted as $Reach_i(\Theta)$ is defined as $\tup{c_i, V_i, P}$ where $c_i = \rho(c, h, k)[i]$ and $V_i = \tup{v_1', v_2', \ldots, v_m'}$ where $\forall 1\leq j \leq m, v_j' = \rho(c+v_j, h, k)[i] - \rho(c, h, k)[i]$. 
+%
+Notice that the predicate does not change for the reachable set, but only the center and the basis vectors are changed.
+%
+
+\begin{algorithm}[h!]
+\SetKwInOut{Input}{input}\SetKwInOut{Output}{output}\SetKw{Return}{return}
+\Input{Initial Set: $\Theta = \tup{c, V, P}$, time step: $h$, time bound: $k\cdot h$}
+\Output{$Reach(\Theta) = Reach_0(\Theta), \ldots, Reach_k(\Theta)$}
+\For{ each $i$ from $0$ to $k$}{
+   $c_i \gets \rho(c, h, k)[i]$\; \label{ln:lineCenter}
+   \For{ each $v_j \in V$ }{ \label{ln:begLoop}
+      $v_j' \gets \rho(c+v_j, h, k)[i] - c_i$\; \label{ln:simVec}
+   } \label{ln:endLoop}
+   $V_i \gets \{ v_1', \ldots, v_m'\}$\;
+   $Reach_i(\Theta) \gets \tup{c_i, V_i, P}$\; \label{ln:reachSeti1}
+   Append $Reach_i(\Theta)$ to $Reach(\Theta)$\;
+}
+{\bf return} $Reach(\Theta)$\;
+\caption{Algorithm that computes the reachable set for a linear dynamical system at time instances $i \cdot h$ from $n+1$ simulations.}
+\label{alg:algoFullInfo}
+\end{algorithm}
+
+Notice that Algorithm~\ref{alg:algoFullInfo} can compute the reachable set of linear dynamical systems using $n+1$ simulations. 
+%
+The reachable set computation technique for hybrid automata has two additional subroutines.
+%
+First, it computes the overlap of the reachable set in each location with the location invariant.
+%
+Second, it also computes the overlap of the reachable sets with the guards of discrete transitions that cause a change in location.
+%
+When a discrete transition is performed, the reachable set in the new location is computed by invoking the Algorithm~\ref{alg:algoFullInfo} subroutine.
+%
+Algorithm~\ref{alg:algoHybrid} is a pseudocode description of the algorithm.
+
+\begin{algorithm}[h!]
+\SetKwInOut{Input}{input}\SetKwInOut{Output}{output}\SetKw{Return}{return}
+\Input{Initial set $\Theta$, Hybrid automaton $H$, Time bound $k \cdot h$.}
+\Output{${\it ReachSet}$ as the set of reachable states.}
+${\it queueStars} \gets \emptyset$; append $\Theta$ to ${\it queueStars}$; ${\it ReachSet} \gets \emptyset$\;
+\While{${\it queueStars}$ is not empty}{
+    $S \gets {\sf dequeue}({\it queueStars})$\;
+    $R \gets {\sf ReachableSetDynamicalSystem}(S, S.loc)$\;
+    $R' \gets {\sf InvariantOverlap}(R, R.loc)$\;
+    ${\it ReachSet} \gets {\it ReachSet} \cup R'$\;
+    ${\it nextRegions} \gets {\sf discreteTrans}(R', H.Trans)$\; \label{ln:guardIntersection}
+    append ${\it nextRegions}$ to ${\it queueStars}$\; \label{ln:appendQueueStars}
+}
+{\bf return} ${\it ReachSet}$\;
+\caption{Algorithm that computes bounded time simulation equivalent reachable set.}
+\label{alg:algoHybrid}
+\end{algorithm}
+
+
+
+
+

@@ -1,0 +1,76 @@
+\section{Introduction}
+\label{sec:intro}
+
+Aeronautical systems such as air-traffic control protocols, auto-pilot software, and satellite maneuver protocols are safety critical in nature.
+%
+Bugs in such systems can lead to many unsafe scenarios, causing loss of property and in some cases, life.
+%
+Testing such systems extensively under various scenarios often provides the system designer and the user with confidence that the systems functions in a safe manner.
+%
+However, such extensive testing has its own set of challenges.
+%
+For systems such as air-traffic control protocols, testing the protocols under various scenarios is an expensive endeavour.
+%
+In the case of satellite maneuver protocols, it is impossible to create a controlled test bed on earth to test such systems.
+%
+Moreover, once deployed, updates to the control algorithms on satellite maneuver protocols is very difficult, if not impossible.
+
+
+One of the widely used method for ensuring that the system does not encounter any unsafe scenarios is model-based analysis.
+%
+In this method, a high-fidelity model of the system is created and extensive testing and verification is performed on the model.
+%
+% Model-based analysis is also helpful in reducing the number of test scenarios of the system.
+%
+% It is particularly well suited for satellite maneuver protocols as creating a test bed for such systems is impossible.
+% 
+% 
+Formal verification of safety properties of several aeronautical systems modelled as a hybrid automata are widely available in the literature.
+%
+This is because hybrid automata is a well suited formalism for modeling satellite maneuver protocols. 
+%
+% The motion of satellite in each mode is modelled as a differential equation. 
+%
+% The change in mode of operation is modelled as a transition among these modes.
+%
+In this paper, we perform safety analysis of satellite rendezvous mission modelled as a hybrid automata.
+
+
+Our analysis relies on computing an artifact called {\em reachable set}. 
+%
+Given a set of initial configurations (often uncountable) $\Theta$, the reachable set is the set of all possible configurations encountered by the system trajectories starting from $\Theta$. 
+%
+Since the reachable set is also an uncountable set, the reachable set computation techniques compute a symbolic representation of the reachable set.
+%
+Typically, symbolic representations of convex sets such as support functions, polytopes, ellipsoids, zonotopes, etc. are used.
+%
+This is because operations such as linear transformation, intersection, and minkowski sum can be efficiently performed using such convex representations.
+
+
+These convex representations are at a significant disadvantage while performing mode switches.
+%
+Consider the case of a satellite rendezvous mission that involves a mode switch from continue to abort.
+%
+This mode switch can happen at any time in a given interval. 
+%
+Due to this non-determinism, the initial set of states in the abort mode is a convex overapproximation of the reachable set. 
+%
+Often, this overapproximation is too conservative and hence, such reachable set computation is not useful in determining whether all the behaviors of the systems are safe. 
+%
+\sridhar{Probably a spaceEx figure for state space exploration might come in handy here.}
+
+This paper exclusively focuses on improving the accuracy of the reachable set by presenting various aggregation strategies for discrete transitions in linear hybrid automata.
+%
+We present a data structure called Aggregated Directed Acyclic Graph (AGGDAG) for keeping track of aggregations and their dependence on the reachable set.
+%
+Using AGGDAG, we present several deaggregation strategies based on the counterexamples generated for the safety specification. 
+%
+We also provide soundness and relative completeness guarantees of our deaggregation strategies.
+%
+
+
+This work on developing deaggregation strategies is crucial for performing safety analysis of a satellite rendezvous mission. 
+%
+\sridhar{Might have to be ommitted.} Due to the non-determinism in the mode switching, state of the art tools are only able to analyze restricted switching behavior of this satellite rendezvous mission.
+%
+We demonstrate that using the deaggregation strategies presented in this paper, we can perform accurate safety analysis very quickly.
