@@ -20,19 +20,21 @@ Our model is based on a published benchmark for this system~\cite{chan2017verify
 %
 The relative dynamics are linearized using the Clohessy-Wiltshire-Hill (CWH) equations~\cite{wh1960terminal}, which is often used in close proximity operations. The hybrid automaton consists of three modes, two for different navigation strategies, and one for the passive dynamics, shown in Figure~\ref{fig:ha}.
 %
-In our analysis, we check for passive safety over the full time bound, $t_1=0$ and $t_2=200$.
+This system is a five-dimensional linear system, with nondeterministic transitions to the passive mode.
 %
-We use the same initial set of states, dynamics, and controller as described in the benchmark proposal~\cite{chan2017verifying}.
+In our analysis, we check for passive safety over the full analysis time bound, $t_1=0$ and $t_2=200$.
+%
+The initial set of states, dynamics, and controller in each mode are described in the original benchmark proposal~\cite{chan2017verifying}.
 %
 We focus on the collision-free safety property, that the spacecraft must remain 0.2 meters apart at all times.
 
 \begin{figure}[t]
 \centerline{\includegraphics[width=0.9\columnwidth]{images/ha.png}}
-\caption{Hybrid automaton model of case study (image from~\cite{chan2017verifying}). We check for passive safety over the full time bound ($t_1=0$ and $t_2=200$).}
+\caption{Hybrid automaton model of our case study (image from~\cite{chan2017verifying}, which also include the dynamics matrices). We check for passive safety over the full time bound ($t_1=0$ and $t_2=200$).}
 \label{fig:ha}
 \end{figure}
 
-Although several tools have successfully analyzed a version of this model in the ARCH hybrid systems tools competition in 2018~\cite{archcomp18linear}, a critical simplification was made: the competition model did not actually check the passive safety requirement. In particular, the competition model used a \emph{fixed} time to transition to the passive model. This is an unrealistic simplification, since the time of failure cannot not be known in advance. 
+Although several tools have successfully analyzed a version of this model in the ARCH hybrid systems tools competition in 2018~\cite{archcomp18linear}, a critical simplification was made: the competition model did not actually check the passive safety requirement. In particular, the competition model used a \emph{fixed} time to transition to the passive mode. This is an unrealistic simplification, since the time of failure cannot not be known in advance. 
 
 The analysis done in the original work~\cite{chan2017verifying} is slightly better, in that it checks for passive safety for a known 5 minute failure interval during the 200 minute maneuver. The reason stated in the paper for this is that, if larger time intervals are used,
 ``the initial set of states under the Passive mode is large, making it very difficult to prove safety.'' The suggestion is then to create subintervals that cover the full time range of transitions to the passive mode, and then run several experiments. Presumably, a manual guess-and-check approach should be used to create these subintervals.
@@ -45,14 +47,14 @@ We first analyze the runtime of the method, shown in Table~\ref{tab:runtime}.
 %
 We look at the number of seconds and the number of reachability steps needed to prove safety for the system as we vary the step size.
 %
-A reachability step is a single continuous post operator, or a refinement step when performing deaggregation.
+A reachability step in this case is a single continuous post operation (safety check at a single multiple of the time step), or a refinement step when performing deaggregation.
 %
 As the step size for this system is reduced, the number of combinations of steps that reach each guard in the hybrid automaton increases.
 %
 However, from the table, we observe that the runtime and number of steps remains inversely proportional to the step size.
 %
 This means that the analysis is successfully using state set aggregation to eliminate combinatorial explosion, with sufficient
-precision to guarantee the system avoid collisions.
+precision to guarantee the system avoids collisions.
 
 \setlength{\tabcolsep}{2pt}
 \begin{table}[t]
@@ -106,7 +108,7 @@ present (the deaggregation continues until single time instants are considered, 
 \end{tabular}
 \end{table}
 
-Overall, our main evaluation result is that analysis of this system is possible though maintaining the aggdag data structure  and
+Overall, our main evaluation result is that analysis of this system is possible by maintaining the aggdag data structure and
 performing deaggregation upon reaching an error mode.
 %
 Prior to this, all analysis on this model checked for switching to the passive mode at a single time instant or small time window, since otherwise the methods would have too much error to prove the system is safe.
