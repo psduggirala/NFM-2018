@@ -30,4 +30,13 @@ More worryingly, the reachable set of $S'$ will trigger additional discrete tran
 Such discrete transitions are artifacts of the conservative overapproximation during the aggregation process.
 
 
-To overcome the above mentioned challenges, 
+To overcome the above mentioned challenges, we develop new aggregation and deaggregation techniques. Our technique works the following way. 
+First, while handling discrete transitions, we perform aggregation for all the sets in the $queueStars$ that go to the same mode. 
+%
+The resultant star is tagged as an \textsf{aggregate} and the reachable set computation continues where the sets are tagged as \textsf{aggregate}. 
+%
+This way of computing the reachable set will result in a conservative overapproximation.
+%
+If one of the sets in the computation overlaps with the unsafe set $U$, we check if the set is tagged as \textsf{aggregate}.
+%
+If so, then we go to the initial set in the location that caused this overapproximation and deaggregate this 
