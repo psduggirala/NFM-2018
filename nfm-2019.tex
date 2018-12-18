@@ -52,7 +52,7 @@ Department of Computer Science and Engineering, \\ University of Connecticut, US
 Reachable set computation tools for hybrid systems approximate the reachable set over an interval of time with a symbolic representation. 
 Most reachable set computation tools implement some form of aggregation for handling discrete transitions. However, such aggregation generate very conservative overapproximations, which are not useful in inferring the safety properties. If such an aggregation is not performed, then one has to keep track of exponential number of symbolic representations and hence suffer from computational drawbacks.
 
-In this paper we present a new data structure called Aggregated Directed Acyclic Graph (AGGDAG) for keeping track of reachable sets. Using AGGDAG, we present a new deaggregation technique for performing selective deaggregation. Our deaggregation strategy is guided by counterexamples and hence provides completeness guarantees for safety verification. We present a case study of inferring safety properties of satellite rendezvous and demonstrate the effectiveness of our approach.
+$~~$In this paper we present two types of technqiues, namely, template based and convex hull based techniques for aggregation. Additionally, we present Aggregated Directed Acyclic Graph (AGGDAG) for keeping track of reachable sets. Using AGGDAG, we present a new deaggregation technique for performing selective deaggregation. Our deaggregation strategy is guided by counterexamples and hence provides completeness guarantees for safety verification. We present a case study of inferring safety properties of satellite rendezvous and demonstrate the effectiveness of our approach.
 
 % For handling discrete transitions, 
 % One of the major challenges in computing reachable set for hybrid systems computation is to handle the discrete transitions. 
@@ -70,6 +70,14 @@ In this paper we present a new data structure called Aggregated Directed Acyclic
 \input{preliminaries}
 \input{algorithm}
 \input{casestudy}
+
+%\vspace{-0.2cm}
+\section{Conclusions}
+\vspace{-0.4cm}
+In this paper we have focused on computing accurate reachable set computation of hybrid automata where there is high nondeterminism in the discrete transitions. We presented two common techniques used for aggregation and highlighted the relative merits and demerits of each technique. We also presented aggdag data structure and outlined the deaggregation strategies that were implemented. Using the techniques we were able to handle a challenging case study of satellite rendezvous mission and prove the passive safety property.
+
+Handling discrete transitions is still a major hurdle in scalable and accurate computation of reachable set for linear hybrid systems. As a part of future work, we intend to explore intelligent aggregation and deaggregation strategies that adapt based on the dynamics to provide an accurate reachable set.
+
 
 \bibliographystyle{abbrv}
 \bibliography{bak}

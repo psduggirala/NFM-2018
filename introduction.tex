@@ -7,16 +7,17 @@ Bugs in such systems can lead to many unsafe scenarios, causing loss of property
 %
 Testing such systems extensively under various scenarios often provides the system designer and the user with confidence that the systems functions in a safe manner.
 %
-However, such extensive testing has its own set of challenges.
+However, such extensive testing is not always possible. 
+%has its own set of challenges.
 %
-For systems such as air-traffic control protocols, testing the protocols under various scenarios is an expensive endeavour.
+%For systems such as air-traffic control protocols, testing the protocols under various scenarios is an expensive endeavour.
 %
 In the case of satellite maneuver protocols, it is impossible to create a controlled test bed on earth to test such systems.
 %
 Moreover, once deployed, updates to the control algorithms on satellite maneuver protocols is very difficult, if not impossible.
-
-
-One of the widely used method for ensuring that the system does not encounter any unsafe scenarios is model-based analysis.
+%
+%
+One of the widely used method for ensuring that the system does not encounter any unsafe scenarios in such cases is model-based analysis.
 %
 In this method, a high-fidelity model of the system is created and extensive testing and verification is performed on the model.
 %
@@ -25,29 +26,29 @@ In this method, a high-fidelity model of the system is created and extensive tes
 % It is particularly well suited for satellite maneuver protocols as creating a test bed for such systems is impossible.
 % 
 % 
-Formal verification of safety properties of several aeronautical systems modelled as a hybrid automata are widely available in the literature.
+Hybrid automata is a well suited framework for modeling such safety critical systems and formal verification approaches for proving safety properties of several aeronautical systems modeled as a hybrid automata are widely available in the literature~\cite{tomlin1998conflict,pallottino2002conflict,prabhakar2009verifying,johnson2012satellite,munoz2013tcas,zhao2014formal,duggirala2014temporal,jeannin2015formally}.
 %
-This is because hybrid automata is a well suited formalism for modeling satellite maneuver protocols. 
+%This is because hybrid automata is a well suited formalism for modeling satellite maneuver protocols. 
 %
 % The motion of satellite in each mode is modelled as a differential equation. 
 %
 % The change in mode of operation is modelled as a transition among these modes.
 %
-In this paper, we perform safety analysis of satellite rendezvous mission modelled as a hybrid automata.
 
-
+In this paper, we perform safety analysis of satellite rendezvous mission modeled as a hybrid automata.
+%
 Our analysis relies on computing an artifact called {\em reachable set}. 
 %
 Given a set of initial configurations (often uncountable) $\Theta$, the reachable set is the set of all possible configurations encountered by the system trajectories starting from $\Theta$. 
 %
-Since the reachable set is also an uncountable set, the reachable set computation techniques compute a symbolic representation of the reachable set.
+Since the reachable set is also an uncountable set, we compute a symbolic representation of the reachable set.
 %
-Typically, symbolic representations of convex sets such as support functions, polytopes, ellipsoids, zonotopes, etc. are used.
+Often, symbolic representations of convex sets such as support functions~\cite{spaceex}, polytopes~\cite{Frehse05_phaver}, zonotopes~\cite{girard2006efficient}, etc. are used because operations such as linear transformation, intersection, and Minkowski sum can be easily performed over these representations.
 %
-This is because operations such as linear transformation, intersection, and minkowski sum can be efficiently performed using such convex representations.
+%This is because operations such as linear transformation, intersection, and minkowski sum can be efficiently performed using such convex representations.
 
 
-These convex representations are at a significant disadvantage while performing mode switches.
+However, such convex representations are at a significant disadvantage while performing mode switches.
 %
 Consider the case of a satellite rendezvous mission that involves a mode switch from continue to abort.
 %
@@ -57,20 +58,28 @@ Due to this non-determinism, the initial set of states in the abort mode is a co
 %
 Often, this overapproximation is too conservative and hence, such reachable set computation is not useful in determining whether all the behaviors of the systems are safe. 
 %
-\sridhar{Probably a spaceEx figure for state space exploration might come in handy here.}
+While some approaches tried to avoid computing intersections, to compute the reachable set~\cite{althoff2012avoiding}, one has to perform overapproximation, which often becomes very conservative.
+%
+%\sridhar{Probably a spaceEx figure for state space exploration might come in handy here.}
 
-This paper exclusively focuses on improving the accuracy of the reachable set by presenting various aggregation strategies for discrete transitions in linear hybrid automata.
+This paper exclusively focuses on improving the accuracy of the reachable set by presenting template based and convex hull based aggregation strategies for discrete transitions in linear hybrid automata.
 %
-We present a data structure called Aggregated Directed Acyclic Graph (AGGDAG) for keeping track of aggregations and their dependence on the reachable set.
+We also present a data structure called Aggregated Directed Acyclic Graph (AGGDAG) and explain how aggdag helps us in implementing various deaggregation strategies. 
+%for keeping track of aggregations and their dependence on the reachable set.
 %
-Using AGGDAG, we present several deaggregation strategies based on the counterexamples generated for the safety specification. 
+%Using AGGDAG, we present several deaggregation strategies based on the counterexamples generated for the safety specification. 
 %
-We also provide soundness and relative completeness guarantees of our deaggregation strategies.
+We also provide soundness and relative completeness guarantees of our reachable set computation algorithm.
 %
+We implement our strategies in a tool called HyLAA~\cite{bak2017hscc} and analyze a satellite rendezvous mission.
+%
+Analyzing this model is particularly difficult because of the nondeterminism in switching behavior.
+%
+In the literature only restricted models of such switching behavior were analyzed owing to the overapproximation created by the state of the art tools.
 
 
-This work on developing deaggregation strategies is crucial for performing safety analysis of a satellite rendezvous mission. 
-%
-\sridhar{Might have to be ommitted.} Due to the non-determinism in the mode switching, state of the art tools are only able to analyze restricted switching behavior of this satellite rendezvous mission.
-%
-We demonstrate that using the deaggregation strategies presented in this paper, we can perform accurate safety analysis very quickly.
+%This work on developing deaggregation strategies is crucial for performing safety analysis of a satellite rendezvous mission. 
+%%
+%\sridhar{Might have to be ommitted.} Due to the non-determinism in the mode switching, state of the art tools are only able to analyze restricted switching behavior of this satellite rendezvous mission.
+%%
+%We demonstrate that using the deaggregation strategies presented in this paper, we can perform accurate safety analysis very quickly.

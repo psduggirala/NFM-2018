@@ -16,6 +16,7 @@ This requirement comes from real-world failures. In 2005, NASA’s DART spacecra
 \label{fig:chaser}
 \end{figure}
 
+
 Our model is based on a published benchmark for this system~\cite{chan2017verifying,jewison2016spacecraft}. The system is modeled as a hybrid automaton with different discrete modes depending on the sensors being used for navigation, and an LQR controller is designed to meet physical and geometric safety constraints.
 %
 The relative dynamics are linearized using the Clohessy-Wiltshire-Hill (CWH) equations~\cite{wh1960terminal}, which is often used in close proximity operations. The hybrid automaton consists of three modes, two for different navigation strategies, and one for the passive dynamics, shown in Figure~\ref{fig:ha}.
@@ -28,16 +29,20 @@ The initial set of states, dynamics, and controller in each mode are described i
 %
 We focus on the collision-free safety property, that the spacecraft must remain 0.2 meters apart at all times.
 
+Although several tools have successfully analyzed a version of this model in the ARCH hybrid systems tools competition in 2018~\cite{archcomp18linear}, a critical simplification was made: the competition model did not actually check the passive safety requirement. In particular, the competition model used a \emph{fixed} time to transition to the passive mode. This is an unrealistic simplification, since the time of failure cannot not be known in advance. 
+
+
+The analysis done in the original work~\cite{chan2017verifying} is slightly better, in that it checks for passive safety for a known 5 minute failure interval during the 200 minute maneuver. The reason stated in the paper for this is that, if larger time intervals are used,
+``the initial set of states under the Passive mode is large, making it very difficult to prove safety.'' The suggestion is then to create subintervals that cover the full time range of transitions to the passive mode, and then run several experiments. Presumably, a manual guess-and-check approach should be used to create these subintervals.
+
+
 \begin{figure}[t]
 \centerline{\includegraphics[width=0.9\columnwidth]{images/ha.png}}
 \caption{Hybrid automaton model of our case study (image from~\cite{chan2017verifying}, which also include the dynamics matrices). We check for passive safety over the full time bound ($t_1=0$ and $t_2=200$).}
 \label{fig:ha}
 \end{figure}
 
-Although several tools have successfully analyzed a version of this model in the ARCH hybrid systems tools competition in 2018~\cite{archcomp18linear}, a critical simplification was made: the competition model did not actually check the passive safety requirement. In particular, the competition model used a \emph{fixed} time to transition to the passive mode. This is an unrealistic simplification, since the time of failure cannot not be known in advance. 
 
-The analysis done in the original work~\cite{chan2017verifying} is slightly better, in that it checks for passive safety for a known 5 minute failure interval during the 200 minute maneuver. The reason stated in the paper for this is that, if larger time intervals are used,
-``the initial set of states under the Passive mode is large, making it very difficult to prove safety.'' The suggestion is then to create subintervals that cover the full time range of transitions to the passive mode, and then run several experiments. Presumably, a manual guess-and-check approach should be used to create these subintervals.
 
 The full passive safety problem can be solved using the proposed aggdag method. Our aggdag method performs full state aggregation (an overapproximation), and then recursively desegregates if the overapproximation reaches an error mode. The advantage of this is that (1) the method is fully automatic, (2) steps where the overapproximation is safe can be skipped by the refined sets, which is more efficient than using multiple independent experiments, and (3) if an error exists, it will be detected after full deaggregation is performed, which allows the generation of a concrete counter example trace. Other verification tools for linear hybrid systems do not typically generate counter-examples when safety cannot be proven.
 
@@ -54,39 +59,11 @@ As the step size for this system is reduced, the number of combinations of steps
 However, from the table, we observe that the runtime and number of steps remains inversely proportional to the step size.
 %
 This means that the analysis is successfully using state set aggregation to eliminate combinatorial explosion, with sufficient
-precision to guarantee the system avoids collisions.
+precision to guarantee the system avoids collisions. 
 
-A plot of the reachable state is shown in shown in Figure~\ref{fig:rendezvous}.
-%
-The initial states are in the lower left corner in the \texttt{far} mode,
-$x \in [-925, -875]$, $y \in [-425, -375]$.
-%
-Upon entering the set denoted by the dotted triangle,
-the system enters a different \texttt{approaching} mode.
-%
-The unsafe set is shown as the red box near the origin, which is not reachable after multiple deaggregation steps are performed.
-%
-A video of the computation and refinement process is available at \url{https://youtu.be/iXJlJnsxeN0}.
+In our experiments, we observed that template based aggregation works much faster than convex hull based aggregation. In this case study, due to the high nondeterminism in the switching conditions, the convex hull representation becomes prohibitively large and checking safety properties with that convex hull aggregation becomes expensive. We conjecture that in instances where switching does not occur often or the nondeterminism involved with the switching is less, convex hull approximation could work better.
+Our deaggregation strategy is from leaves to root, i.e., we first deaggregate the states in the discrete transition closest to the occurrence of the overlap with the unsafe set.
 
-\begin{figure}[t]
-\centerline{\includegraphics[width=0.8\columnwidth]{images/rendezvous.png}}
-\caption{The reachable set for the spacecraft rendezvous system at three different zoom levels is shown.
-  Reachable states near the unsafe set (red square near origin) are deaggregated using the proposed approach until no unsafe states are reachable.
-A video of the computation is online at \url{https://youtu.be/iXJlJnsxeN0}.}
-\label{fig:rendezvous}
-\end{figure}
-
-The analysis is exact, in that if the system were to have a collision, the deaggregation approach would eventually find it.
-%
-In the next experiment, we increase the collision distance from 0.2 to 1.0 meters.
-%
-In this case, a collision is possible, and our approach generates the corresponding counter-example trace (initial state and switching times)
-for every step size analyzed.
-%
-The results are shown in Table~\ref{tab:runtime} on the right.
-%
-The runtime increases compared with the safe version of the benchmark, as more deaggregation is necessary in this case since a real error trace is
-present (the deaggregation continues until single time instants are considered, at which point a concrete trace can be generated).
 
 \setlength{\tabcolsep}{2pt}
 \begin{table}[t]
@@ -118,6 +95,39 @@ present (the deaggregation continues until single time instants are considered, 
 \bottomrule
 \end{tabular}
 \end{table}
+
+A plot of the reachable state is shown in shown in Figure~\ref{fig:rendezvous}.
+%
+The initial states are in the lower left corner in the \texttt{far} mode,
+$x \in [-925, -875]$, $y \in [-425, -375]$.
+%
+Upon entering the set denoted by the dotted triangle,
+the system enters a different \texttt{approaching} mode.
+%
+The unsafe set is shown as the red box near the origin, which is not reachable after multiple deaggregation steps are performed.
+%
+A video of the computation and refinement process is available at \url{https://youtu.be/iXJlJnsxeN0}.
+
+\begin{figure}[t]
+\centerline{\includegraphics[width=0.8\columnwidth]{images/rendezvous.png}}
+\vspace{-0.2cm}
+\caption{{ The reachable set for the spacecraft rendezvous system at three different zoom levels is shown.
+  Reachable states near the unsafe set (red square near origin) are deaggregated using the proposed approach until no unsafe states are reachable.
+A video of the computation is online at \url{https://youtu.be/iXJlJnsxeN0}.}}
+\label{fig:rendezvous}
+\end{figure}
+
+The analysis is exact, in that if the system were to have a collision, the deaggregation approach would eventually find it.
+%
+In the next experiment, we increase the collision distance from 0.2 to 1.0 meters.
+%
+In this case, a collision is possible, and our approach generates the corresponding counter-example trace (initial state and switching times)
+for every step size analyzed.
+%
+The results are shown in Table~\ref{tab:runtime} on the right.
+%
+The runtime increases compared with the safe version of the benchmark, as more deaggregation is necessary in this case since a real error trace is
+present (the deaggregation continues until single time instants are considered, at which point a concrete trace can be generated).
 
 Overall, our main evaluation result is that analysis of this system is possible by maintaining the aggdag data structure and
 performing deaggregation upon reaching an error mode.
