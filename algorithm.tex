@@ -89,17 +89,7 @@ For computing $d_j$, $1 \leq j \leq l$, we solve $m$ linear programming problems
     $d_j \gets \mathsf{d_j^1, \ldots, d_j^m}$\;
 }
 
-
-${\it queueStars} \gets \emptyset$; append $\Theta$ to ${\it queueStars}$; ${\it ReachSet} \gets \emptyset$\;
-\While{${\it queueStars}$ is not empty}{
-    $S \gets {\sf dequeue}({\it queueStars})$\;
-    $R \gets {\sf ReachableSetDynamicalSystem}(S, S.loc)$\;
-    $R' \gets {\sf InvariantOverlap}(R, R.loc)$\;
-    ${\it ReachSet} \gets {\it ReachSet} \cup R'$\;
-    ${\it nextRegions} \gets {\sf discreteTrans}(R', H.Trans)$\; \label{ln:guardIntersection}
-    append ${\it nextRegions}$ to ${\it queueStars}$\; \label{ln:appendQueueStars}
-}
-{\bf return} ${\it ReachSet}$\;
+{\bf return} $P' \deq (c_1^T \alpha \leq d_1) \wedge (c_2^T \alpha \leq d_2) \wedge \ldots \wedge (c_l^{T} \alpha \leq d_l)$\;
 \caption{Algorithm that computes bounded time simulation equivalent reachable set.}
 \label{alg:algoHybrid}
 \end{algorithm}
