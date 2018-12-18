@@ -29,6 +29,11 @@ More worryingly, the reachable set of $S'$ will trigger additional discrete tran
 %
 Such discrete transitions are artifacts of the conservative overapproximation during the aggregation process.
 
+\begin{figure}[t]
+\centerline{\includegraphics[width=0.8\columnwidth]{images/deagg.png}}
+\caption{The deaggregation process is shown for a two-mode system. Upon reaching an error mode (red dotted region), the fully aggregated set of states (gray large region), is split in half (two black regions), which no longer contain error states. A video of the complete computation is available online at \url{https://youtu.be/SDzGKDBq5tM}.}
+\label{fig:deagg}
+\end{figure}
 
 To overcome the above mentioned challenges, we develop new aggregation and deaggregation techniques. Our technique works the following way. 
 First, while handling discrete transitions, we perform aggregation for all the sets in the $queueStars$ that go to the same mode. 

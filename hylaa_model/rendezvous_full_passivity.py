@@ -97,10 +97,10 @@ def make_automaton(safe):
     ############## Error Transitions ##############
     # In the aborting mode, the vehicle must avoid the target, which is modeled as a box B with
     # 0.2m edge length and the center placed as the origin
-    #rad = 0.2
+    rad = 0.2
 
     # unsafe rad: 1.0
-    rad = 1.0
+    #rad = 1.0
     
     t = ha.new_transition(passive, error)
     guard_mat = [ \
@@ -173,7 +173,7 @@ def make_settings(safe):
     'make the reachability settings object'
 
     # see hylaa.settings for a list of reachability settings
-    settings = HylaaSettings(0.1, 200.0) # step: 0.1, bound: 200.0
+    settings = HylaaSettings(1.0, 200.0) # step: 0.1, bound: 200.0
 
     settings.stop_on_aggregated_error = False
     #settings.process_urgent_guards = True
@@ -184,13 +184,13 @@ def make_settings(safe):
 
     settings.stdout = HylaaSettings.STDOUT_VERBOSE
 
-    settings.plot.plot_mode = PlotSettings.PLOT_NONE
-    settings.plot.filename = "rendezvous_full_passivity.png"
-    settings.plot.plot_size = (8, 9)
+    #settings.plot.plot_mode = PlotSettings.PLOT_IMAGE
+    #settings.plot.filename = "rendezvous_full_passivity.png"
+    #settings.plot.plot_size = (8, 9)
 
-    #settings.plot.video_pause_frames = 10
-    #settings.plot.plot_mode = PlotSettings.PLOT_VIDEO
-    #settings.plot.filename = "rendezvous_full_passivity.mp4"
+    settings.plot.video_pause_frames = 2
+    settings.plot.plot_mode = PlotSettings.PLOT_VIDEO
+    settings.plot.filename = "rendezvous_full_passivity.mp4"
 
     settings.plot.xdim_dir = [0] * 3
     settings.plot.ydim_dir = [1] * 3

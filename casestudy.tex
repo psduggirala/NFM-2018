@@ -43,7 +43,7 @@ The full passive safety problem can be solved using the proposed aggdag method. 
 
 Our experiments are performed on a system with an Intel i5-5300U CPU running at 2.30GHz with 16GB RAM and using Ubuntu Linux 18.04.
 %
-We first analyze the runtime of the method, shown in Table~\ref{tab:runtime}.
+We first analyze the runtime of the method, shown in Table~\ref{tab:runtime} on the left.
 %
 We look at the number of seconds and the number of reachability steps needed to prove safety for the system as we vary the step size.
 %
@@ -56,14 +56,46 @@ However, from the table, we observe that the runtime and number of steps remains
 This means that the analysis is successfully using state set aggregation to eliminate combinatorial explosion, with sufficient
 precision to guarantee the system avoids collisions.
 
+A plot of the reachable state is shown in shown in Figure~\ref{fig:rendezvous}.
+%
+The initial states are in the lower left corner in the \texttt{far} mode,
+$x \in [-925, -875]$, $y \in [-425, -375]$.
+%
+Upon entering the set denoted by the dotted triangle,
+the system enters a different \texttt{approaching} mode.
+%
+The unsafe set is shown as the red box near the origin, which is not reachable after multiple deaggregation steps are performed.
+%
+A video of the computation and refinement process is available at \url{https://youtu.be/iXJlJnsxeN0}.
+
+\begin{figure}[t]
+\centerline{\includegraphics[width=0.8\columnwidth]{images/rendezvous.png}}
+\caption{The reachable set for the spacecraft rendezvous system at three different zoom levels is shown.
+  Reachable states near the unsafe set (red square near origin) are deaggregated using the proposed approach until no unsafe states are reachable.
+A video of the computation is online at \url{https://youtu.be/iXJlJnsxeN0}.}
+\label{fig:rendezvous}
+\end{figure}
+
+The analysis is exact, in that if the system were to have a collision, the deaggregation approach would eventually find it.
+%
+In the next experiment, we increase the collision distance from 0.2 to 1.0 meters.
+%
+In this case, a collision is possible, and our approach generates the corresponding counter-example trace (initial state and switching times)
+for every step size analyzed.
+%
+The results are shown in Table~\ref{tab:runtime} on the right.
+%
+The runtime increases compared with the safe version of the benchmark, as more deaggregation is necessary in this case since a real error trace is
+present (the deaggregation continues until single time instants are considered, at which point a concrete trace can be generated).
+
 \setlength{\tabcolsep}{2pt}
 \begin{table}[t]
-\caption{Safe maneuver check time.}
+\caption{Verification time for the safe case (left) and unsafe case (right).}
 \label{tab:runtime}
 \centering
 \setlength{\aboverulesep}{0.0pt}
 \setlength{\belowrulesep}{0.0pt}
-\setlength{\extrarowheight}{-0.2ex}
+\setlength{\extrarowheight}{.0ex}
 \begin{tabular}{@{}lll@{}}
   \toprule
   Step Size & Runtime (s) & Num Steps \\
@@ -74,28 +106,7 @@ precision to guarantee the system avoids collisions.
   0.1 & 73.2 & 9557 \\
 \bottomrule
 \end{tabular}
-\end{table}
-
-The analysis is exact, in that if the system were to have a collision, the deaggregation approach would eventually find it.
-%
-In the next experiment, we increase the collision distance from 0.2 to 1.0 meters.
-%
-In this case, a collision is possible, and our approach generates the corresponding counter-example trace (initial state and switching times)
-for every step size analyzed.
-%
-The results are shown in Table~\ref{tab:runtime_unsafe}.
-%
-The runtime increases compared with the safe version of the benchmark, as more deaggregation is necessary in this case since a real error trace is
-present (the deaggregation continues until single time instants are considered, at which point a concrete trace can be generated).
-
-\setlength{\tabcolsep}{2pt}
-\begin{table}[t]
-\caption{Unsafe maneuver check time.}
-\label{tab:runtime_unsafe}
-\centering
-\setlength{\aboverulesep}{0.0pt}
-\setlength{\belowrulesep}{0.0pt}
-\setlength{\extrarowheight}{.0ex}
+~~~~~~~~
 \begin{tabular}{@{}lll@{}}
   \toprule
   Step Size & Runtime (s) & Num Steps \\
