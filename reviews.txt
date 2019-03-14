@@ -182,14 +182,42 @@ Reviewer 3
 
 Problems with Definition 2:
 
+>>> nitpicking over the trajectories and states.
+
 - locations are not connected to the actions a_i (I assume that you intend to have a_i = (Loc_i, Loc_{i+1}). This also applies to Def 3.
 - it is written "\tau_i is the solution of the differential equation", but \tau_0 contains an "initial state" q_0 = (Loc_0, x_0). This is inconsistent since the ODEs are defined over x only, not over q.
 
+
 Algorithm 2: It is not clear what the subcalls in either of the lines 4, 5, and 7 do. Line 4 is presumably Algorithm 1, but the arguments do not coincide with those of Algorithm 1, and Algorithm 1 does not deal with locations but the output of Line 4 has a property "R.loc".
+
+>>> Did you even read the paper? When you are running several LPs on the same polytope, how does it matter when you are working with different centers and predicates?
 
 I don't agree with the statement "it is easy to observe that the template based aggregation can also be extended to stars with different centers and different basis vectors". In the section up until this point, aggregation is done only via modifying the predicates. It does not seem like there is an analogue of Lemma 2 in the case with different centers and basis vectors, and in that case over-approximation by just considering predicates becomes impossible. At a minimum, it seems like over-approximation in this case will require solving a much larger number of linear programs which also do not have the "same polytopes" (assuming polytope refers to the predicate) that the authors say improve computational performance. The aggregation algorithm is later used for sets with different centers and basis vectors, so this is not insignificant.
 
+>>> Explain AGGDAG with examples.
 
 Figure 2: Please explain what the bracketed times are in the figure. It is confusing since for some paths time increases (112 -> 199) but in others it decreases (112 -> 91 -> 90)
 
 Case study: There seems to be a problem with the definition of (q_0,h)-simulation and this example. (q_0,h) simulations require continuous trajectories to stay in the invariant, and switches to happen in guards. In my opinion this only makes sense if the system has significant overlap between guards and invariants, since otherwise most h-sampled trajectories will never reach the guards before jumping out of the invariant. This is however not the case in this example; the invariant for Mode1 is for example \rho \geq 100, and the guard is \rho \leq 100. So unless a trajectory reaches \rho = 100 at _exactly_ a time nh for integer n, that is not a valid trajectory of the system as the verification problem is designed. The set of all such trajectories has measure zero just considering the first switch, and with switches back and forth the set of valid trajectories will be pruned even further (maybe even become empty). This is an issue since it becomes easy to verify a problem if there are almost no valid trajectories (trajectories are declared invalid instead of proven to be safe). I do not think this is what the authors do in their numerical computations, but it is an issue with the way the paper is written so I think it should be clarified.
+
+
+================================
+
+Action items.
+
+Change the notation of the Star to anchor, generators, and predicate.
+
+Present the stars, operations on stars before presenting the reachable set computation algorithm.
+
+Add the section of differences from previous work, especially TACAS work.
+
+Add a definition and example of AGGDAG before introducing it too deeply.
+
+Sanitize the definitions with a careful comb.
+
+Give more details on why the case study was difficult. I think there was a loss of appreciation of the difficulty of the case study. Maybe present the results of SpaceEx or Flow star in the introduction itself and highlight the problem.
+
+I think the core reason why other tools cannot do it should be highlighted. If other tools attempt to do this, the computational costs would be too much.
+
+I think it is fair criticism that we did not discuss about the aggregation when the anchors and generators are not the same. It is probably very easy to show for template polyhedra, but for convex hull, it might be worth investing the time.
+
