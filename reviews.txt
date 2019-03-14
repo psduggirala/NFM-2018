@@ -1,0 +1,177 @@
+=============================
+Reviewer 1 (Borderline paper)
+
+This work presents an approach to automatically refine approximative reachability analysis results for hybrid systems with mixed discrete-continuous behavior. The analysis is based on time discretization, where sequences of state sets are computed to approximate the system states reachable at certain points in time, starting from a given initial state set. When jumps (discrete transitions) are continuously enabled for a while then they might be taken from several of those state sets; when jump successor computation would continue from each of those state sets separately then the computational effort would grow too steeply with the number of jumps taken. Therefore, those state sets (or their jump successors) are typically aggregated (over-approximated by a single state set, in this work template polyhedra). Aggregation naturally introduces additional over-approximation errors. The authors exploit the chosen state set representation and develop a directed acyclic graph (DAG)-based approach to keep track of these aggregations and partially reverse those aggregations during computation, if an intersection with the set of bad states was encountered during computation, in order to reduce the approximation error with minimal additional computational effort.
+
+The paper fits into the scope of the conference. The submission deals with an interesting and relevant topic, however, the presentation could be improved in several aspects.
+
+There are typos, also in the formalisms, which harden the understanding.
+
+To understand the concepts presented in the paper, the authors introduce parts of their previous work. Whole text blocks as well as algorithms seem to be taken from reference [4] in the paper, for instance the text block from Def. 2 until Def.3 (inclusive) is with exception of one or two sentences copied from reference [4]. It feels like the authors could spent more time on rephrasing - for instance some indices do not match (see detailed comments below).
+
+The novel contributions should be stated clearly. In general, there is strong relation to the author's TACAS'17 paper [4]. The abstract states that the paper presents two aggregation techniques and a DAG-based automated refinement approach. The first aggregation technique based on template-polyhedra - using a fixed set of d directions to obtain a polyhedral approximation of a state set by solving d linear programs - seems to be already published in [4]; the difference is, as far as I can see, the strategy when to refine (i.e. deaggregate). The other method using convex hull computations based on symbolic orthogonal projections has been also previously developed and applied for generalized stars as well. The third contribution, using graph-based approaches in hybrid systems reachability analysis is also not novel. Counterexample paths have been used to prioritize search [R2, see below] already, furthermore DAGs similar to the one presented in the paper have been used for refinement of counterexample paths before [R3].
+
+Lemma 2 assumes that the stars have the same centers and the same basis vectors but different predicates. Is this true for the state sets that need to be aggregated? To my understanding, those sets are the time successors of an initial state set for different time points, e.g., the transformation operator will be different, what would result in different basis vectors (but the same predicates). How are they transformed to satisfy the assumption of Lemma 2?
+
+The approach presented here is not over-approximating, since simulation is used and, furthermore, the intersection with the bad state set and the enabledness of guards are checked at discrete time points only. This should be stated clearly. For this reason, a comparison with other approaches, which over-approximate continuous behavior, seems to be somewhat unfair, as those techniques naturally need more computations. 
+
+Some detailed comments:
+
+Abstract: technqiues -> techniques
+
+Def. 3: You mention that for discrete transitions "Loc_{i-1} = Loc_i", i.e., you assume that no two discrete transitions can be taken without at least h time elapse in-between. This implicitly prevents Zeno behavior, but puts serious restrictions on the models (e.g. Instantaneous controller computations cannot be composed from several successive jumps; different parallel composed components cannot take a jump at the same time; etc.), which then definitely should be mentioned. Furthermore, for time successors, the invariant should probably be required for x_{i+1}, not for x_i. 
+
+Def. 6: The term "basis vectors" in combination with having n of those in a n-dimensional subspace sounds as if the v_i are a basis of R^n, which is not the case. Maybe use a different term, e.g. "generator vectors" or something like that?
+
+After Alg. 1: You mention "v_j' = \rho(c+v_j,h,k)[i] - \rho(c,h,k)[i]". How is that operation defined for the given star state set representation? In general this paragraph is not very clear and lacks information on how to compute time successors.
+
+Before Alg. 2: You mention that there are subroutines which compute the overlap of the computed state sets with the guards and invariants. How is that done? Is that information relevant for this work?
+
+Beginning of Sec. 3: You reference line 15 in Alg.2 - there is no line 15, did you mean Alg. 3?
+
+Later in Sec. 3: You state that S' "will" trigger additional discrete transitions, I guess it "may" trigger those, right? A bit later you mention de-aggregation, which is introduced later, maybe mention that it will be defined later, otherwise this is confusing. Also you mention that generalized stars allow for easy aggregation and de-aggregation, which is not clear at that time.
+
+Fig. 1 (and others): Maybe use colors that are distinguishable when printed in greyscale.
+
+Alg. 3: I found it hard to distinguish comments from pseudo-code, also in line 4 the assignment puts a label "aggregate" on S, right? Maybe mention that such that it becomes clearer.
+
+End of Sec. 3: I think it is very important to mention (before!) that you do not aggregate already de-aggregated states again. In the linked video it seems as if there is partial de-aggregation, similar to clustering in SpaceEx, is that true or is this partial de-aggregation an artifact from the AGGDAG?
+
+Lemma 2: In this Lemma you consider stars with same centers and same basis vectors but different predicates. Why? I assume the difference in predicates comes from guard- and invariant-checks, is that true? On the other hand, Alg. 1, which computes time-successor states keeps the predicates the same but changes the center and basic vectors of the stars - mention EARLIER that the aggregation also works if centers and basic vectors are different, as the result from Alg.1 will have that property. It would be very interesting on how to compute this aggregation with varying center and basic vectors.
+
+When you describe the templated aggregation, a number "m" is mentioned - where does this come from? I assume m = l*k? Additionally "m" is used in Alg. 4 as an index for the predicates, should that not be "k" instead, as used before in this paragraph?
+
+When you introduce de-aggregation of templated aggregations, you basically store all linear program results - how does this affect memory usage during running time? What is "warm start optimization"?
+
+Convex hull aggregation (minor detail): You mention that in order to compute the convex hull a transformation between vertex- and facet-representation is required. To my understanding this transformation is equivalent to computing the convex hull (which is vertex enumeration), which is dual to facet enumeration.
+
+Def. 7 (typo): "prepresents"
+
+Section 3.2, Remark 1: S_a_1 == S_a ? Again you assume stars with similar centers and basic vectors, which allows your assumption for simpler re-computation of de-aggregated sets. I guess this does not extend to stars with different centers and basic vectors, which should be a result of time successor computation. Is this the case? If so, is it true that Remark 1 can never be used?
+
+Def. 9 and following: You introduce AGGDAG - maybe use the capitalized version throughout the whole paper?
+
+References:
+
+[R1] C. le Guernic, A. Girard: Reachability Analysis of Hybrid Systems using Support Functions, CAV'09
+
+[R2] S. Bogomolov, A. Donze, G. Frehse, R. Grosu, T. Johnson, H. Ladan, A. Podelski, M. Wehrle: Abstraction-based Guided Search for Hybrid Systems, SPIN'13
+
+[R3] S. Schupp, E. Abraham: Efficient Dynamic Error Reduction for Hybrid Systems Reachability Analysis, TACAS'18
+
+============================
+Reviewer 2 (Borderline)
+
+This paper considers the problem of determining reachable sets for hybrid systems with discrete but nondeterministic transitions. As they point out, standard convex over-approximations are too conservative, and safety violations for those methods are often false alarms. The paper presents an improvement to the approach based on aggregation strategies and deagregation strategies based on generalized stars. The idea of the generalized stars is that for two stars that share a center, it is easy to take their union as another star. Unions for other generalized stars, in their approach, is done more cafefully than naive over-approximation. They leverage template and convex-hull based aggregation strategies.
+
+The approach seems similar to branch-and-bound strategies to compute over-approximations of sets defined by real equations. Indeed, in those cases, if a naive over-approximation is good enough to show that an unsafe state is not reached, then no further refinement is needed. So the refinement only happens around counter-examples, as in this paper. 
+
+The paper is interesting, because they are able to prove some real properties about reachable states for a satellite rendezvous system. The model that they use is publicly available and has been considered by other tools. Their approach is interesting, because they are able to consider states with an arbitrary transition time to a passive mode, whereas other approaches have considered only a single time of transition or at the very most a small interval of transition. Their work on this case study is interesting, but it seems to lack detail. It would be better to have more information about exactly what is being examined in this case study. What do the functions look like, how are the states described, etc. Otherwide, it is difficult to determine how complicated are the properties that they have proved. Also, it is not clear whether their results are reproducible, because their code isn't available. 
+
+Their approach to smarter aggregation and deaggregation in determining reachable states is promising and should be applied to other domains. For that reason, the paper is good. It could be improved significantly by more clearly stating exactly what is happening, and why, in the descriptions of aggregation and deaggregation on page 6. Also, a more detailed, reproducible model of the satellite rendezvous would greatly improve the paper.
+
+
+==============================
+Reviewer 3 (Reject -2)
+
+Summary
+
+Reachability analysis for detecting safety violations of hybrid systems with non-deterministic switching is considered, which is a difficult problem due to the branching of mode sequences. This issue is mitigated by aggregating states via over-approximations, but again tightening these over-approximations if safety-violations are detected in sequences with previous over-approximations, which leads to an algorithm that adaptively refines the analysis around high-risk trajectories. The method is applied to the problem of verifying a satellite rendezvous benchmark, and is allegedly the first method capable of conducting the verification without any restriction on mode changes.
+
+The improvement over previous work appears to be in algorithm details based on a collection of fairly simple results, but could still be significant since it results the first solution of the benchmark problem. The videos linked in the paper are nice. However, the paper is not carefully written and has a number of problems in its presentation which makes it difficult to follow. In particular the algorithms, which are arguably the main results, are poorly written and difficult to understand. The English could be improved across the board.
+
+
+Detailed comments:
+
+There are spelling errors in the abstract (technqiues)
+
+It is not clear to the reader what "deaggregation" is until fairly late in the paper. Since it is mentioned extensively in the abstract and the introduction it would be good to at least give some idea of what it does and what the purpose is.
+
+Problems with Definition 2:
+
+- locations are not connected to the actions a_i (I assume that you intend to have a_i = (Loc_i, Loc_{i+1}). This also applies to Def 3.
+- it is written "\tau_i is the solution of the differential equation", but \tau_0 contains an "initial state" q_0 = (Loc_0, x_0). This is inconsistent since the ODEs are defined over x only, not over q.
+
+It is not clear to the reader what a "fixed simulation algorithm" is, so this would be good to explain.
+
+Definition 4: I guess T should be k
+
+Algorithm 1: It is not clear what \rho is
+
+Algorithm 2: It is not clear what the subcalls in either of the lines 4, 5, and 7 do. Line 4 is presumably Algorithm 1, but the arguments do not coincide with those of Algorithm 1, and Algorithm 1 does not deal with locations but the output of Line 4 has a property "R.loc". Furthermore, it is not clear whether the algorithm terminates (this would require showing that queueStars becomes empty); it seems conceivable that two modes that have transitions into each other could lead to infinite loops in the algorithm. Presumably termination has something to do with the time bound k, but k is not used at all in the algorithm. Finally, in the algorithm it seems like discrete locations are added to the queue on line 8, but continuous sets are taken out on line 3. Please clear this up so that the algorithm can be understood.
+
+Beginning of section 3: There is a reference to "line 15 in Algorithm 2", but Algorithm 2 only has 10 lines.
+
+Algorithm 3: what are "aggregatable stars going to the same mode"? I don't understand why "ReachSet" is at all present in this algorithm since it does not affect the algorithm at all, and is not connected to the deaggregation step. In the text it seems like children of tagged stars are also tagged, but this does not appear to happen in the algorithm. In fact, R'.tag can never be equal to aggregate since R' just has been computed on the line before. h and k do not appear anywhere in the body of the algorithm.
+
+Lemma 1: The proof relies on termination of Algorithm 2, so the same problems apply here too. The proof says that "there are only finitely many sets that we compute", but this seems like the statement that should be proven.
+
+Algorithm 4: 
+- There are numerous notation problems around the algorithm, in particular indices m, l and k seem to be used interchangeably without any obvious pattern. 
+- The algorithm only takes predicates as inputs, but yet stars appear on the second line.
+
+I don't agree with the statement "it is easy to observe that the template based aggregation can also be extended to stars with different centers and different basis vectors". In the section up until this point, aggregation is done only via modifying the predicates. It does not seem like there is an analogue of Lemma 2 in the case with different centers and basis vectors, and in that case over-approximation by just considering predicates becomes impossible. At a minimum, it seems like over-approximation in this case will require solving a much larger number of linear programs which also do not have the "same polytopes" (assuming polytope refers to the predicate) that the authors say improve computational performance. The aggregation algorithm is later used for sets with different centers and basis vectors, so this is not insignificant.
+
+definition 9: The concepts here should be defined with precise mathematics, as it is written now I was not able to understand what the graph represents.
+
+Figure 2: Please explain what the bracketed times are in the figure. It is confusing since for some paths time increases (112 -> 199) but in others it decreases (112 -> 91 -> 90)
+
+Case study: There seems to be a problem with the definition of (q_0,h)-simulation and this example. (q_0,h) simulations require continuous trajectories to stay in the invariant, and switches to happen in guards. In my opinion this only makes sense if the system has significant overlap between guards and invariants, since otherwise most h-sampled trajectories will never reach the guards before jumping out of the invariant. This is however not the case in this example; the invariant for Mode1 is for example \rho \geq 100, and the guard is \rho \leq 100. So unless a trajectory reaches \rho = 100 at _exactly_ a time nh for integer n, that is not a valid trajectory of the system as the verification problem is designed. The set of all such trajectories has measure zero just considering the first switch, and with switches back and forth the set of valid trajectories will be pruned even further (maybe even become empty). This is an issue since it becomes easy to verify a problem if there are almost no valid trajectories (trajectories are declared invalid instead of proven to be safe). I do not think this is what the authors do in their numerical computations, but it is an issue with the way the paper is written so I think it should be clarified.
+
+
+==========================
+
+Filtered comments
+
+Reviewer 1
+
+ The first aggregation technique based on template-polyhedra - using a fixed set of d directions to obtain a polyhedral approximation of a state set by solving d linear programs - seems to be already published in [4]; the difference is, as far as I can see, the strategy when to refine (i.e. deaggregate). The other method using convex hull computations based on symbolic orthogonal projections has been also previously developed and applied for generalized stars as well. The third contribution, using graph-based approaches in hybrid systems reachability analysis is also not novel. Counterexample paths have been used to prioritize search [R2, see below] already, furthermore DAGs similar to the one presented in the paper have been used for refinement of counterexample paths before [R3].
+
+Is this true for the state sets that need to be aggregated? To my understanding, those sets are the time successors of an initial state set for different time points, e.g., the transformation operator will be different, what would result in different basis vectors (but the same predicates). How are they transformed to satisfy the assumption of Lemma 2?
+
+the intersection with the bad state set and the enabledness of guards are checked at discrete time points only. This should be stated clearly.
+
+Def. 6: The term "basis vectors" in combination with having n of those in a n-dimensional subspace sounds as if the v_i are a basis of R^n, which is not the case. Maybe use a different term, e.g. "generator vectors" or something like that?
+
+After Alg. 1: You mention "v_j' = \rho(c+v_j,h,k)[i] - \rho(c,h,k)[i]". How is that operation defined for the given star state set representation? In general this paragraph is not very clear and lacks information on how to compute time successors.
+
+Later in Sec. 3: You state that S' "will" trigger additional discrete transitions, I guess it "may" trigger those, right?
+
+End of Sec. 3: I think it is very important to mention (before!) that you do not aggregate already de-aggregated states again. In the linked video it seems as if there is partial de-aggregation, similar to clustering in SpaceEx, is that true or is this partial de-aggregation an artifact from the AGGDAG?
+
+It would be very interesting on how to compute this aggregation with varying center and basic vectors.
+
+Section 3.2, Remark 1: S_a_1 == S_a ? Again you assume stars with similar centers and basic vectors, which allows your assumption for simpler re-computation of de-aggregated sets. I guess this does not extend to stars with different centers and basic vectors, which should be a result of time successor computation. Is this the case? If so, is it true that Remark 1 can never be used?
+
+Def. 9 and following: You introduce AGGDAG - maybe use the capitalized version throughout the whole paper?
+
+
+[R1] C. le Guernic, A. Girard: Reachability Analysis of Hybrid Systems using Support Functions, CAV'09
+
+[R2] S. Bogomolov, A. Donze, G. Frehse, R. Grosu, T. Johnson, H. Ladan, A. Podelski, M. Wehrle: Abstraction-based Guided Search for Hybrid Systems, SPIN'13
+
+[R3] S. Schupp, E. Abraham: Efficient Dynamic Error Reduction for Hybrid Systems Reachability Analysis, TACAS'18
+
+-------------
+Reviewer 2
+
+ Their work on this case study is interesting, but it seems to lack detail. It would be better to have more information about exactly what is being examined in this case study. What do the functions look like, how are the states described, etc. Otherwide, it is difficult to determine how complicated are the properties that they have proved. Also, it is not clear whether their results are reproducible, because their code isn't available.
+
+-----------
+Reviewer 3
+
+ The videos linked in the paper are nice. However, the paper is not carefully written and has a number of problems in its presentation which makes it difficult to follow. In particular the algorithms, which are arguably the main results, are poorly written and difficult to understand. The English could be improved across the board.
+
+Problems with Definition 2:
+
+- locations are not connected to the actions a_i (I assume that you intend to have a_i = (Loc_i, Loc_{i+1}). This also applies to Def 3.
+- it is written "\tau_i is the solution of the differential equation", but \tau_0 contains an "initial state" q_0 = (Loc_0, x_0). This is inconsistent since the ODEs are defined over x only, not over q.
+
+Algorithm 2: It is not clear what the subcalls in either of the lines 4, 5, and 7 do. Line 4 is presumably Algorithm 1, but the arguments do not coincide with those of Algorithm 1, and Algorithm 1 does not deal with locations but the output of Line 4 has a property "R.loc".
+
+I don't agree with the statement "it is easy to observe that the template based aggregation can also be extended to stars with different centers and different basis vectors". In the section up until this point, aggregation is done only via modifying the predicates. It does not seem like there is an analogue of Lemma 2 in the case with different centers and basis vectors, and in that case over-approximation by just considering predicates becomes impossible. At a minimum, it seems like over-approximation in this case will require solving a much larger number of linear programs which also do not have the "same polytopes" (assuming polytope refers to the predicate) that the authors say improve computational performance. The aggregation algorithm is later used for sets with different centers and basis vectors, so this is not insignificant.
+
+
+Figure 2: Please explain what the bracketed times are in the figure. It is confusing since for some paths time increases (112 -> 199) but in others it decreases (112 -> 91 -> 90)
+
+Case study: There seems to be a problem with the definition of (q_0,h)-simulation and this example. (q_0,h) simulations require continuous trajectories to stay in the invariant, and switches to happen in guards. In my opinion this only makes sense if the system has significant overlap between guards and invariants, since otherwise most h-sampled trajectories will never reach the guards before jumping out of the invariant. This is however not the case in this example; the invariant for Mode1 is for example \rho \geq 100, and the guard is \rho \leq 100. So unless a trajectory reaches \rho = 100 at _exactly_ a time nh for integer n, that is not a valid trajectory of the system as the verification problem is designed. The set of all such trajectories has measure zero just considering the first switch, and with switches back and forth the set of valid trajectories will be pruned even further (maybe even become empty). This is an issue since it becomes easy to verify a problem if there are almost no valid trajectories (trajectories are declared invalid instead of proven to be safe). I do not think this is what the authors do in their numerical computations, but it is an issue with the way the paper is written so I think it should be clarified.
