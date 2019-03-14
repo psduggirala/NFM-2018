@@ -125,19 +125,37 @@ Filtered comments
 
 Reviewer 1
 
+
+>>> Add a notice on the difference in the aggregation mechanism for then and now. Is it picking the accurate templates?
+>>> Clearly describe the innovation about AGGDAG.
+
  The first aggregation technique based on template-polyhedra - using a fixed set of d directions to obtain a polyhedral approximation of a state set by solving d linear programs - seems to be already published in [4]; the difference is, as far as I can see, the strategy when to refine (i.e. deaggregate). The other method using convex hull computations based on symbolic orthogonal projections has been also previously developed and applied for generalized stars as well. The third contribution, using graph-based approaches in hybrid systems reachability analysis is also not novel. Counterexample paths have been used to prioritize search [R2, see below] already, furthermore DAGs similar to the one presented in the paper have been used for refinement of counterexample paths before [R3].
+
+>>> Add statements for describing the various alternatives and why the other alternatives are not that applicable.
 
 Is this true for the state sets that need to be aggregated? To my understanding, those sets are the time successors of an initial state set for different time points, e.g., the transformation operator will be different, what would result in different basis vectors (but the same predicates). How are they transformed to satisfy the assumption of Lemma 2?
 
+>>> Where should we add this??
+
 the intersection with the bad state set and the enabledness of guards are checked at discrete time points only. This should be stated clearly.
+
+>>> Generalized stars should be remarked as anchor, generators, and Predicates.
 
 Def. 6: The term "basis vectors" in combination with having n of those in a n-dimensional subspace sounds as if the v_i are a basis of R^n, which is not the case. Maybe use a different term, e.g. "generator vectors" or something like that?
 
+>>> Have to introduce the notion of \rho.
+
 After Alg. 1: You mention "v_j' = \rho(c+v_j,h,k)[i] - \rho(c,h,k)[i]". How is that operation defined for the given star state set representation? In general this paragraph is not very clear and lacks information on how to compute time successors.
+
+>>> Yes, the language should be changed.
 
 Later in Sec. 3: You state that S' "will" trigger additional discrete transitions, I guess it "may" trigger those, right?
 
+>>> I think we need to rewrite all the deaggregation stuff.
+
 End of Sec. 3: I think it is very important to mention (before!) that you do not aggregate already de-aggregated states again. In the linked video it seems as if there is partial de-aggregation, similar to clustering in SpaceEx, is that true or is this partial de-aggregation an artifact from the AGGDAG?
+
+>>> Template aggregation seems very obvious; might require explanation for convex hull aggregation.
 
 It would be very interesting on how to compute this aggregation with varying center and basic vectors.
 

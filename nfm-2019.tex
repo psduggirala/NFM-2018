@@ -39,8 +39,8 @@ Parasara Sridhar Duggirala\inst{2}}
 % If there are more than two authors, 'et al.' is used.
 %
 \institute{Safe Sky Analytics, LLC, USA. \\ \email{stanleybak@gmail.com} \and
-Department of Computer Science and Engineering, \\ University of Connecticut, USA. \\
-\email{psd@uconn.edu}}
+Department of Computer Science, \\ University of North Carolina at Chapel Hill, USA. \\
+\email{psd@cs.unc.edu}}
 % \\
 % \url{http://www.springer.com/gp/computer-science/lncs} \and
 % ABC Institute, Rupert-Karls-University Heidelberg, Heidelberg, Germany\\
@@ -50,9 +50,11 @@ Department of Computer Science and Engineering, \\ University of Connecticut, US
 %
 \begin{abstract}
 Reachable set computation tools for hybrid systems approximate the reachable set over an interval of time with a symbolic representation. 
-Most reachable set computation tools implement some form of aggregation for handling discrete transitions. However, such aggregation generate very conservative overapproximations, which are not useful in inferring the safety properties. If such an aggregation is not performed, then one has to keep track of exponential number of symbolic representations and hence suffer from computational drawbacks.
+Most reachable set computation tools implement some form of aggregation for handling discrete transitions. Sometimes, the reachable set is insufficient for inferring the safety specification since the aggregation strategies lead to very conservative overapproximations. However, if such an aggregation is not performed, then one has to keep track of exponential number of symbolic representations and incur significant computation costs. 
 
-$~~$In this paper we present two types of technqiues, namely, template based and convex hull based techniques for aggregation. Additionally, we present Aggregated Directed Acyclic Graph (AGGDAG) for keeping track of reachable sets. Using AGGDAG, we present a new deaggregation technique for performing selective deaggregation. Our deaggregation strategy is guided by counterexamples and hence provides completeness guarantees for safety verification. We present a case study of inferring safety properties of satellite rendezvous and demonstrate the effectiveness of our approach.
+$~~$This paper proposes techniques for improving the accuracy of the aggregation operations performed for reachable set computation. First we present two aggregation strategies over generalized stars, namely convex hull aggregation and template based aggregation. Second, we perform adaptive deaggregation using a data structure called Aggregated Directed Acyclic Graph (AGGDAG). Our deaggregation stragety is driven by counterexamples and hence has soundness and relative completeness guarantees. We apply our technique to infer safety properties of satellite rendezvous mission and demonstrate the computational benefits of these enhancements.
+
+%In this paper we present two types of technqiues, namely, template based and convex hull based techniques for aggregation. Additionally, we present Aggregated Directed Acyclic Graph (AGGDAG) for keeping track of reachable sets. Using AGGDAG, we present a new deaggregation technique for performing selective deaggregation. Our deaggregation strategy is guided by counterexamples and hence provides completeness guarantees for safety verification. We present a case study of inferring safety properties of satellite rendezvous and demonstrate the effectiveness of our approach.
 
 % For handling discrete transitions, 
 % One of the major challenges in computing reachable set for hybrid systems computation is to handle the discrete transitions. 
