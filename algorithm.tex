@@ -1,7 +1,7 @@
-\vspace{-0.4cm}
+%\vspace{-0.4cm}
 \section{Aggregation and Deaggregation Strategies}
 \label{sec:agdag}
-\vspace{-0.2cm}
+%\vspace{-0.2cm}
 
 One of the primary drawbacks of Algorithm~\ref{alg:algoHybrid} is in handling the discrete transitions. 
 %
@@ -47,14 +47,14 @@ Hence, we perform counterexample guided deaggregation.
 %
 Our algorithm terminates after we find either a counterexample for safety specification or prove that the overapproximation of the reachable set does not overlap with unsafe set.
 
-\vspace{-0.7cm}
+%\vspace{-0.7cm}
 \begin{figure}[h!]
 \centerline{\includegraphics[width=0.7\columnwidth]{images/deagg.png}}
-\vspace{-0.4cm}
+%\vspace{-0.4cm}
 \caption{{\footnotesize The deaggregation process is shown for a two-mode system. Upon reaching an error mode (red dotted region), the fully aggregated set of states (gray large region), is split in half (two black regions), which no longer contain error states. A video of the complete computation is available online at \url{https://youtu.be/SDzGKDBq5tM}.}}
 \label{fig:deagg}
 \end{figure}
-\vspace{-0.7cm}
+%\vspace{-0.7cm}
 
 
 One of the advantages of generalized stars is that it allows for easy aggregation and deaggregation. 
@@ -102,10 +102,10 @@ This proof is a consequence of simulation equivalent reachability of Algorithm~\
 It now remains to prove that the loop in lines~\ref{ln:begLoop}-~\ref{ln:endLoop} terminates after finite number of times. This is easy to infer as there are only finitely many reachable sets that we compute. Hence, we perform only finitely many aggregations. Since we strictly do not aggregate the stars that were deaggregated before, the condition in line~\ref{ln:deagg} will only be encountered finite number of times. Hence the loop terminates and the algorithm either returns safe or unsafe.
 \end{proof}
 
-\vspace{-0.3cm}
+%\vspace{-0.3cm}
 \subsection{Aggregation and Deaggregation Using Generalized Stars}
 \label{sec:aggStars}
-\vspace{-0.1cm}
+%\vspace{-0.1cm}
 
 In this section, we present two techniques for performing aggregation and deaggregation of generalized stars. The first is template based aggregation and deaggregation and the second is aggregation using convex hulls.
 % advantages of using generalized stars in aggregation and deaggregation. 
@@ -133,7 +133,7 @@ For each location, a set of template directions $c_1^{T}, c_2^{T}, \ldots, c_{l}
 
 For computing $d_j$, $1 \leq j \leq l$, we solve $m$ linear programming problems. $d_j^i$ is the maximum value of $c_j^T \alpha$ in $P_i$. That is, $d_j^1 = \mathsf{max}~ c_j^T \alpha~ \mathsf{given} P_1(\alpha) = \top$. Similarly, $d_j^2 = \mathsf{max}~ c_j^T \alpha~ \mathsf{given} P_2(\alpha) = \top$. Similarly we compute $d_j^3, \ldots, d_j^l$. The value of $d_j = \mathsf{max} \{d_j^1, d_j^2, \ldots, d_j^l\}$.
 
-\vspace{-0.6cm}
+%\vspace{-0.6cm}
 \begin{algorithm}[h!]
 \SetKwInOut{Input}{input}\SetKwInOut{Output}{output}\SetKw{Return}{return}
 \Input{Predicates $P_1, P_2, \ldots, P_m$, template directions $c_1^{T}, c_2^{T}, \ldots, c_l^{T}$.}
@@ -149,12 +149,12 @@ For computing $d_j$, $1 \leq j \leq l$, we solve $m$ linear programming problems
 \caption{Algorithm that performs template based aggregate of stars.}
 \label{alg:aggTemplate}
 \end{algorithm}
-\vspace{-0.8cm}
+%\vspace{-0.8cm}
 
 \begin{lemma}
 The predicate $P'$ returned by Algorithm~\ref{alg:aggTemplate} is such that $(P_1 \vee \ldots \vee P_l) \Rightarrow P'$.
 \end{lemma}
-\vspace{-0.1cm}
+%\vspace{-0.1cm}
 
 It is also inexpensive to perform deaggregation of the stars aggregated using template directions. 
 %
@@ -185,7 +185,7 @@ We avoid these exponential time operations by using the symbolic orthogonal proj
 %
 We include the basic details of this convex hull operation for the sake of completeness.
 
-\vspace{-0.1cm}
+%\vspace{-0.1cm}
 \begin{definition}
 A symbolic orthogonal projection $\O$ is given as a pair of matrices $A \in \reals^{m \times n}$ and $L \in \reals^{m \times k}$ and ${\bf a}$ is a column vector in $\reals^m$, represented as $(A, L, {\bf a})$ prepresents the set
 
@@ -193,11 +193,11 @@ $$
 \O = \{~x \in \reals^n~|~ \exists z \in \reals^k, Ax + Lz \leq {\bf a}\}
 $$ 
 \end{definition}
-\vspace{-0.1cm}
+%\vspace{-0.1cm}
 
 If a polytope is represented as a generalized star, there is are no existentially quantified free variables in it. Hence, generalized stars that represent polytopes are special cases of symbolic orthogonal projections. The convex hull of two symbolic orthogonal projections, which can be computed by merely transforming the structural representations is presented below (taken from~\cite{hagemann2014reachability}).
 
-\vspace{-0.1cm}
+%\vspace{-0.1cm}
 \begin{definition}
 Given two symbolic orthogonal projections $\O_1 \deq (A_1, L_1, {\bf a_1})$ and $\O_2 \deq (A_2, L_2, {\bf a_2})$, the convex hull of $\O_1$ and $\O_2$ is given as a symbolic orthogonal projection $O_3 \deq (A_3, L_3, {\bf a_3})$ where 
 $$
@@ -219,7 +219,7 @@ A_1 & L_1 & {\bf 0} & {\bf a_1} \\
 $$
 Where ${\bf 0}$ represents the zero matrix of the appropriate dimension. 
 \end{definition}
-\vspace{-0.1cm}
+%\vspace{-0.1cm}
 
 The advantage of symbolic orthogonal projection over other representations is that convex hull can be computed purely syntactically. 
 %
@@ -229,39 +229,39 @@ If one desires to perform convex hull of $r$ symbolic orthogonal projections, th
 %
 Hence, the number of constraints and variables required to specify the polytope exponentially increases with the number of discrete transitions. This increases the cost associated with checking the safety property of all the stars in the reachable set. Additionally, the deaggregation operation cannot reuse the computations performed during aggregation.
 
-\vspace{-0.3cm}
+%\vspace{-0.3cm}
 \subsection{Aggregated Directed Acyclic Graph - AGGDAG}
 \label{sec:aggdag}
-\vspace{-0.1cm}
+%\vspace{-0.1cm}
 
 When the overapproximation obtained from reachable set is too convervative and overlaps with the unsafe set, we perform deaggregation. In typical reachable set computation tools, one has to resume the computation of the reachable set from the newly deaggregated sets. However, we leverage the properties of generalized stars in reachable set computation and decrease the computations that need to be performed.
 
-\vspace{-0.1cm}
+%\vspace{-0.1cm}
 \begin{remark}
 \label{rem:changePred}
 Consider an aggregated star $S_a \deq \tup{c, V, P_a}$ and the bounded time reachable set be $S_{a_1}, \ldots, S_{a_k}$ where $S_{a_i} \deq \tup{c_i, V_i, P_a}$. After performing deaggregation, $S_a$ results in stars $S_{b}$ and $S_c$ where $S_{b} \deq \tup{c, V, P_{b}}$ and $S_{c} \deq \tup{c, V, P_{c}}$, then the reachable set starting from $S_{b}$ is given as $S_{b_1}, \ldots, S_{b_k}$ where $S_{b_i} \deq \tup{c_i, V_i, P_b}$. Similar relation holds for $S_{c}$ as initial set. Therefore, one need not recompute the center and basis vectors for computing the reachable set with new initial set. Merely changing the predicate in the generalized stars suffices.
 \end{remark}
-\vspace{-0.1cm}
+%\vspace{-0.1cm}
 
 While recomputing the new center and basis vectors can be avoided, we also reduce our effort by checking intersection with guards and overlap with unsafe set after deaggregation. That is, when an aggregation is performed and the reachable set is computed, we only keep track of the stars that either overlap with the unsafe set or encounter a discrete transition. We keep track of the relationship between the reachable sets called as Aggregated Directed Acyclic Graph (AGGDAG).
 
-\vspace{-0.1cm}
+%\vspace{-0.1cm}
 \begin{definition}
 \label{def:aggdag}
 An AGGDAG is a directed graph $(G, H)$ where, the set of nodes $G$ corresponds to the generalized stars obtained during the reachable set computation that encounter the discrete transitions or overlap with the unsafe set, and the set of edges $E$ represents the successor relationship among these generalized stars.
 \end{definition}
-\vspace{-0.4cm}
+%\vspace{-0.4cm}
 
-\vspace{-0.3cm}
+%\vspace{-0.3cm}
 \begin{figure}
 \centering
 \includegraphics[width=0.9\textwidth]{images/viz2}
 \caption{Example of an aggdag.}
 \label{fig:aggdagex1}
 \end{figure}
-\vspace{-0.5cm}
+%\vspace{-0.5cm}
 
-\vspace{-0.3cm}
+%\vspace{-0.3cm}
 \begin{example}
 Figure~\ref{fig:aggdagex1} is an example of aggdag where the hybrid automata has 3 modes of operation, namely, {\em Far}, {\em Approaching}, and {\em Abort}. The initial set starting from the Far mode takes the discrete transitions to Abort in the time duration $[1,56]$ and $[57,112]$ and stays in the Abort mode without encountering any unsafe set. The successors of the stars that encounter a discrete transition to the Approaching mode in the time interval $[109,112]$, encounter the unsafe set in future. In the Figure~\ref{fig:aggdagex1}, the star representing the node Approaching is the collection of the stars that encounter the discrete transition in the time interval $[109, 112]$. Simiarly, the node Abort [Abort (90) to be more precise] corresponds to the collection of the stars that take the discrete transition from Approaching mode to the Abort mode. Out of the stars in the Abort(90) node, the violation of safety propery happens between the time intervals $[16,86]$.
 \end{example}

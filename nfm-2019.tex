@@ -2,9 +2,19 @@
 % LLNCS macro package for Springer Computer Science proceedings;
 % Version 2.20 of 2017/10/04
 %
-\documentclass[runningheads]{llncs}
+%\documentclass[runningheads]{llncs}
+%\documentclass[format=sigconf, authordraft=true]{acmart}
+
 %
-\usepackage{graphicx}
+% The first command in your LaTeX source must be the \documentclass command.
+\documentclass[sigconf]{acmart}
+
+%
+% \BibTeX command to typeset BibTeX logo in the docs
+
+
+%
+%\usepackage{graphicx}
 % Used for displaying a sample figure. If possible, figure files should
 % be included in EPS format.
 %
@@ -12,41 +22,43 @@
 % to display URLs in blue roman font according to Springer's eBook style:
 % \renewcommand\UrlFont{\color{blue}\rmfamily}
 
-\include{psd-macros}
-\include{psd-macros-extra}
+%\include{psd-macros}
+%\include{psd-macros-extra}
 
-\usepackage{booktabs}
-\usepackage{tabularx}
-\usepackage{colortbl}
-\usepackage{xcolor}
+%\usepackage{booktabs}
+%\usepackage{tabularx}
+%\usepackage{colortbl}
+%\usepackage{xcolor}
 
-\usepackage[boxed,linesnumbered,lined,commentsnumbered]{algorithm2e}
+%\usepackage[boxed,linesnumbered,lined,commentsnumbered]{algorithm2e}
 
 
 \begin{document}
 %
-\title{Aggregation Strategies in Reachable Set Computation of Hybrid Systems: A Safe Satellite Rendezvous Case Study}
+
 %
 %\titlerunning{Abbreviated paper title}
 % If the paper title is too long for the running head, you can set
 % an abbreviated paper title here
 %
-\author{Stanley Bak\inst{1} \and
-Parasara Sridhar Duggirala\inst{2}}
-%
+%%%%
+%\author{Stanley Bak\inst{1} \and
+%Parasara Sridhar Duggirala\inst{2}}
+%%%%%
 % 
 % First names are abbreviated in the running head.
 % If there are more than two authors, 'et al.' is used.
 %
-\institute{Safe Sky Analytics, LLC, USA. \\ \email{stanleybak@gmail.com} \and
-Department of Computer Science, \\ University of North Carolina at Chapel Hill, USA. \\
-\email{psd@cs.unc.edu}}
+%\institute{Safe Sky Analytics, LLC, USA. \\ \email{stanleybak@gmail.com} \and
+%Department of Computer Science, \\ University of North Carolina at Chapel Hill, USA. \\
+%\email{psd@cs.unc.edu}}
+%%%%%%%%
 % \\
 % \url{http://www.springer.com/gp/computer-science/lncs} \and
 % ABC Institute, Rupert-Karls-University Heidelberg, Heidelberg, Germany\\
 % \email{\{abc,lncs\}@uni-heidelberg.de}
 %
-\maketitle              % typeset the header of the contribution
+%\maketitle              % typeset the header of the contribution
 %
 \begin{abstract}
 Reachable set computation tools for hybrid systems approximate the reachable set over an interval of time with a symbolic representation. 
@@ -62,26 +74,31 @@ $~~$This paper proposes techniques for improving the accuracy of the aggregation
 % Most reachable set computation tools implement some form of aggregation. 
 
 
-\keywords{Hybrid Systems \and Reachable Set \and Linear Differential Equations \and Aggregations for Reachable Set \and Adaptive Deaggregation.}
 \end{abstract}
+
+%\keywords{Hybrid Systems \and Reachable Set \and Linear Differential Equations \and Aggregations for Reachable Set \and Adaptive Deaggregation.}
+
+
 %
 %
 %
 
-\input{introduction}
-\input{preliminaries}
-\input{algorithm}
-\input{casestudy}
+%\input{introduction}
+%\input{preliminaries}
+%\input{algorithm}
+%\input{casestudy}
 
 %\vspace{-0.2cm}
 \section{Conclusions}
-\vspace{-0.4cm}
+%\vspace{-0.4cm}
 In this paper we have focused on computing accurate reachable set computation of hybrid automata where there is high nondeterminism in the discrete transitions. We presented two common techniques used for aggregation and highlighted the relative merits and demerits of each technique. We also presented aggdag data structure and outlined the deaggregation strategies that were implemented. Using the techniques we were able to handle a challenging case study of satellite rendezvous mission and prove the passive safety property.
 
 Handling discrete transitions is still a major hurdle in scalable and accurate computation of reachable set for linear hybrid systems. As a part of future work, we intend to explore intelligent aggregation and deaggregation strategies that adapt based on the dynamics to provide an accurate reachable set.
 
 
-\bibliographystyle{abbrv}
+%\citestyle{acmauthoryear}
+\bibliographystyle{ACM-Reference-Format}
+%\bibliographystyle{acm}
 \bibliography{bak}
 
 \end{document}

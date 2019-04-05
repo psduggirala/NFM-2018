@@ -2,14 +2,23 @@
 \usepackage[usenames,dvipsnames]{pstricks}
 \usepackage{epsfig}
 
+
+\usepackage{ifthen}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{listings}
+\usepackage{mathrsfs}
+\usepackage{xspace}
+\usepackage{graphics}
+
 %\usepackage{palatino}
-\RequirePackage{ifthen}
-\RequirePackage{amsmath}
-\RequirePackage{amssymb}
-\RequirePackage{listings}
-\RequirePackage{mathrsfs}
-\RequirePackage{xspace}
-\RequirePackage{graphics}
+%\RequirePackage{ifthen}
+%\RequirePackage{amsmath}
+%\RequirePackage{amssymb}
+%\RequirePackage{listings}
+%\RequirePackage{mathrsfs}
+%\RequirePackage{xspace}
+%\RequirePackage{graphics}
 
 % PACKAGES FOR ORGANIZING THE STRUCTE OF DOCUMENT
 %\usepackage{minipage}
@@ -214,19 +223,19 @@
 %  \newtheorem{corollary}[theorem]{Corollary}
 %  \newtheorem*{claim}{Claim}
 %  \newtheorem{assumption}{Assumption}
-%  \theoremstyle{definition}
-%  \newtheorem{definition}{Definition}
+  \theoremstyle{definition}
+  \newtheorem{definition}{Definition}
 %  \newcommand{\qed}{\hfill{\rule{2mm}{2mm}}\medskip}
 %  \newenvironment{proof}{\pf}{\qed}
 %  \newtheorem{proposition}[theorem]{Proposition}
 % \newtheorem{inv}[theorem]{Invariant}
  
-%    \newcounter{rem}
-%  \setcounter{rem}{0}
-%  
-%   \newenvironment{remark}
-%   {\refstepcounter{rem} \vspace{2ex}\par\noindent
-%    \textbf{Remark}~\textbf{\therem~}}
+    \newcounter{rem}
+  \setcounter{rem}{0}
+  
+   \newenvironment{remark}
+   {\refstepcounter{rem} \vspace{2ex}\par\noindent
+    \textbf{Remark}~\textbf{\therem~}}
  
 % \newcounter{example}
 %  \setcounter{example}{0}
@@ -355,7 +364,7 @@
 \def\K{{\cal K}} % environment sequence
 \def\L{{\cal L}} % environment sequence
 \def\M{{\cal M}} % Mode switching transitions
-\def\O{{\cal O}} % outcome function
+%\def\O{{\cal O}} % outcome function
 \def\P{{\cal P}} % set of modes
 \def\Q{{\cal Q}} % set of modes
 \def\R{{\cal R}} % relation
@@ -458,4 +467,12 @@
 % Spacing
 \newcommand{\FFF}{\vspace{0.1in}}
 \newcommand{\BBB}{\hspace{-0.1in}}
+
+\newcommand{\tup}[1]
+           {
+             \relax\ifmmode
+             \langle #1 \rangle
+             \else $\langle$ #1 $\rangle$ \fi
+           }
+
 

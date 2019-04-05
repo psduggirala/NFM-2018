@@ -6,10 +6,10 @@ States and vectors are elements in $\reals^n$ are denoted as $x$ and $v$.
 %Given a sequence $seq = s_1, s_2, \ldots$, the $i^{th}$ element in the sequence is denoted as $seq[i]$. 
 In this work, we use the following mathematical notation of a linear hybrid automata.
 
-\vspace{-0.1cm}
+%\vspace{-0.1cm}
 \begin{definition}
 \label{def:hybridAutomata}
- A \emph{linear hybrid automaton} is defined to be a tuple \newline
+ A \emph{linear hybrid automaton} is defined to be a tuple
  $\tup{Loc, X, Flow, Inv, Trans, Guard}$ where:
  \vspace{-0.2cm}
 \begin{description}
@@ -20,10 +20,11 @@ In this work, we use the following mathematical notation of a linear hybrid auto
 \item[$Trans$] $\subseteq Loc \times Loc$ is the set of discrete transitions.
 \item[$Guard$] $: Trans \rightarrow 2^{\reals^n}$ defines the set of states where a discrete transition is enabled.
 \end{description}
-\vspace{-0.2cm}
+
+%\vspace{-0.2cm}
 For a linear hybrid automaton, the invariants and guards are given as a conjunction of linear constraints.
 \end{definition}
-\vspace{-0.1cm}
+%\vspace{-0.1cm}
 
 The \textit{set of initial states} $\Theta \deq (loc_0, S_0)$ where $loc_0 \in Loc$ is called the initial location and $S_0$ is given as a conjunction of linear constraints.
 %
@@ -93,7 +94,7 @@ Sometimes we will refer to both $\Theta$ and $\means{\Theta}$ as $\Theta$.
 \end{definition}
 The generalized stars that we encounter in our analysis have predicate $P$ defined as a conjunction of linear constraints.
 
-\vspace{-0.7cm}
+%\vspace{-0.7cm}
 \begin{algorithm}[h]
 \SetKwInOut{Input}{input}\SetKwInOut{Output}{output}\SetKw{Return}{return}
 \Input{Initial Set: $\Theta = \tup{c, V, P}$, time step: $h$, time bound: $k\cdot h$}
@@ -111,7 +112,7 @@ The generalized stars that we encounter in our analysis have predicate $P$ defin
 \caption{Algorithm that computes the reachable set for a linear dynamical system at time instances $i \cdot h$ from $n+1$ simulations.}
 \label{alg:algoFullInfo}
 \end{algorithm}
-\vspace{-0.7cm}
+%\vspace{-0.7cm}
 
 Given an initial set $\Theta \deq \tup{c, V, P}$ with $V = \{v_1, v_2, \ldots, v_n\}$, we compute the reachable set for a linear dynamical system $\dot{x} = Ax + B$ using simulations.
 %
@@ -134,7 +135,7 @@ When a discrete transition is performed, the reachable set in the new location i
 %
 Algorithm~\ref{alg:algoHybrid} is a pseudocode description of the algorithm. This reachable set computed is simulation equivalent reachable set, i.e., a state is in the reachable set if and only if there exists at least one simulation that visits the state.
 
-\vspace{-0.6cm}
+%\vspace{-0.6cm}
 \begin{algorithm}[h!]
 \SetKwInOut{Input}{input}\SetKwInOut{Output}{output}\SetKw{Return}{return}
 \Input{Initial set $\Theta$, Hybrid automaton $H$, Time bound $k \cdot h$.}
@@ -152,4 +153,4 @@ ${\it queueStars} \gets \emptyset$; append $\Theta$ to ${\it queueStars}$; ${\it
 \caption{Algorithm that computes bounded time simulation equivalent reachable set.}
 \label{alg:algoHybrid}
 \end{algorithm}
-\vspace{-0.8cm}
+%\vspace{-0.8cm}
