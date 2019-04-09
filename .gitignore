@@ -23,3 +23,5 @@ counterexample.py
 *.blg
 nfm-2019.pdf
 .directory
+
+*.pdf
