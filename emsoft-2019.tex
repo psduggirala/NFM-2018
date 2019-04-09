@@ -25,11 +25,11 @@
 % the commands and values with those provided to you when you complete the rights form.
 %
 % These commands are for a PROCEEDINGS abstract or paper.
-%\copyrightyear{2018}
-%\acmYear{2018}
-%\setcopyright{acmlicensed}
-%\acmConference[Woodstock '18]{Woodstock '18: ACM Symposium on Neural Gaze Detection}{June 03--05, 2018}{Woodstock, NY}
-%\acmBooktitle{Woodstock '18: ACM Symposium on Neural Gaze Detection, June 03--05, 2018, Woodstock, NY}
+\copyrightyear{2019}
+\acmYear{2019}
+\setcopyright{acmlicensed}
+\acmConference[]{International Conference on Embedded Software (EMSOFT)}{}{}
+\acmBooktitle{ACM SIGBED International Conference on Embedded Software, October 13--18, 2019, New York, NY}
 %\acmPrice{15.00}
 %\acmDOI{10.1145/1122445.1122456}
 %\acmISBN{978-1-4503-9999-9/18/06}
@@ -90,10 +90,18 @@
 %
 % The abstract is a short summary of the work to be presented in the article.
 \begin{abstract}
-Reachable set computation tools for hybrid systems approximate the reachable set over an interval of time with a symbolic representation. 
-Most reachable set computation tools implement some form of aggregation for handling discrete transitions. Sometimes, the reachable set is insufficient for inferring the safety specification since the aggregation strategies lead to very conservative overapproximations. However, if such an aggregation is not performed, then one has to keep track of exponential number of symbolic representations and incur significant computation costs. 
+Computing the (an overapproximation of) set of reachable states is a widely used technique for proving that a hybrid system satisfies its safety specification. Since hybrid systems involve a mix of discrete and continuous behaviors, the reachable set of states are often uncountable sets. Therefore, a symbolic representation is used for representing the set of reachable states. 
+%For systems involving a mix of continuous and discrete behaviors, Reachable set computation tools for hybrid systems approximate the reachable set over an interval of time with a symbolic representation. 
+For handling the mix of discrete and continuous behaviors, most reachable set computation tools implement some form of aggregation.
+%for handling discrete transitions. 
+Sometimes, the aggregation results in a very conservative overapproximation of the reachable set, making it insufficient for inferring the safety specification. 
+%the reachable set is insufficient for inferring the safety specification since the aggregation strategies lead to very conservative overapproximations. 
+However, if such an aggregation is not performed, then one has to keep track of exponential number of symbolic representations and incur significant computation costs. 
 
-$~~$This paper proposes techniques for improving the accuracy of the aggregation operations performed for reachable set computation. First we present two aggregation strategies over generalized stars, namely convex hull aggregation and template based aggregation. Second, we perform adaptive deaggregation using a data structure called Aggregated Directed Acyclic Graph (AGGDAG). Our deaggregation stragety is driven by counterexamples and hence has soundness and relative completeness guarantees. We apply our technique to infer safety properties of satellite rendezvous mission and demonstrate the computational benefits of these enhancements.
+%$~~$
+This paper proposes techniques for improving the accuracy of the aggregation operations performed for reachable set computation. 
+%In this paper, the reachable set is represented as a generalized star. 
+First, we present two aggregation strategies over generalized stars, namely convex hull aggregation and template based aggregation. Second, we perform adaptive deaggregation using a data structure called Aggregated Directed Acyclic Graph (AGGDAG). Our deaggregation stragety is driven by counterexamples and hence has soundness and relative completeness guarantees. We apply our technique to infer safety properties of satellite rendezvous mission and demonstrate the computational benefits of these enhancements.
 \end{abstract}
 
 %

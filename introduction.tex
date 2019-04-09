@@ -1,3 +1,4 @@
+% !TEX root = emsoft-2019.tex
 \section{Introduction}
 \label{sec:intro}
 
@@ -5,7 +6,7 @@ Aeronautical systems such as air-traffic control protocols, auto-pilot software,
 %
 Design errors in such systems, such as floating point bugs in Ariane 5 spacecraft, might lead to unsafe behaviors causing loss of property and in some cases, life.
 %
-Testing such systems extensively under various scenarios might give confidence to the system designer that the  with confidence that the systems functions in a safe manner.
+Testing such systems extensively under various scenarios might give confidence to the system designer that the systems functions in a safe manner.
 %
 However, such extensive testing is not always possible. 
 %has its own set of challenges.
@@ -14,7 +15,7 @@ However, such extensive testing is not always possible.
 %
 In the case of satellite maneuver protocols, it is impossible to create a controlled test bed on earth to test such systems.
 %
-Moreover, once deployed, updates to the control algorithms on satellite maneuver protocols is very difficult, if not impossible.
+Moreover, once deployed, updating the control algorithms on satellite maneuver protocols is very difficult, if not impossible.
 %
 %
 One of the widely used method for ensuring that the system does not encounter any unsafe scenarios in such cases is model-based analysis.
@@ -35,47 +36,95 @@ Hybrid automata is a well suited framework for modeling such safety critical sys
 % The change in mode of operation is modelled as a transition among these modes.
 %
 
-In this paper, we perform safety analysis of satellite rendezvous mission modeled as a hybrid automata.
+In this paper, we perform safety analysis of a satellite rendezvous mission modeled as a hybrid automata.
 %
-Our analysis relies on computing an artifact called {\em reachable set}. 
+We adopt a widely used technique for establishing safety properties of hybrid systems is {\em reachable set computation}.
 %
-Given a set of initial configurations (often uncountable) $\Theta$, the reachable set is the set of all possible configurations encountered by the system trajectories starting from $\Theta$. 
+%Our analysis relies on computing an artifact called {\em reachable set}. 
+%
+Given a set of initial configurations $\Theta$ (often uncountable), the reachable set is the set of all possible configurations encountered by the system trajectories starting from $\Theta$. 
 %
 Since the reachable set is also an uncountable set, we compute a symbolic representation of the reachable set.
 %
-Often, symbolic representations of convex sets such as support functions~\cite{spaceex}, polytopes~\cite{Frehse05_phaver}, zonotopes~\cite{girard2006efficient}, etc. are used because operations such as linear transformation, intersection, and Minkowski sum can be easily performed over these representations.
+If the reachable set does not contain any unsafe configurations, then one can prove that the safety specification is satisfied.
+%
+Often, symbolic representations of convex sets such as polytopes~\cite{Frehse05_phaver}, zonotopes~\cite{girard2006efficient}, support functions~\cite{spaceex}, etc. are used because operations such as linear transformation, intersection, convex hull, and Minkowski sum can be easily performed over these representations.
 %
 %This is because operations such as linear transformation, intersection, and minkowski sum can be efficiently performed using such convex representations.
 
+Such representations, however, are at a disadvantage while performing mode switches.
+%
+Due to the non-determinism of mode switching behavior, one has to compute an overapproximation of all the states that can perform the mode switch in the chosen representation.
+%
+This operation is called aggregation.
+%
+Often, this overapproximation is very conservative and might overlap with the unsafe set of configurations.
+%
+If one does not perform aggregation, then one has to keep track of exponential number of symbolic representation after a finite number of mode switches.
 
-However, such convex representations are at a significant disadvantage while performing mode switches.
+This paper exclusively focuses on aggregation and de-aggregation strategies in reachable set computation. 
 %
-Consider the case of a satellite rendezvous mission that involves a mode switch from continue to abort.
+We present two aggregation strategies, first, template based, and second, convex hull based. 
 %
-This mode switch can happen at any time in a given interval. 
+For efficient de-aggregation, we introduce a data structure called Aggregated Directed Acyclic Graph (AGGDAG), and explain our de-aggregation strategy.
 %
-Due to this non-determinism, the initial set of states in the abort mode is a convex overapproximation of the reachable set. 
+
+%These improvements in aggregation and de-aggregation strategies enable us to perform the safety analysis of a satellite rendezvous mission.
 %
-Often, this overapproximation is too conservative and hence, such reachable set computation is not useful in determining whether all the behaviors of the systems are safe. 
+In a rendezvous mission, the satellite can operate in one of the two modes: approach or abort. 
 %
-While some approaches tried to avoid computing intersections, to compute the reachable set~\cite{althoff2012avoiding}, one has to perform overapproximation, which often becomes very conservative.
+In the approach mode, the trajectory of the satellite proceeds towards the rendezvous point. 
+%
+In the abort mode, the decision to rendezvous is aborted and hence the satellite should maintain a safe distance from the rendezvous point. 
+%
+Naturally, one cannot decide to abort the rendezvous when the satellite is too close to the rendezvous point.
+%
+In this paper, we establish that if the decision to abort is performed in a given interval of time, the safe distance from the rendezvous point is maintained.
+%
+The nondeterminism in the mode switch from approach to abort makes the safety analysis very challenging.
+%
+Due to the nondeterminism in the switching behavior, the aggregation and de-aggregation techniques proposed in this paper are crucial for the safety analysis.
+
+%This paper exclusively focuses on improving the accuracy of the reachable set by presenting template based and convex hull based aggregation strategies for discrete transitions in linear hybrid automata.
+%%
+%We also present a data structure called Aggregated Directed Acyclic Graph (AGGDAG) and explain how aggdag helps us in implementing various deaggregation strategies. 
+%%for keeping track of aggregations and their dependence on the reachable set.
+%%
+%%Using AGGDAG, we present several deaggregation strategies based on the counterexamples generated for the safety specification. 
+%%
+%We also provide soundness and relative completeness guarantees of our reachable set computation algorithm.
+%%
+%We implement our strategies in a tool called HyLAA~\cite{bak2017hscc} and analyze a satellite rendezvous mission.
+%%
+%Analyzing this model is particularly difficult because of the nondeterminism in switching behavior.
+%%
+%In the literature only restricted models of such switching behavior were analyzed owing to the overapproximation created by the state of the art tools.
+%
+%
+%
+%
+%%
+%The initial set of states after the mode switch is obtained by representing an overapproximation of the set of states that can 
+%%
+%Due to the non-determinism at a mode switch, the initial set of states for the next mode are obtained by performing 
+%%
+%When the executions of hybrid automata switch from one mode to another, one has to over
+%%
+%While performing such mode switches, one has to approximate a union of 
+%%
+%%
+%Consider the case of a satellite rendezvous mission that involves a mode switch from continue to abort.
+%%
+%This mode switch can happen at any time in a given interval. 
+%%
+%Due to this non-determinism, the initial set of states in the abort mode is a convex overapproximation of the reachable set. 
+%%
+%Often, this overapproximation is too conservative and hence, such reachable set computation is not useful in determining whether all the behaviors of the systems are safe. 
+%%
+%While some approaches tried to avoid computing intersections, to compute the reachable set~\cite{althoff2012avoiding}, one has to perform overapproximation, which often becomes very conservative.
 %
 %\sridhar{Probably a spaceEx figure for state space exploration might come in handy here.}
 
-This paper exclusively focuses on improving the accuracy of the reachable set by presenting template based and convex hull based aggregation strategies for discrete transitions in linear hybrid automata.
-%
-We also present a data structure called Aggregated Directed Acyclic Graph (AGGDAG) and explain how aggdag helps us in implementing various deaggregation strategies. 
-%for keeping track of aggregations and their dependence on the reachable set.
-%
-%Using AGGDAG, we present several deaggregation strategies based on the counterexamples generated for the safety specification. 
-%
-We also provide soundness and relative completeness guarantees of our reachable set computation algorithm.
-%
-We implement our strategies in a tool called HyLAA~\cite{bak2017hscc} and analyze a satellite rendezvous mission.
-%
-Analyzing this model is particularly difficult because of the nondeterminism in switching behavior.
-%
-In the literature only restricted models of such switching behavior were analyzed owing to the overapproximation created by the state of the art tools.
 
 
 %This work on developing deaggregation strategies is crucial for performing safety analysis of a satellite rendezvous mission. 
