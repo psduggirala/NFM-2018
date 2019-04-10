@@ -173,7 +173,7 @@ def make_settings(safe):
     'make the reachability settings object'
 
     # see hylaa.settings for a list of reachability settings
-    settings = HylaaSettings(1.0, 200.0) # step: 0.1, bound: 200.0
+    settings = HylaaSettings(0.1, 300.0) # step: 0.1, bound: 200.0
 
     settings.stop_on_aggregated_error = False
     #settings.process_urgent_guards = True
@@ -189,8 +189,8 @@ def make_settings(safe):
     #settings.plot.plot_size = (8, 9)
 
     settings.plot.video_pause_frames = 2
-    settings.plot.plot_mode = PlotSettings.PLOT_VIDEO
-    settings.plot.filename = "rendezvous_full_passivity.mp4"
+    settings.plot.plot_mode = PlotSettings.PLOT_NONE
+    #settings.plot.filename = "rendezvous_full_passivity.mp4"
 
     settings.plot.xdim_dir = [0] * 3
     settings.plot.ydim_dir = [1] * 3
