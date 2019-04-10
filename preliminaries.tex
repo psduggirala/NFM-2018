@@ -1,6 +1,7 @@
+% !TEX root = emsoft-2019.tex
 \section{Preliminaries}
 \label{sec:prelims}
-\vspace{-0.2cm}
+%\vspace{-0.2cm}
 
 States and vectors are elements in $\reals^n$ are denoted as $x$ and $v$. 
 %Given a sequence $seq = s_1, s_2, \ldots$, the $i^{th}$ element in the sequence is denoted as $seq[i]$. 
@@ -11,7 +12,7 @@ In this work, we use the following mathematical notation of a linear hybrid auto
 \label{def:hybridAutomata}
  A \emph{linear hybrid automaton} is defined to be a tuple
  $\tup{Loc, X, Flow, Inv, Trans, Guard}$ where:
- \vspace{-0.2cm}
+% \vspace{-0.2cm}
 \begin{description}
 \item[$Loc$] is a finite set of locations (also called modes).
 \item[$X$] $\subseteq \reals^n$ is the state space of the behaviors.
@@ -75,37 +76,60 @@ Given a hybrid automaton $H$, initial set $\Theta$, bounded time $T$, and simula
 A hybrid automaton $H$ with initial set $\Theta$, time bound $T$, step size $h$, and unsafe set $U$ is said to be Simulation-equivalent safe, if all the simulations $\rho_{H}(q_0, h, k)$ with $q_0$ from $\Theta$ do not visit the unsafe set $U$.
 \end{definition}
 
-\subsection{Reachable Set Computation of Linear Dynamical Systems Using Generalized Stars}
-\label{sec:reachStars}
-
-In this section we will outline the reachable set computation of linear dynamical systems that uses a symbolic representation called \emph{Generalized Stars}.
-%
-Reachable set computation using generalized star representation leverages the superposition property of the linear dynamical systems.
-%
-We include the basic details of this representation and the reachable set computation technique in this paper for completeness. For additional details, the readers can refer to~\cite{duggirala2016parsimonious,bak2017tacas}.
+\subsection{Symbolic Representation: Generalized Stars}
+\label{sec:genStars}
+We include the basic details of the symbolic representation called generalized stars~\cite{duggirala2016parsimonious,bak2017tacas} with some syntactic modifications. 
+%For additional details, the readers can refer to~\cite{duggirala2016parsimonious,bak2017tacas}.
 
 \begin{definition}
 \label{def:genStar}
-A \emph{generalized star} (or simply star) $\Theta$ is a tuple $\tup{c,V,P}$ where $c \in \reals^n$ is called the \emph{center}, $V = \{v_1,v_2,\ldots, v_n\}$ is a set of vectors in $\reals^n$ called the \emph{basis vectors}, and $P: \reals^n \rightarrow \{\top, \bot\}$ is a predicate. A generalized star $\Theta$ defines a subset of $\reals^n$ as follows.
+A \emph{generalized star} (or simply star) $\Theta$ is a tuple $\tup{a,G,P}$ where $a \in \reals^n$ is called the \emph{anchor}, $G = \{g_1,g_2,\ldots, g_n\}$ is a set of vectors in $\reals^n$ called the \emph{generators}, and $P: \reals^n \rightarrow \{\top, \bot\}$ is a predicate. A generalized star $\Theta$ defines a subset of $\reals^n$ as follows.
 \begin{eqnarray*}
-\means{\Theta} = \{ x\: |\: \exists \bar{\alpha} = [\alpha_1, \ldots, \alpha_n]^T \mbox{ such that } x = c + \Sigma_{i=1}^n \alpha_i v_i \mbox{ and } P(\bar{\alpha}) = \top \}
+\means{\Theta} = \{ x\: |\: \exists \bar{\alpha} = [\alpha_1, \ldots, \alpha_n]^T \mbox{ such that }\\
+ x = a + \Sigma_{i=1}^n \alpha_i g_i \mbox{ and } P(\bar{\alpha}) = \top \}
 \end{eqnarray*}
 Sometimes we will refer to both $\Theta$ and $\means{\Theta}$ as $\Theta$.
 \end{definition}
 The generalized stars that we encounter in our analysis have predicate $P$ defined as a conjunction of linear constraints.
 
+\begin{example}
+\label{ex:genStar}
+A unit square $S$ in the cartesian plane with corners at $(0,0)$ and $(1,1)$ can be represented as a star $\tup{a, G, P}$ where $a = (0,0)$, $G = \{i, j\}$ where $i$ and $j$ are unit vectors along the $x$ and $y$ axes respectively, and $P \deq 0 \leq \alpha_1 \leq 1 \wedge 0 \leq \alpha_2 \leq 1$.
+
+A set can be represeted in multiple ways in generalized star representation. Changing the anchor to $a' = (1,1)$ results in the new predicate $P' \deq -1 \leq \alpha_1 \leq 0 \wedge -1 \leq \alpha_2 \leq 0$. Changing the generators to $G' = \{i+j, i-j\}$ would result in the predicate $P'' \deq -\sqrt{2} \leq \alpha_1 + \alpha_2 \leq 0 \wedge -\sqrt{2} \leq \alpha_1 - \alpha_2 \leq 0$. Observe that changing the anchor would correspond to translation and changing the generators corresponds to a linear transformation over the predicate $P$.
+\end{example}
+
+%\subsubsection{Operations On Generalized Stars}
+
+Given two generalized stars $\Theta_1 \deq \tup{a, G, P_1}$ and $\Theta_2 \deq \tup{a, G, P_2}$, $\Theta_1 \cap \Theta_2 \deq \tup{a, G, P_1 \wedge P_2}$. 
+%
+Here, the predicates $P_1$ and $P_2$ are defined over the same set of variables. 
+%
+If two stars do not share the same anchor and generators, one has to perform translation and linear transformation to have the same anchor and generators. 
+
+%Given two generalized stars $\Theta \deq \tup{a, G, P}$ and $\Theta' \deq \tup{a', G', P'}$, the Minkowski sum of $\Theta \oplus \Theta' \deq \tup{a+a', G \cup G', P\wedge P'}$. Observe that the number of generators in $\Theta \oplus \Theta'$ is equal to the sum of number of generators in $\Theta$ and $\Theta'$. Additionally, we perform variable renaming such that the predicates $P$ and $P'$ do not share any variables.
+
+\subsection{Reachable Set Computation of Linear Dynamical Systems Using Generalized Stars}
+\label{sec:reachStars}
+
+In this section we will outline the reachable set computation of linear dynamical systems that uses a symbolic representation called \emph{Generalized Stars}.
+%
+Generalized star representation leverages the superposition property of the linear dynamical systems~\cite{duggirala2016parsimonious}.
+%
+
 %\vspace{-0.7cm}
 \begin{algorithm}[h]
-\SetKwInOut{Input}{input}\SetKwInOut{Output}{output}\SetKw{Return}{return}
-\Input{Initial Set: $\Theta = \tup{c, V, P}$, time step: $h$, time bound: $k\cdot h$}
+\SetAlgoVlined
+\SetKwInOut{Input}{Input}\SetKwInOut{Output}{Output}\SetKw{Return}{return}
+\Input{Initial Set: $\Theta = \tup{a, G, P}$, Dynamics: $(A, B)$, Step: $h$, Bound: $k$}
 \Output{$Reach(\Theta) = Reach_0(\Theta), \ldots, Reach_k(\Theta)$}
 \For{ each $i$ from $0$ to $k$}{
-   $c_i \gets \rho(c, h, k)[i]$\; \label{ln:lineCenter}
-   \For{ each $v_j \in V$ }{ \label{ln:begLoop}
-      $v_j' \gets \rho(c+v_j, h, k)[i] - c_i$\; \label{ln:simVec}
+   $a_i \gets \rho(a, h, k)[i]$\; \label{ln:lineCenter}
+   \For{ each $g_j \in V$ }{ \label{ln:begLoop}
+      $g_j' \gets \rho(c+g_j, h, k)[i] - a_i$\; \label{ln:simVec}
    } \label{ln:endLoop}
-   $V_i \gets \{ v_1', \ldots, v_m'\}$\;
-   $Reach_i(\Theta) \gets \tup{c_i, V_i, P}$\; \label{ln:reachSeti1}
+   $G_i \gets \{ g_1', \ldots, g_m'\}$\;
+   $Reach_i(\Theta) \gets \tup{a_i, G_i, P}$\; \label{ln:reachSeti1}
    Append $Reach_i(\Theta)$ to $Reach(\Theta)$\;
 }
 {\bf return} $Reach(\Theta)$\;
@@ -114,38 +138,52 @@ The generalized stars that we encounter in our analysis have predicate $P$ defin
 \end{algorithm}
 %\vspace{-0.7cm}
 
-Given an initial set $\Theta \deq \tup{c, V, P}$ with $V = \{v_1, v_2, \ldots, v_n\}$, we compute the reachable set for a linear dynamical system $\dot{x} = Ax + B$ using simulations.
+Given an initial set $\Theta \deq \tup{a, G, P}$ with $G = \{g_1, g_2, \ldots, g_n\}$, we compute the reachable set for a linear dynamical system $\dot{x} = Ax + B$ using simulations.
 %
-We generate simulations starting from $c$ (denoted as $\rho(c, h, k)$), and $c+v_j$ $\forall 1\leq j \leq n$ (denoted as $\rho(c+v_j, h, k)$). 
+We generate simulations starting from $a$ (denoted as $\rho(a, h, k)$), and $a+g_j$ $\forall 1\leq j \leq n$ (denoted as $\rho(a+g_j, h, k)$). 
 %
-For a given time instance $i\cdot h$, the reachable set denoted as $Reach_i(\Theta)$ is defined as $\tup{c_i, V_i, P}$ where $c_i = \rho(c, h, k)[i]$ and $V_i = \tup{v_1', v_2', \ldots, v_n'}$ where $\forall 1\leq j \leq n, v_j' = \rho(c+v_j, h, k)[i] - \rho(c, h, k)[i]$. 
+For a given time instance $i\cdot h$, the reachable set denoted as $Reach_i(\Theta)$ is defined as $\tup{a_i, G_i, P}$ where $c_i = \rho(a, h, k)[i]$ and $G_i = \tup{g_1', g_2', \ldots, g_n'}$ where $\forall 1\leq j \leq n, g_j' = \rho(a+g_j, h, k)[i] - \rho(a, h, k)[i]$. 
 %
-Notice that the predicate does not change for the reachable set, but only the center and the basis vectors are changed.
+Readers can refer to~\cite{bak2017tacas} for the correctness of this algorithm.
+%
+For ensuring that all trajectories starting from $\Theta$ satisfy the safety specification, one can check if there exists a set in $Reach(\Theta)$ overlapping with the unsafe set $U$.
+%Notice that the predicate does not change for the reachable set, but only the center and the basis vectors are changed.
 %
 
-Notice that Algorithm~\ref{alg:algoFullInfo} can compute the reachable set of linear dynamical systems using $n+1$ simulations. 
+\begin{remark}
+\label{rem:predConst}
+Notice that the predicate in the reachable set remains same as that of the initial set $\Theta$. Hence, if one changes the initial set by changing the predicate, one need not generate additional simulations for computing the reachable set. One can just change the predicate in line~\ref{ln:reachSeti1} and compute the new reachable set. For checking the safety specification with the new initial set, we still have to perform the overlap of the unsafe set $U$ with reachable set.
+\end{remark}
+
+\subsection{Reachable Set Computation of Linear Hybrid Systems Using Generalized Stars}
+%Notice that Algorithm~\ref{alg:algoFullInfo} can compute the reachable set of linear dynamical systems using $n+1$ simulations. 
 %
-The reachable set computation technique for hybrid automata has two additional subroutines.
+The reachable set computation technique for hybrid automata has three subroutines.
 %
-First, it computes the overlap of the reachable set in each location with the location invariant.
+First, it computes the reachable set of the dynamical system in the current mode of operation (line~\ref{ln:reachDyn}).
 %
-Second, it also computes the overlap of the reachable sets with the guards of discrete transitions that cause a change in location.
+Second, it computes the overlap of the reachable set in the current mode with the location invariant (line~\ref{ln:overlapInv}).
 %
-When a discrete transition is performed, the reachable set in the new location is computed by invoking the Algorithm~\ref{alg:algoFullInfo} subroutine.
+Third, it computes the overlap of the reachable sets with the guards of discrete transitions that cause a change in mode (line~\ref{ln:guardIntersection}).
+%
+When a discrete transition is performed, the reachable set in the new mode is computed by invoking the Algorithm~\ref{alg:algoFullInfo} subroutine.
 %
 Algorithm~\ref{alg:algoHybrid} is a pseudocode description of the algorithm. This reachable set computed is simulation equivalent reachable set, i.e., a state is in the reachable set if and only if there exists at least one simulation that visits the state.
 
 %\vspace{-0.6cm}
 \begin{algorithm}[h!]
-\SetKwInOut{Input}{input}\SetKwInOut{Output}{output}\SetKw{Return}{return}
-\Input{Initial set $\Theta$, Hybrid automaton $H$, Time bound $k \cdot h$.}
+\SetAlgoVlined
+\SetKwInOut{Input}{Input}\SetKwInOut{Output}{Output}\SetKw{Return}{return}
+\Input{Initial set $\Theta$, Hybrid system $H$, Step: $h$, Bound: $k$.}
 \Output{${\it ReachSet}$ as the set of reachable states.}
-${\it queueStars} \gets \emptyset$; append $\Theta$ to ${\it queueStars}$; ${\it ReachSet} \gets \emptyset$\;
+${\it queueStars} \gets \emptyset$\; 
+append ($\Theta$, $loc_0$, $0$) to ${\it queueStars}$\; 
+${\it ReachSet} \gets \emptyset$\;
 \While{${\it queueStars}$ is not empty}{
     $S \gets {\sf dequeue}({\it queueStars})$\;
-    $R \gets {\sf ReachableSetDynamicalSystem}(S, S.loc)$\;
-    $R' \gets {\sf InvariantOverlap}(R, R.loc)$\;
-    ${\it ReachSet} \gets {\it ReachSet} \cup R'$\;
+    $R \gets {\sf ReachSetDynamicalSystem}(S, S.loc, h, k-S.time)$\; \label{ln:reachDyn}
+    $R' \gets {\sf InvariantOverlap}(R, R.Inv)$\; \label{ln:overlapInv}
+    ${\it ReachSet} \gets {\it ReachSet} \cup R'$\; 
     ${\it nextRegions} \gets {\sf discreteTrans}(R', H.Trans)$\; \label{ln:guardIntersection}
     append ${\it nextRegions}$ to ${\it queueStars}$\; \label{ln:appendQueueStars}
 }
@@ -154,3 +192,31 @@ ${\it queueStars} \gets \emptyset$; append $\Theta$ to ${\it queueStars}$; ${\it
 \label{alg:algoHybrid}
 \end{algorithm}
 %\vspace{-0.8cm}
+
+We want to highlight that the reachable set is only computed only at discrete instances of time.
+%
+However, the advantage of our approach is that we can provide a counterexample when the safety specification is violated.
+%
+Algorithm~\ref{alg:algoHybrid} terminates because of two reasons. First, the simulations considered in this paper spend at least one step in its current mode of operation. Second, we compute the reachable set for only a bounded number of steps $k$. Hence, the set of states in ${\it queueStars}$ is finite.
+
+One of the primary drawbacks of Algorithm~\ref{alg:algoHybrid} is in handling the discrete transitions. 
+%
+Suppose that in a given location, the number of stars that overlap with the guard of a discrete transition (line~\ref{ln:guardIntersection} in Algorithm~\ref{alg:algoHybrid}) is $m$.
+%
+As a result, the number of stars in the $queueStars$ will become $O(m^2)$ after 2 discrete transitions. After $t$ number of discrete transitions, the number of states in $queueStars$ grows to $O(m^t)$.
+%
+To avoid the exponential blow up of the number of sets in $queueStars$, reachable set computation tools often use aggregation.
+
+\begin{remark}
+\label{rem:hybridAlgo}
+While Algorithm~\ref{alg:algoHybrid} might compute exponential number of reachable sets, we do not generate exponential number of simulations for each mode in the hybrid automata. For each mode, we decide on an anchor $a_{mode}$ and generators $G_{mode}$ and pre-compute the $n+1$ simulations required for reachable set computation for that mode. For computing the reachable set of a star in a new mode (line~\ref{ln:reachDyn}), we change the anchor and the generators of the star to $a_{mode}$ and $G_{mode}$ respectively and use the observation in Remark~\ref{rem:predConst}. 
+
+While this helps us cut down the number of simulations, we still have to check for overlap of unsafe set with exponential number of stars. Aggregation is crucial step to decrease the number of overlaps.
+\end{remark}
+
+
+%\begin{remark}
+%\label{rem:reachHybrid}
+%
+%\end{remark}
+%
