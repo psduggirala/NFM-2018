@@ -15,16 +15,18 @@ from hylaa.hybrid_automaton import HybridAutomaton
 from hylaa.settings import HylaaSettings, PlotSettings, LabelSettings
 from hylaa.core import Core
 from hylaa.stateset import StateSet
-from hylaa import lputil
+from hylaa import lputil, aggstrat
 from hylaa.aggstrat import Aggregated
 
-def make_automaton(safe):
+def make_automaton(abortmin, abortmax):
     'make the hybrid automaton'
 
+    safe = True
     ha = HybridAutomaton('Spacecraft Rendezvous with Abort')
+    rad = 5.0
 
-    passive_min_time = 0
-    passive_max_time = 250
+    passive_min_time = abortmin
+    passive_max_time = abortmax
     
     ############## Modes ##############
     p2 = ha.new_mode('Far')
@@ -97,7 +99,6 @@ def make_automaton(safe):
     ############## Error Transitions ##############
     # In the aborting mode, the vehicle must avoid the target, which is modeled as a box B with
     # 0.2m edge length and the center placed as the origin
-    rad = 0.2
 
     # unsafe rad: 1.0
     #rad = 1.0
@@ -151,38 +152,30 @@ def make_init(ha):
 
     return init_list
 
-class MyAggergated(Aggregated):
-    'a custom aggregation strategy'
-
-    def __init__(self):
-        Aggregated.__init__(self)
-
-    def pop_waiting_list(self, waiting_list):
-        '''
-        Get the states to remove from the waiting list based on a score-based method
-        '''
-
-        states = Aggregated.pop_waiting_list(self, waiting_list)
-
-        if len(states) == 9:
-            states = states[0:4]
-
-        return states
-
-def make_settings(safe):
+def make_settings(abortmin, abortmax, stepsize, aggregation):
     'make the reachability settings object'
 
+    rad = (abortmax - abortmin) / 2.0
+
     # see hylaa.settings for a list of reachability settings
-    settings = HylaaSettings(0.1, 300.0) # step: 0.1, bound: 200.0
+    settings = HylaaSettings(stepsize, 250.0) # step: 0.1, bound: 200.0
 
-    settings.stop_on_aggregated_error = False
-    #settings.process_urgent_guards = True
+    #settings.approx_model = HylaaSettings.APPROX_LGG
 
-    #settings.aggstrat = MyAggergated()
-    settings.aggstrat.deaggregate = True # use deaggregation
-    settings.aggstrat.deagg_preference = Aggregated.DEAGG_LEAVES_FIRST
+    if aggregation == 'deagg':
+        settings.stop_on_aggregated_error = False
+        #settings.process_urgent_guards = True
 
-    settings.stdout = HylaaSettings.STDOUT_VERBOSE
+        settings.aggstrat.deaggregate = True # use deaggregation
+        settings.aggstrat.deagg_preference = Aggregated.DEAGG_LEAVES_FIRST
+    elif aggregation == 'unagg':
+
+        # dont use aggregation
+        settings.aggstrat = aggstrat.Unaggregated()
+    else:
+        assert aggregation == 'agg', f"unknown aggregation value {aggregation}"
+
+    settings.stdout = HylaaSettings.STDOUT_NONE
 
     #settings.plot.plot_mode = PlotSettings.PLOT_IMAGE
     #settings.plot.filename = "rendezvous_full_passivity.png"
@@ -192,16 +185,17 @@ def make_settings(safe):
     settings.plot.plot_mode = PlotSettings.PLOT_NONE
     #settings.plot.filename = "rendezvous_full_passivity.mp4"
 
-    settings.plot.xdim_dir = [0] * 3
-    settings.plot.ydim_dir = [1] * 3
-    settings.plot.grid = False
-    settings.plot.label = []
-    settings.plot.extra_collections = []
+    if True:
+        # single plot
+        settings.plot.xdim_dir = [0] * 1
+        settings.plot.ydim_dir = [1] * 1
+        settings.plot.grid = False
+        settings.plot.label = []
+        settings.plot.extra_collections = []
 
-    for _ in range(3):
         ls = LabelSettings()
         settings.plot.label.append(ls)
-    
+
         ls.big(size=24)
 
         ls.x_label = '$x$'
@@ -211,34 +205,124 @@ def make_settings(safe):
         line = [(-100, y), (-100, -y), (0, 0), (-100, y)]
         c1 = collections.LineCollection([line], animated=True, colors=('gray'), linewidths=(1), linestyle='dashed')
 
-        rad = 0.2
         line = [(-rad, -rad), (-rad, rad), (rad, rad), (rad, -rad), (-rad, -rad)]
         c2 = collections.LineCollection([line], animated=True, colors=('red'), linewidths=(2))
 
         settings.plot.extra_collections.append([c1, c2])
 
-    settings.plot.label[0].axes_limits = [-950, 400, -450, 70]
-    #settings.plot.label[1].axes_limits = [-150, 50, -70, 70]
-    settings.plot.label[1].axes_limits = [-80, 5, -30, 5]
-    settings.plot.label[2].axes_limits = [-3, 1.5, -1.5, 1.5]
+        settings.plot.label[0].axes_limits = [-4*rad, 4*rad, -4*rad, 4*rad]
+    else:
+        # multiplot
+        settings.plot.xdim_dir = [0] * 3
+        settings.plot.ydim_dir = [1] * 3
+        settings.plot.grid = False
+        settings.plot.label = []
+        settings.plot.extra_collections = []
+
+        for _ in range(3):
+            ls = LabelSettings()
+            settings.plot.label.append(ls)
+
+            ls.big(size=24)
+
+            ls.x_label = '$x$'
+            ls.y_label = '$y$'
+
+            y = 57.735
+            line = [(-100, y), (-100, -y), (0, 0), (-100, y)]
+            c1 = collections.LineCollection([line], animated=True, colors=('gray'), linewidths=(1), linestyle='dashed')
+
+            line = [(-rad, -rad), (-rad, rad), (rad, rad), (rad, -rad), (-rad, -rad)]
+            c2 = collections.LineCollection([line], animated=True, colors=('red'), linewidths=(2))
+
+            settings.plot.extra_collections.append([c1, c2])
+
+        settings.plot.label[0].axes_limits = [-950, 400, -450, 70]
+        #settings.plot.label[1].axes_limits = [-150, 50, -70, 70]
+        settings.plot.label[1].axes_limits = [-80, 5, -30, 5]
+
+        settings.plot.label[2].axes_limits = [-3, 1.5, -1.5, 1.5]
+        
 
     return settings
 
-def main():
-    'main entry point'
+def hylaa_single(abortmin, abortmax, stepsize=1.0, aggregation='deagg'):
+    'run hylaa a single time'
 
-    safe = True
-
-    ha = make_automaton(safe)
+    ha = make_automaton(abortmin, abortmax)
 
     init_states = make_init(ha)
 
-    settings = make_settings(safe)
+    settings = make_settings(abortmin, abortmax, stepsize, aggregation)
 
     result = Core(ha, settings).run(init_states)
 
-    for i, seg in enumerate(result.counterexample):
-        print(f"counterexample {i}: {seg}")
+    safe = not result.has_concrete_error
+
+    if aggregation == 'agg':
+        safe = not result.has_aggregated_error
+    
+    secs = result.top_level_timer.total_secs
+
+    return [safe, secs]
+
+def hylaa(abortmin, abortmax, stepsize=1.0, aggregation='deagg'):
+    '''
+    run hylaa with the given settings. will run multiple times if time is small
+    '''
+
+    small = 1.0
+
+    rv = hylaa_single(abortmin, abortmax, stepsize=stepsize, aggregation=aggregation)
+
+    if rv[0] == 'safe' and rv[1] < small:
+        # run four more times and return average of middle three runs
+        times = [rv[1]]
+
+        for _ in range(4):
+            rv = hylaa_single(abortmin, abortmax, stepsize=stepsize, aggregation=aggregation)
+            times.append(rv[1])
+
+        times.sort()
+
+        rv[1] = sum(times[1:4]) / 3.0
+
+        print("Runtimes: {}, returning {}".format(times, rv[1]))
+
+    return rv
+
+def measure_hylaa():
+    'run hylaa measurements, saving to plot/data_deagg.dat'
+
+    timeout = 5
+
+    print("Running deagg measurements")
+    start = time.time()
+    step = 5
+    params = [1, 0.5, 0.25]
+
+    with open('plot/data_deagg.dat', 'w') as f:
+        for stepsize in params:
+
+            f.write('" step={})"\n'.format(stepsize))
+
+            for rad in range(0, 75, step):
+                result = hylaa(70-rad, 70+rad, stepsize=stepsize, aggregation='deagg')
+
+                result, sec = result # extract result tuple
+
+                assert result != 'unsafe', 'result was unsafe with deagg???'
+
+                f.write("{} {}\n".format(rad, sec))
+
+                if sec > timeout: # don't need binary search here because we have a valid measurement
+                    break
+
+            f.write("\n\n")
+            print("") # newline
+
+    print(f"Finished deagg in {(time.time() - start) / 60.0)} minutes")
 
 if __name__ == "__main__":
-    main()
+    measure_hylaa()
+    

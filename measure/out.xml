@@ -4,14 +4,14 @@
     <note>Created by Hyst v1.6
 Hybrid Automaton in SpaceEx
 Converted from file: abort.xml
-Command Line arguments: -verbose -set_init "abortmin==120 &amp; abortmax==120 &amp; t==0 &amp; vx==0 &amp; vy==0 &amp; -925&lt;=x&lt;=-875 &amp; -425&lt;=y&lt;=-375 &amp; Tmax==300 &amp; loc()==P2"" -i abort.xml -o out.xml -tool spaceex "-output-format none"</note>
+Command Line arguments: -verbose -set_init "abortmin==12 &amp; abortmax==128 &amp; t==0 &amp; vx==0 &amp; vy==0 &amp; -925&lt;=x&lt;=-875 &amp; -425&lt;=y&lt;=-375 &amp; Tmax==250 &amp; loc()==P2"" -i abort.xml -o out.xml -tool spaceex "-output-format none -aggregation none -flowpipe_tol 0.2 -directions oct"</note>
     <param controlled="true" d1="1" d2="1" dynamics="any" local="false" name="x" type="real"/>
     <param controlled="true" d1="1" d2="1" dynamics="any" local="false" name="y" type="real"/>
     <param controlled="true" d1="1" d2="1" dynamics="any" local="false" name="vx" type="real"/>
     <param controlled="true" d1="1" d2="1" dynamics="any" local="false" name="vy" type="real"/>
     <param controlled="true" d1="1" d2="1" dynamics="any" local="false" name="t" type="real"/>
     <location id="1" name="P2">
-      <invariant>t &lt;= 120.0 &amp;
+      <invariant>t &lt;= 128.0 &amp;
  x &lt;= -100.0</invariant>
       <flow>t' == 1.0 &amp;
  x' == vx &amp;
@@ -20,7 +20,7 @@ Command Line arguments: -verbose -set_init "abortmin==120 &amp; abortmax==120 &a
  vy' == -0.000174031357370456 * x - 0.0665123984901026 * y - 0.00875351105536225 * vx - 2.90300269286856 * vy</flow>
     </location>
     <location id="2" name="P3">
-      <invariant>t &lt;= 120.0 &amp;
+      <invariant>t &lt;= 128.0 &amp;
  y &gt;= -100.0 &amp;
  x + y &gt;= -141.1 &amp;
  x &gt;= -100.0 &amp;
@@ -36,8 +36,8 @@ Command Line arguments: -verbose -set_init "abortmin==120 &amp; abortmax==120 &a
  vy' == -0.000262486080737868 * x - 0.575999940191886 * y - 0.00876276068239993 * vx - 19.2299765959399 * vy</flow>
     </location>
     <location id="3" name="Passive">
-      <invariant>t &gt;= 120.0 &amp;
- t &lt;= 300.0</invariant>
+      <invariant>t &gt;= 12.0 &amp;
+ t &lt;= 250.0</invariant>
       <flow>t' == 1.0 &amp;
  x' == vx &amp;
  y' == vy &amp;
@@ -57,12 +57,12 @@ Command Line arguments: -verbose -set_init "abortmin==120 &amp; abortmax==120 &a
       <middlepoint/>
     </transition>
     <transition asap="false" bezier="false" source="1" target="3" timedriven="false">
-      <guard>t &gt;= 120.0</guard>
+      <guard>t &gt;= 12.0</guard>
       <labelposition/>
       <middlepoint/>
     </transition>
     <transition asap="false" bezier="false" source="2" target="3" timedriven="false">
-      <guard>t &gt;= 120.0</guard>
+      <guard>t &gt;= 12.0</guard>
       <labelposition/>
       <middlepoint/>
     </transition>
