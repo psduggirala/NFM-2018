@@ -1,5 +1,5 @@
 
-MAIN=nfm-2019
+MAIN=emsoft-2019
 
 all $(MAIN).pdf : $(MAIN).tex 
 	pdflatex $<
