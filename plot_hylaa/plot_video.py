@@ -152,10 +152,8 @@ def make_init(ha):
 
     return init_list
 
-def make_settings(abortmin, abortmax, stepsize, aggregation):
+def make_settings(stepsize, aggregation):
     'make the reachability settings object'
-
-    rad = (abortmax - abortmin) / 2.0
 
     # see hylaa.settings for a list of reachability settings
     settings = HylaaSettings(stepsize, 250.0) # step: 0.1, bound: 200.0
@@ -175,24 +173,31 @@ def make_settings(abortmin, abortmax, stepsize, aggregation):
     else:
         assert aggregation == 'agg', f"unknown aggregation value {aggregation}"
 
-    settings.stdout = HylaaSettings.STDOUT_NONE
+    settings.stdout = HylaaSettings.STDOUT_VERBOSE
 
     #settings.plot.plot_mode = PlotSettings.PLOT_IMAGE
-    #settings.plot.filename = "rendezvous_full_passivity.png"
-    #settings.plot.plot_size = (8, 9)
+    settings.plot.plot_size = (8, 9)
+    settings.plot.video_pause_frames = 15
+    settings.plot.video_fps = 25
 
-    settings.plot.video_pause_frames = 2
-    settings.plot.plot_mode = PlotSettings.PLOT_NONE
-    #settings.plot.filename = "rendezvous_full_passivity.mp4"
+    video = True
 
-    if True:
-        # single plot
-        settings.plot.xdim_dir = [0] * 1
-        settings.plot.ydim_dir = [1] * 1
-        settings.plot.grid = False
-        settings.plot.label = []
-        settings.plot.extra_collections = []
+    if video:
+        settings.plot.plot_mode = PlotSettings.PLOT_VIDEO
+        settings.plot.filename = "rendezvous_full_passivity.mp4"
+    else:
+        settings.plot.plot_mode = PlotSettings.PLOT_IMAGE
+        settings.plot.filename = "rendezvous_full_passivity.png"
+    
 
+    # multiplot
+    settings.plot.xdim_dir = [0] * 3
+    settings.plot.ydim_dir = [1] * 3
+    settings.plot.grid = False
+    settings.plot.label = []
+    settings.plot.extra_collections = []
+
+    for _ in range(3):
         ls = LabelSettings()
         settings.plot.label.append(ls)
 
@@ -205,67 +210,36 @@ def make_settings(abortmin, abortmax, stepsize, aggregation):
         line = [(-100, y), (-100, -y), (0, 0), (-100, y)]
         c1 = collections.LineCollection([line], animated=True, colors=('gray'), linewidths=(1), linestyle='dashed')
 
+        rad = 5
         line = [(-rad, -rad), (-rad, rad), (rad, rad), (rad, -rad), (-rad, -rad)]
         c2 = collections.LineCollection([line], animated=True, colors=('red'), linewidths=(2))
 
         settings.plot.extra_collections.append([c1, c2])
 
-        settings.plot.label[0].axes_limits = [-4*rad, 4*rad, -4*rad, 4*rad]
-    else:
-        # multiplot
-        settings.plot.xdim_dir = [0] * 3
-        settings.plot.ydim_dir = [1] * 3
-        settings.plot.grid = False
-        settings.plot.label = []
-        settings.plot.extra_collections = []
+    settings.plot.label[0].axes_limits = [-950, 200, -450, 70]
+    #settings.plot.label[1].axes_limits = [-150, 50, -70, 70]
+    settings.plot.label[1].axes_limits = [-150, 100, -80, 80]
 
-        for _ in range(3):
-            ls = LabelSettings()
-            settings.plot.label.append(ls)
+    settings.plot.label[2].axes_limits = [-40, 40, -30, 30]
 
-            ls.big(size=24)
-
-            ls.x_label = '$x$'
-            ls.y_label = '$y$'
-
-            y = 57.735
-            line = [(-100, y), (-100, -y), (0, 0), (-100, y)]
-            c1 = collections.LineCollection([line], animated=True, colors=('gray'), linewidths=(1), linestyle='dashed')
-
-            line = [(-rad, -rad), (-rad, rad), (rad, rad), (rad, -rad), (-rad, -rad)]
-            c2 = collections.LineCollection([line], animated=True, colors=('red'), linewidths=(2))
-
-            settings.plot.extra_collections.append([c1, c2])
-
-        settings.plot.label[0].axes_limits = [-950, 400, -450, 70]
-        #settings.plot.label[1].axes_limits = [-150, 50, -70, 70]
-        settings.plot.label[1].axes_limits = [-80, 5, -30, 5]
-
-        settings.plot.label[2].axes_limits = [-3, 1.5, -1.5, 1.5]
-        
 
     return settings
 
-def plot_hylaa(abortmin, abortmax, stepsize=1.0, aggregation='deagg', axis_limits=None, filename='out.png'):
+def video_hylaa(abortmin, abortmax, stepsize=1.0):
     'run hylaa a single time'
 
     ha = make_automaton(abortmin, abortmax)
 
     init_states = make_init(ha)
 
-    settings = make_settings(abortmin, abortmax, stepsize, aggregation)
+    settings = make_settings(stepsize, 'deagg')
 
     result = Core(ha, settings).run(init_states)
 
     safe = not result.has_concrete_error
 
-    if aggregation == 'agg':
-        safe = not result.has_aggregated_error
-    
-    secs = result.top_level_timer.total_secs
-
-    return [safe, secs]
+    assert safe
 
 if __name__ == "__main__":
-    plot_hylaa(140, 140, stepsize=1.0, aggregation='none', axis_limits=[-20, 20, -20, 20], filename='step1_0.png')
+    video_hylaa(0, 140, stepsize=1.0)
     
