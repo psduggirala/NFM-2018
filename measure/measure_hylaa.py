@@ -167,6 +167,7 @@ def make_settings(abortmin, abortmax, stepsize, aggregation):
         #settings.process_urgent_guards = True
 
         settings.aggstrat.deaggregate = True # use deaggregation
+        #settings.aggstrat.deagg_preference = Aggregated.DEAGG_LEAVES_FIRST
         settings.aggstrat.deagg_preference = Aggregated.DEAGG_LEAVES_FIRST
     elif aggregation == 'unagg':
 
@@ -278,7 +279,7 @@ def hylaa(abortmin, abortmax, stepsize=1.0, aggregation='deagg'):
     run hylaa with the given settings. will run multiple times if time is small
     '''
 
-    small = 1.0
+    small = 10.0
 
     rv = hylaa_single(abortmin, abortmax, stepsize=stepsize, aggregation=aggregation)
 
@@ -332,3 +333,6 @@ def measure_hylaa():
 
 if __name__ == "__main__":
     measure_hylaa()
+
+    # ~37 secs
+    #print(hylaa_single(0, 140, stepsize=0.25, aggregation='deagg'))

@@ -12,7 +12,7 @@ def spaceex(abortmin, abortmax, agg="none", tol=0.1, directions='box', timeout=5
     run spaceex with the given settings. will run multiple times if time is small
     '''
 
-    small = 1.0
+    small = 10.0
 
     rv = spaceex_single(abortmin, abortmax, agg=agg, tol=tol, directions=directions, timeout=timeout)
 
@@ -168,9 +168,9 @@ def main():
 
     timeout=60
     
-    #run_chull(timeout=timeout) # takes about 6 minutes with timeout=60
+    run_chull(timeout=timeout) # takes about 6 minutes with timeout=60
     
-    run_unaggregated(timeout=timeout) # takes about 16 minutes with timeout=60
+    run_unaggregated(timeout=timeout) # takes about 24 minutes with timeout=60
     return
         
 if __name__ == '__main__':

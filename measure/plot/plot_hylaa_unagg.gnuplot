@@ -25,8 +25,8 @@ set style line 4 lc rgb "#ef8d00" lt 2 lw 2.0 pt 6 ps 0.4 dt 2 pi -1
 set key on bottom right
 set logscale y
 
-set output "unagg.pdf"
-set title "SpaceEx STC without Aggregation" font 'Verdana,22' offset 0,-1
+set output "hylaa_unagg.pdf"
+set title "Hylaa without Aggregation" font 'Verdana,22' offset 0,-1
 
 set style line 5 lc rgb "#808080" lt 2 lw 2.0 pt 13 ps 0.8 dt 2
 set arrow from 0, 50 to 75, 50 nohead ls 5
@@ -37,6 +37,6 @@ set grid xtics lc '#606060' lw 0.25 lt 1 dt 3
 
 set key Left invert font 'Verdana,14' box
 
-datafile = 'data_unagg.dat'
+datafile = 'data_hylaa_unagg.dat'
 plot for [i=0:*] datafile index i using 1:2\
 with linespoints title columnheader(1) ls (i+1)

@@ -7,7 +7,7 @@ set bmargin at screen 0.15
 set tmargin at screen 0.9
 
 set autoscale
-set yrange [0:65]
+set yrange [0.05:65]
 set xrange [0:72]
 unset label
 set xtic auto
