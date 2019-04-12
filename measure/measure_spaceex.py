@@ -1,5 +1,5 @@
 '''
-Find parameters with SpaceEx
+emsoft-2019 SpaceEx measurements (generates plot/*.dat files for plotting)
 '''
 
 import time
@@ -168,7 +168,7 @@ def main():
 
     timeout=60
     
-    run_chull(timeout=timeout) # takes about 6 minutes with timeout=60
+    run_chull(timeout=timeout) # takes about 11 minutes with timeout=60
     
     run_unaggregated(timeout=timeout) # takes about 24 minutes with timeout=60
     return

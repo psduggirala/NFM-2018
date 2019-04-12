@@ -1,13 +1,15 @@
 \section{Case Study: Spacecraft Rendezvous Passive Safety}
 \label{sec:casestudy}
 
-We evaluate our method on a spacecraft rendezvous passive safety case study. The system consists of a primary chaser spacecraft moving towards a secondary, free-flying object (such as a satellite) and performing close-proximity maneuvers.
+We evaluate our method on a spacecraft rendezvous passive safety case study.
+%
+The system consists of a primary chaser spacecraft moving towards a secondary, free-flying object (such as a satellite) and performing close-proximity maneuvers.
 %
 The maneuver is analyzed in relative coordinates, as shown in Figure~\ref{fig:chaser}.
 %
 The verification goal is to ensure \emph{passive safety}: at any time in the maneuver, a system failure may occur and the resulting propulsion-free trajectory must avoid colliding with the target satellite.
 %
-This requirement comes from real-world failures. In 2005, NASA’s DART spacecraft was intended to rendezvous with the MUBLCOM satellite, but due to depleted propellant instead collided with the target satellite (a loss of a
+This requirement comes from real-world failures. In 2005, NASA's DART spacecraft was intended to rendezvous with the MUBLCOM satellite, but due to depleted propellant instead collided with the target satellite (a loss of a
 \$110 million project)~\cite{croomes2006overview}.
 
 \begin{figure}[t]
@@ -17,37 +19,160 @@ This requirement comes from real-world failures. In 2005, NASA’s DART spacecra
 \end{figure}
 
 
-Our model is based on a published benchmark for this system~\cite{chan2017verifying,jewison2016spacecraft}. The system is modeled as a hybrid automaton with different discrete modes depending on the sensors being used for navigation, and an LQR controller is designed to meet physical and geometric safety constraints.
+Our model is based on a published spacecraft rendezvous benchmark~\cite{chan2017verifying,jewison2016spacecraft}.
 %
-The relative dynamics are linearized using the Clohessy-Wiltshire-Hill (CWH) equations~\cite{wh1960terminal}, which is often used in close proximity operations. The hybrid automaton consists of three modes, two for different navigation strategies, and one for the passive dynamics, shown in Figure~\ref{fig:ha}.
+The system is modeled as a hybrid automaton with different discrete modes depending on the sensors being used for navigation, and an LQR controller is designed to meet physical and geometric safety constraints.
 %
-This system is a five-dimensional linear system, with nondeterministic transitions to the passive mode.
+The relative dynamics are linearized using the Clohessy-Wiltshire-Hill (CWH) equations~\cite{wh1960terminal},
+which is often used in close proximity operations, and generally considered valid when spacecraft are within a few kilometers.
 %
-In our analysis, we check for passive safety over the full analysis time bound, $t_1=0$ and $t_2=200$.
+The hybrid automaton consists of three modes, two for different navigation strategies, and one for the passive dynamics, shown in Figure~\ref{fig:ha}.
 %
-The initial set of states, dynamics, and controller in each mode are described in the original benchmark proposal~\cite{chan2017verifying}.
+This system is a six-dimensional linear system, with nondeterministic transitions to the passive mode.
 %
-We focus on the collision-free safety property, that the spacecraft must remain 0.2 meters apart at all times.
+In our analysis, we check for passive safety from $t_1=0$ to $t_2=250$.
+%
+The initial set of states, dynamics, and controller in each mode are as described in the benchmark paper~\cite{chan2017verifying}.
+%
+We focus on the collision-free safety requirement, and strive to verify that the spacecraft remain separated by at least
+5 meters in the infinity norm (the unsafe set is a $10 \times 10$ box centered at the origin).
 
-Although several tools have successfully analyzed a version of this model in the ARCH hybrid systems tools competition in 2018~\cite{archcomp18linear}, a critical simplification was made: the competition model did not actually check the passive safety requirement. In particular, the competition model used a \emph{fixed} time to transition to the passive mode. This is an unrealistic simplification, since the time of failure cannot not be known in advance. 
+Although several tools have successfully analyzed a version of this model in the ARCH hybrid systems tools competition in
+2018~\cite{archcomp18linear}, a critical simplification was made: the competition model did not actually check the passive safety requirement.
+%
+In particular, the competition model used a \emph{fixed} time to transition to the passive mode.
+%
+This is an unrealistic simplification, since the time of failure cannot not be known in advance.
 
 
-The analysis done in the original work~\cite{chan2017verifying} is slightly better, in that it checks for passive safety for a known 5 minute failure interval during the 200 minute maneuver. The reason stated in the paper for this is that, if larger time intervals are used,
-``the initial set of states under the Passive mode is large, making it very difficult to prove safety.'' The suggestion is then to create subintervals that cover the full time range of transitions to the passive mode, and then run several experiments. Presumably, a manual guess-and-check approach should be used to create these subintervals.
-
+The analysis done in the original work~\cite{chan2017verifying} is slightly better, in that it checks for passive safety for a known 5 minute failure interval during the 200 minute maneuver.
+%
+In the paper they state that, if larger time intervals are used,
+``the initial set of states under the Passive mode is large, making it very difficult to prove safety.''
+%
+The suggestion is then to create subintervals that cover the full time range of transitions to the passive mode, and then successively
+analyze each interval as a standalone verification problem.
+%
+Presumably, a manual guess-and-check approach should be used to create these subintervals.
 
 \begin{figure}[t]
 \centerline{\includegraphics[width=0.9\columnwidth]{images/ha.png}}
-\caption{Hybrid automaton model of our case study (image from~\cite{chan2017verifying}, which also include the dynamics matrices). We check for passive safety over the full time bound ($t_1=0$ and $t_2=200$).}
+\caption{Hybrid automaton model for our case study (image from~\cite{chan2017verifying}, which also include the dynamics matrices). We check for passive safety
+  from time $t_1=70 - r$ to $t_2=70 + r$, where $r$ is a model parameter.}
 \label{fig:ha}
 \end{figure}
 
-
-
-The full passive safety problem can be solved using the proposed aggdag method. Our aggdag method performs full state aggregation (an overapproximation), and then recursively desegregates if the overapproximation reaches an error mode. The advantage of this is that (1) the method is fully automatic, (2) steps where the overapproximation is safe can be skipped by the refined sets, which is more efficient than using multiple independent experiments, and (3) if an error exists, it will be detected after full deaggregation is performed, which allows the generation of a concrete counter example trace. Other verification tools for linear hybrid systems do not typically generate counter-examples when safety cannot be proven.
-
-Our experiments are performed on a system with an Intel i5-5300U CPU running at 2.30GHz with 16GB RAM and using Ubuntu Linux 18.04.
+We consider a parameterized version of the problem, where a single parameter $r$ controls the amount of nondeterminism in the switch to the passive mode.
 %
+A simulation-based analysis revealed that entering the passive mode up to around time 145 will not violate the collision safety specification.
+%
+We thus consider enable the switch to the passive mode from time $70-r$ to time $70+r$.
+%
+In this way, $r=0$ corresponds to the easy case where the switch
+occurs at exactly time $70$, and $r=70$ corresponds to the difficult case where the switch can occur at any time between $0$ and $140$.
+%
+In the automaton in Figure~\ref{fig:ha}, we set $t_1=70 - r$ and $t_2=70 + r$.
+
+All the experiments are performed on a system with an Intel i5-5300U CPU running at 2.30GHz and 16GB RAM running Ubuntu Linux 18.04.
+%
+Since we needed to script and measure many executions of the tools, we make use of the \texttt{hypy}~\cite{hypy} library distributed as part of the
+Hyst tool~\cite{bak2015hscc}.
+
+For comparison, we run the benchmark on SpaceEx~\cite{spaceex} and Hylaa~\cite{bak2017hscc}.
+%
+Our proposed aggregation and deaggregation enhancements are implemented as modifications to the publicly available
+Hylaa tool~\footnote{We did not have anonymized code available for review, although we plan to release the source with the paper.}.
+%
+Note that SpaceEx analyzes the system in continuous time, while Hylaa, as well as our enhancements, do discrete-time (simulation-equivalent) analysis.
+%
+Although SpaceEx needs extra operations to enable continuous-time analysis, this also allows it to use larger time steps where accuracy permits, as
+it will be known that the state will not jump through the unsafe region (tunneling).
+%
+Tunneling is possible with discrete-time analysis methods, so the choice of time step is an important parameter (we will analyze this with the Hylaa results).
+%
+Another difference is that discrete-time methods permit the generation of counter-examples when specification violations occur, but continuous-time methods
+like SpaceEx do not generate these, as the detected violation may be due to overapproximation needed to handle continuous time.
+%
+For both methods, we expect the reach set to be the qualitatively the same for discrete time analysis with small time steps, and for continuous time analysis
+with sufficient accuracy.
+
+\subsection{SpaceEx}
+
+We use the latest space-time clustering (STC) reachability method implemented in SpaceEx~\cite{frehse2013flowpipe} version \texttt{v0.9.8f}.
+%
+Two aggregation methods are available, \texttt{cull} (convex hull aggregation) and \texttt{none} (no aggregation).
+%
+Accuracy is controlled by setting a \texttt{flowpipe-tolerance} parameter as well as the number of support function directions to use, for which we consider
+both \texttt{box} and \texttt{oct}.
+%
+By fixing the parameters, we can analyze the system as the passive-mode switch time parameter $r$ is increased from $0$ to $70$.
+%
+Since several options which trade off accuracy for computation time are available to the user, a fair comparison difficult.
+%
+We thus consider many permutations of these parameters, to try to find the best ones for each value of $r$.
+%
+In the experiments we had a one minute timeout to run the verification task.
+%
+Some of the lines end before exceeding the timeout; these are the cases where increasing $r$ by 1 would prevent
+successful analysis with those settings (safety could not be proven due to overapproximation).
+
+With convex hull aggregation (Figure~\ref{fig:spaceex_chull}), the system can be analyzed successfully up to around $r=25$.
+%
+Different accuracy settings can slightly go beyond this, with $r=30$ being possible in about one minute with \texttt{oct} directions and
+\texttt{flowpipe-tolerance=0.01}.
+%
+This demonstrates the inherent overapproximation due to aggregation, where even modest uncertainty in the switch to the passive mode
+prevents verification.
+
+\begin{figure}[t]
+\centerline{\includegraphics[width=0.9\columnwidth]{images/chull.pdf}}
+\caption{SpaceEx with convex hull aggregation can analyze the system up to around $r=30$.}
+\label{fig:spaceex_chull}
+\end{figure}
+
+With no aggregation (Figure~\ref{fig:spaceex_unagg}), we can be sure there is no error from aggregation overapproximation.
+%
+In this case, however, all combinations of mode-switching times along the execution path must be explored,
+which can take excessive time when high accuracy settings are used.
+%
+In general, the number of possible switching times grows exponentially in the number of discrete transitions along system trajectories.
+%
+In this system, however, the longest path will only have two mode switches in the automaton in Figure~\ref{fig:ha}:
+from mode 1 to mode 2, and mode 2 to the passive mode (the switch from mode 2 back to mode 1 is not executed for the given initial set).
+%
+Thus, unaggregated analysis is feasible.
+%
+In Figure~\ref{fig:spaceex_unagg}, SpaceEx can analyze the system up to around $r=55$ in this case.
+%
+It can still not do the full time bound (up to $r=70$) since there is still some overapproximation from the choice of \text{flowpipe-tolerance} and the
+choice of support function directions.
+%
+We did not find parameter values where we could analyze for much larger values of $r$ in a reasonable amount of time,
+although theoretically analysis should be possible.
+
+\begin{figure}[t]
+\centerline{\includegraphics[width=0.9\columnwidth]{images/unagg.pdf}}
+\caption{SpaceEx without aggregation can analyze the system up to around $r=55$}
+\label{fig:spaceex_unagg}
+\end{figure}
+
+One final note is that parameter selection is difficult for SpaceEx, and it would be unreasonable to perform an exhaustive search for every model
+that needs analysis.
+%
+Although we have presented several reasonable options (and experimented with many others that were not presented), we have no guarantee that
+the combinations of options we tried were the fastest or most accurate.
+%
+Further, there are other parameters we could have explored, such as the \texttt{lgg} reachability mode instead of \texttt{stc}, where a \texttt{clustering}
+parameter is available to more finely control the aggregation process.
+%
+The SpaceEx help lists about 50 parameters, not all linked to method accuracy, that can affect the results of the computation,
+and it can be difficult to select the correct ones to explore.
+
+\subsection{Hylaa}
+
+\subsection{Proposed Approach}
+
+
 We first analyze the runtime of the method, shown in Table~\ref{tab:runtime} on the left.
 %
 We look at the number of seconds and the number of reachability steps needed to prove safety for the system as we vary the step size.
