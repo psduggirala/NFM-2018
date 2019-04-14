@@ -170,7 +170,52 @@ and it can be difficult to select the correct ones to explore.
 
 \subsection{Hylaa}
 
+\begin{figure}
+\begin{minipage}[b]{\linewidth}
+  \centering
+  \includegraphics[width=0.9\columnwidth,trim=0 1.3em 0 0, clip]{images/step_a_1_0.png}
+\subcaption{Step Size 1.0}%\label{fig:1a}
+\end{minipage}%
+\\
+\vspace{1em}
+\begin{minipage}[b]{\linewidth}
+  \centering
+    \includegraphics[width=0.9\columnwidth,trim=0 1.3em 0 0, clip]{images/step_b_0_5.png}
+\subcaption{Step Size 0.5}%\label{fig:1b}
+\end{minipage}
+\\
+\vspace{1em}
+\begin{minipage}[b]{\linewidth}
+  \centering
+    \includegraphics[width=0.9\columnwidth,trim=0 1.3em 0 0, clip]{images/step_c_0_25.png}
+\subcaption{Step Size 0.25}%\label{fig:1c}
+\end{minipage}
+\\
+\vspace{1em}
+\begin{minipage}[b]{\linewidth}
+  \centering
+    \includegraphics[width=0.9\columnwidth,trim=0 1.3em 0 0, clip]{images/deagg_1_0.png}
+\subcaption{Deaggregation with Step Size 1.0}%\label{fig:1c}
+\end{minipage}
+\caption{Plots of the discrete-time reach set near the unsafe state.
+HEREEEE!!!!!!!!!!!!!!!!!!!!!
+  While a step size of 1.0 is unlikely to tunnel through the unsafe states (red box)}\label{fig:1}
+\end{figure}
+
+
+\begin{figure}[t]
+\centerline{\includegraphics[width=0.9\columnwidth]{images/hylaa_unagg.pdf}}
+\caption{Hylaa without aggregation can analyze up to the full $r=70$, although for small time steps the time bound is exceeded.}
+\label{fig:hylaa_unagg}
+\end{figure}
+
 \subsection{Proposed Approach}
+
+\begin{figure}[t]
+\centerline{\includegraphics[width=0.9\columnwidth]{images/deagg.pdf}}
+\caption{The proposed aggdag approach can analyze up to the full $r=70$, even for the smallest time step.}
+\label{fig:deagg}
+\end{figure}
 
 
 We first analyze the runtime of the method, shown in Table~\ref{tab:runtime} on the left.

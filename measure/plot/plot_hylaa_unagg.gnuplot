@@ -17,10 +17,10 @@ set ylabel "Runtime (seconds)" offset 2.5,0
 
 set style line 1 lc rgb "#00bd60" lt 1 lw 3.5 pt 12 ps 0.5
 set style line 2 lc rgb "#ff4040" lt 2 lw 3.0 pt 5 ps 0.2 dt 3
-set style line 3 lc rgb "#8B008B" lt 6 lw 0.6 pt 3 ps 0.4
+set style line 4 lc rgb "#8B008B" lt 6 lw 0.6 pt 3 ps 0.4
 
 set pointintervalbox 0.5
-set style line 4 lc rgb "#ef8d00" lt 2 lw 2.0 pt 6 ps 0.4 dt 2 pi -1
+set style line 3 lc rgb "#ef8d00" lt 2 lw 2.0 pt 6 ps 0.4 dt 2 pi -1
 
 set key on bottom right
 set logscale y
