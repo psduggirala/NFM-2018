@@ -162,7 +162,7 @@ The reachable set computation technique for hybrid automata has three subroutine
 %
 First, it computes the reachable set of the dynamical system in the current mode of operation (line~\ref{ln:reachDyn}).
 %
-Second, it computes the overlap of the reachable set in the current mode with the location invariant (line~\ref{ln:overlapInv}).
+Second, it computes the overlap of the reachable set in the current mode with the mode invariant (line~\ref{ln:overlapInv}).
 %
 Third, it computes the overlap of the reachable sets with the guards of discrete transitions that cause a change in mode (line~\ref{ln:guardIntersection}).
 %
@@ -193,7 +193,7 @@ ${\it ReachSet} \gets \emptyset$\;
 \end{algorithm}
 %\vspace{-0.8cm}
 
-We want to highlight that the reachable set is only computed only at discrete instances of time.
+We want to highlight that the reachable set is only computed at discrete instances of time.
 %
 However, the advantage of our approach is that we can provide a counterexample when the safety specification is violated.
 %
@@ -209,9 +209,9 @@ To avoid the exponential blow up of the number of sets in $queueStars$, reachabl
 
 \begin{remark}
 \label{rem:hybridAlgo}
-While Algorithm~\ref{alg:algoHybrid} might compute exponential number of reachable sets, we do not generate exponential number of simulations for each mode in the hybrid automata. For each mode, we decide on an anchor $a_{mode}$ and generators $G_{mode}$ and pre-compute the $n+1$ simulations required for reachable set computation for that mode. For computing the reachable set of a star in a new mode (line~\ref{ln:reachDyn}), we change the anchor and the generators of the star to $a_{mode}$ and $G_{mode}$ respectively and use the observation in Remark~\ref{rem:predConst}. 
+While Algorithm~\ref{alg:algoHybrid} might compute exponential number of stars, we do not generate exponential number of simulations for each mode in the hybrid automata. For each mode, we decide on an anchor $a_{mode}$ and generators $G_{mode}$ and pre-compute the $n+1$ simulations required for reachable set computation for that mode. For computing the reachable set of a star in a new mode (line~\ref{ln:reachDyn}), we change the anchor and the generators of the star to $a_{mode}$ and $G_{mode}$ respectively and use the observation in Remark~\ref{rem:predConst}. 
 
-While this helps us cut down the number of simulations, we still have to check for overlap of unsafe set with exponential number of stars. Aggregation is crucial step to decrease the number of overlaps.
+While this helps us cut down the number of simulations, we still have to check for overlap of unsafe set with exponential number of stars. Aggregation is crucial step to decrease the number of such possible overlaps.
 \end{remark}
 
 

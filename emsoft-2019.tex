@@ -93,8 +93,8 @@
 \begin{abstract}
   Computing the set of reachable states is a widely used technique for proving that a hybrid system satisfies its safety specification.
   %
-  Flow-pipe construction methods interleave phases where continuous successors according are computed with some time step, and
-  phases where discrete successors are computed.
+  Flow-pipe construction methods interleave phases of computing continuous successors and phases of computing discrete successors.
+%   are computed.
   %
   Directly doing this leads to a combinatorial explosion problem, though, as with each discrete successor there may be an interval of time
   where the transition can occur, so that the number of paths becomes exponential in the number of discrete transitions.

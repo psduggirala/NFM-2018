@@ -78,7 +78,7 @@ ${\it ReachSet} \gets \emptyset$\;
         Enqueue $newStars$ into $queueStars$\;
     }
     \If{$R' \cap U \neq \emptyset$ and $R'.tag \neq {\sf aggregate}$}{ \label{ln:crucial}
-        {\bf return} There exists a trajectory from $\Theta$ visiting $U$\;
+        {\bf return} There exists a trajectory from $\Theta$ visiting $U$\; \label{ln:unsafereturn}
     }
     ${\it ReachSet} \gets {\it ReachSet} \cup R'$\;
     ${\it nextRegions} \gets {\sf discreteTrans}(R', H.Trans)$\; \label{ln:guardIntersection}
@@ -141,6 +141,13 @@ Since we strictly do not aggregate the stars that were deaggregated before, the 
 Hence the loop terminates and the algorithm either returns safe or unsafe.
 \end{proof}
 
+
+\begin{remark}
+\label{rem:aggonly}
+In Algorithm~\ref{alg:aggdeagg}, by default, we perform aggregation of all the stars making a discrete transition to the same mode. Also, upon visiting unsafe set, we deaggregate the first aggregated star in the path to unsafe set and do not perform any future aggregations in reachable set computation. 
+
+The algorithm we implement is different from Algorithm~\ref{alg:aggdeagg} in two ways. First, we take into account the sequence of modes visited by the star for performing aggregation. That is, if two stars have encountered a different sequence of mode switches, they might be aggregated into different stars. Second, the deaggregation need not be performed at the first aggregated star in the path. We perform the deaggregation of one of the aggregated stars in the path. However, we ensure that we do not re-aggregate the children of deaggregated star. As a result, the line~\ref{ln:unsafereturn} would be invoked only if all the stars in the path from unsafe set to the initial set were unaggregated.
+\end{remark}
 
 One of the advantages of generalized stars is that it allows for easy aggregation and deaggregation. 
 %In the remainder of this section, we demonstrate the advantages of performing aggregation 
@@ -296,48 +303,63 @@ If one desires to perform convex hull of $r$ symbolic orthogonal projections, th
 %
 Hence, the number of constraints and variables required to specify the polytope exponentially increases with the number of discrete transitions. This increases the cost associated with checking the safety property of all the stars in the reachable set. Additionally, the deaggregation operation cannot reuse the computations performed during aggregation.
 
+
 %\vspace{-0.3cm}
 \subsection{Aggregated Directed Acyclic Graph - AGGDAG}
 \label{sec:aggdag}
 %\vspace{-0.1cm}
 
-When the overapproximation obtained from reachable set is too convervative and overlaps with the unsafe set, we perform deaggregation. In typical reachable set computation tools, one has to resume the computation of the reachable set from the newly deaggregated sets. However, we leverage the properties of generalized stars in reachable set computation and decrease the computations that need to be performed.
+In Remark~\ref{rem:hybridAlgo}, we observed that we need not generate exponential number of simulations for each mode. Rather, we convert the anchor and generator of a star to $a_{mode}$ and $G_{mode}$. We reuse the same simulations for computing reachable set of modes after deaggreation. To further reduce the computation after deaggregation, we use Aggregated Directed Acyclic Graph (AGGDAG).
 
-%\vspace{-0.1cm}
-\begin{remark}
-\label{rem:changePred}
-Consider an aggregated star $S_a \deq \tup{c, V, P_a}$ and the bounded time reachable set be $S_{a_1}, \ldots, S_{a_k}$ where $S_{a_i} \deq \tup{c_i, V_i, P_a}$. After performing deaggregation, $S_a$ results in stars $S_{b}$ and $S_c$ where $S_{b} \deq \tup{c, V, P_{b}}$ and $S_{c} \deq \tup{c, V, P_{c}}$, then the reachable set starting from $S_{b}$ is given as $S_{b_1}, \ldots, S_{b_k}$ where $S_{b_i} \deq \tup{c_i, V_i, P_b}$. Similar relation holds for $S_{c}$ as initial set. Therefore, one need not recompute the center and basis vectors for computing the reachable set with new initial set. Merely changing the predicate in the generalized stars suffices.
-\end{remark}
-%\vspace{-0.1cm}
+Observe that after deaggregation, there are only two instances where recomputing the reachable set contributes to the accuracy for safety verification. First, one needs to check if the reachable set of deaggregated stars overlaps with the unsafe set. Second, recompute the overlap of reachable set and the guards for discrete transitions. For time instances that do not overlap with any guard or with the unsafe set, one need not perform the recomputation. AGGDAG is a bookkeeping mechanism for keeping track of time steps for discrete transitions and time steps for overlap with the unsafe set.
+ 
+%When the overapproximation obtained from reachable set is too convervative and overlaps with the unsafe set, we perform deaggregation. In typical reachable set computation tools, one has to resume the computation of the reachable set from the newly deaggregated sets. However, we leverage the properties of generalized stars in reachable set computation and decrease the computations that need to be performed.
+%
+%%\vspace{-0.1cm}
+%\begin{remark}
+%\label{rem:changePred}
+%Consider an aggregated star $S_a \deq \tup{c, V, P_a}$ and the bounded time reachable set be $S_{a_1}, \ldots, S_{a_k}$ where $S_{a_i} \deq \tup{c_i, V_i, P_a}$. After performing deaggregation, $S_a$ results in stars $S_{b}$ and $S_c$ where $S_{b} \deq \tup{c, V, P_{b}}$ and $S_{c} \deq \tup{c, V, P_{c}}$, then the reachable set starting from $S_{b}$ is given as $S_{b_1}, \ldots, S_{b_k}$ where $S_{b_i} \deq \tup{c_i, V_i, P_b}$. Similar relation holds for $S_{c}$ as initial set. Therefore, one need not recompute the center and basis vectors for computing the reachable set with new initial set. Merely changing the predicate in the generalized stars suffices.
+%\end{remark}
+%%\vspace{-0.1cm}
 
-While recomputing the new center and basis vectors can be avoided, we also reduce our effort by checking intersection with guards and overlap with unsafe set after deaggregation. That is, when an aggregation is performed and the reachable set is computed, we only keep track of the stars that either overlap with the unsafe set or encounter a discrete transition. We keep track of the relationship between the reachable sets called as Aggregated Directed Acyclic Graph (AGGDAG).
+%While recomputing the new center and basis vectors can be avoided, we also reduce our effort by checking intersection with guards and overlap with unsafe set after deaggregation. That is, when an aggregation is performed and the reachable set is computed, we only keep track of the stars that either overlap with the unsafe set or encounter a discrete transition. We keep track of the relationship between the reachable sets called as Aggregated Directed Acyclic Graph (AGGDAG).
+
+The nodes in AGGDAG correspond to the modes visited during the reachable set computation. Each mode is tagged with the maximum time a star remains in that mode. Each transition in AGGDAG corresponds to a discrete transition from one mode to another. The transition is also labelled with the time steps when the reachable set has overlap with the guard condition for the transition. Finally, if stars that experience different sequence of mode switches are aggregated, the corresponding node in AGGDAG has two incoming edges from different nodes. Each of these discrete transitions would be labelled by the time interval for the corresponding discrete transition.
+% discrete transitions are merged, 
 
 %\vspace{-0.1cm}
 \begin{definition}
 \label{def:aggdag}
-An AGGDAG is a directed graph $(G, H)$ where, the set of nodes $G$ corresponds to the generalized stars obtained during the reachable set computation that encounter the discrete transitions or overlap with the unsafe set, and the set of edges $E$ represents the successor relationship among these generalized stars.
+An AGGDAG is a directed graph $(G, H)$ where, the set of nodes $G$ corresponds to the modes visited during the reachable set computation that encounter the discrete transitions or overlap with the unsafe set, and the set of edges $E$ represents the successor relationship among these modes.
 \end{definition}
 %\vspace{-0.4cm}
 
 %\vspace{-0.3cm}
-\begin{figure}
+\begin{figure}[t]
 \centering
-\includegraphics[width=0.9\textwidth]{images/viz2}
-\caption{Example of an aggdag.}
+\includegraphics[width=0.49\textwidth]{images/viz2}
+\caption{Example of an AGGDAG.}
 \label{fig:aggdagex1}
 \end{figure}
 %\vspace{-0.5cm}
 
+
 %\vspace{-0.3cm}
 \begin{example}
-Figure~\ref{fig:aggdagex1} is an example of aggdag where the hybrid automata has 3 modes of operation, namely, {\em Far}, {\em Approaching}, and {\em Abort}. The initial set starting from the Far mode takes the discrete transitions to Abort in the time duration $[1,56]$ and $[57,112]$ and stays in the Abort mode without encountering any unsafe set. The successors of the stars that encounter a discrete transition to the Approaching mode in the time interval $[109,112]$, encounter the unsafe set in future. In the Figure~\ref{fig:aggdagex1}, the star representing the node Approaching is the collection of the stars that encounter the discrete transition in the time interval $[109, 112]$. Simiarly, the node Abort [Abort (90) to be more precise] corresponds to the collection of the stars that take the discrete transition from Approaching mode to the Abort mode. Out of the stars in the Abort(90) node, the violation of safety propery happens between the time intervals $[16,86]$.
+Figure~\ref{fig:aggdagex1} is an example of AGGDAG where the hybrid automata has 3 modes of operation, namely, {\em Far}, {\em Approaching}, and {\em Abort}. The initial set starting from the Far mode takes the discrete transitions to Abort in the time duration $[1,56]$ and $[57,112]$, it also takes a discrete transition to Approaching mode in $[109,112]$ steps. Notice that Far mode is tagged with $112$, which means that after $112$ steps, all of the stars leave the Far mode. 
+
+Notice that the two Abort($199$) nodes do not have any outgoing edges. This implies that the reachable states in these abort modes does not take any further discrete transitions. On the other hand, the Approaching node has an outoing edge to Abort and the edge is labelled with time interval $[1,91]$. Hence, the reachable set in Approaching mode take a discrete transition to Abort mode in time interval $[1,91]$. Similarly, the Abort node (more specifically Abort($90$)) mode has one outoing edge to the Error node and the edge is labelled with interval $[16,26]$.
+%   and stays in the Abort mode without encountering any unsafe set. The successors of the stars that encounter a discrete transition to the Approaching mode in the time interval $[109,112]$, encounter the unsafe set in future. In the Figure~\ref{fig:aggdagex1}, the star representing the node Approaching is the collection of the stars that encounter the discrete transition in the time interval $[109, 112]$. Simiarly, the node Abort [Abort (90) to be more precise] corresponds to the collection of the stars that take the discrete transition from Approaching mode to the Abort mode. Out of the stars in the Abort(90) node, the violation of safety propery happens between the time intervals $[16,86]$.
+
+To check if the safety property is violated, we first inspect the AGGDAG in Figure~\ref{fig:aggdagex1} to see if any Error node is present in it. Since reachable set in Abort mode overlap with unsafe set, we need to inspect whether this overlap is caused due to overapproximation induced in the aggregation of the reachable set in the path from the root node (Far node) to the Abort node or if it corresponds to an real behavior for safety violation. 
+
+The overapproximation of reachable set can be at two instances, first, the aggregation of stars in the Approaching modes in the interval $[109, 112]$ or second, in the Abort mode in the interval $[1,91]$.  If both these reachable set do not have any aggregation, then we have proof that the overlap with the unsafe set is indeed a safety violation. After performing deaggregation, we recompute the reachable sets \emph{only for the time intervals on these edges}. This reduces the total number of reachable sets to be computed.
+%  Hence, refining only the aggregation associated with the reachable sets in the specific interval of time suffices.
 \end{example}
 
-To check if the safety property is indeed violated in the reachable set computation, we first inspect the aggdag in Figure~\ref{fig:aggdagex1}. Since the safety is violated in trajectories in Abort mode, we need to inspect whether there is overapproximation induced in the aggregation of the reachable set in the path from the root node to the Abort node. 
-This overapproximation can be at two instances, first, the aggregation of stars in the Approaching modes in the interval $[109, 112]$ or second, in the Abort mode in the interval $[1,91]$.  If both these reachable set do not have any aggregation, then we have proof that the overlap with the unsafe set is indeed a safety violation. Hence, refining only the aggregation associated with the reachable sets in the specific interval of time suffices.
 
 
-The aggdag is useful only in bookkeeping the states that encounter the discrete transitions. The strategy for deaggregation is still decided by the user. In our tool, we have implemented two deaggregation strategies, first, from the leaf to root and second, from root to leaf. In the case of leaf to root, we first deaggregate the reachable sets that are closest to the safety violation and continue the deaggregation to the top. In Figure~\ref{fig:aggdagex1}, in the leaf to root strategy, we would first deaggregate the states taking the discrete transition from Approaching to Abort. In the root to leaf strategy, the deaggregation is performed at the node closest to the root node in the path leading to the unsafe overlap. In Figure~\ref{fig:aggdagex1}, under the root to leaf strategy, one would deaggregate the stars in the discrete transition from Far to Approaching. The best deaggregation strategy for proving safety or discovering the counterexample is still an area to be investigated and is a part of future research.
+The AGGDAG is useful only in bookkeeping the modes encountered during reachable set and the time intervals for the discrete transitions. The strategy for deaggregation is still decided by the user. In our tool, we have implemented two deaggregation strategies, first, from the leaf to root and second, from root to leaf. In the case of leaf to root, we first deaggregate the reachable sets that are closest to the safety violation and continue the deaggregation to the top. In Figure~\ref{fig:aggdagex1}, in the leaf to root strategy, we would first deaggregate the states taking the discrete transition from Approaching to Abort. In the root to leaf strategy, the deaggregation is performed at the node closest to the root node in the path leading to the unsafe overlap. In Figure~\ref{fig:aggdagex1}, under the root to leaf strategy, one would deaggregate the stars in the discrete transition from Far to Approaching. The best deaggregation strategy for proving safety or discovering the counterexample is still an area to be investigated and is a part of future research.
 
 
 
