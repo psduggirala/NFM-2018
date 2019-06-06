@@ -20,6 +20,20 @@
 \usepackage[boxed,linesnumbered,lined,commentsnumbered]{algorithm2e}
 
 
+% track is a boolean variable if we should track changes (manual)
+\newtoggle{track}
+\toggletrue{track}
+%\togglefalse{track}
+\iftoggle{track}
+{
+\newcommand{\new}[1]{\textcolor{red}{#1}}
+\newcommand{\old}[1]{\textcolor{blue}{\textbf{\st{#1}}}}
+}
+{
+\newcommand{\new}[1]{#1}
+\newcommand{\old}[1]{}
+}
+
 % Rights management information. 
 % This information is sent to you when you complete the rights form.
 % These commands have SAMPLE values in them; it is your responsibility as an author to replace

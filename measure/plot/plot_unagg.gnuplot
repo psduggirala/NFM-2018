@@ -26,7 +26,7 @@ set key on bottom right
 set logscale y
 
 set output "unagg.pdf"
-set title "SpaceEx STC without Aggregation" font 'Verdana,22' offset 0,-1
+set title "SpaceEx STC with Error-Guided Partial Aggregation" font 'Verdana,22' offset 0,-1
 
 set style line 5 lc rgb "#808080" lt 2 lw 2.0 pt 13 ps 0.8 dt 2
 set arrow from 0, 50 to 75, 50 nohead ls 5
