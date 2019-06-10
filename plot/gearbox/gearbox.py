@@ -29,7 +29,7 @@ from hylaa.stateset import StateSet
 from hylaa import lputil, aggstrat, symbolic
 from hylaa.aggstrat import Aggregated
 
-from gearbox_sim import get_worst_case_sim
+from gearbox_sim_data import get_worst_case_sim
 
 def make_automaton(theta_deg, maxi=20):
     'make the hybrid automaton'
@@ -285,14 +285,25 @@ def run_hylaa(is_sim=False, tmax=0.1):
         init_mode = ha.modes['move_free']
         settings.aggstrat.sim_avoid_modes.append('meshed')
         settings.plot.sim_line_width = 1.0
-        settings.plot.filename = "gearbox_sim.png"
-        #settings.plot.filename = "gearbox_sim.mp4"
+        #settings.plot.filename = "gearbox_sim.png"
+        settings.plot.filename = "gearbox_sim.mp4"
 
-        settings.plot.plot_mode = PlotSettings.PLOT_IMAGE
+        # worst-case witness
+        #settings.plot.plot_mode = PlotSettings.PLOT_VIDEO
+        #settings.plot.video_pause_frames = 0
+        #settings.plot.sim_line_color = 'red'
+        #settings.plot.label[0].title = "Gearbox Worst-Case Witness"
+        #settings.plot.filename = "witness.mp4"
 
-        settings.random_seed = 0 # 1 for 100 sims no worst-case
-        result = Core(ha, settings).simulate(init_mode, box, [84, 85]) # was 100
-        #[84, 85] [18. 19]
+        settings.plot.plot_mode = PlotSettings.PLOT_VIDEO
+        settings.plot.video_pause_frames = 5
+        settings.plot.sim_line_color = 'black'
+        settings.plot.label[0].title = "Gearbox 100 Random Simulations"
+        settings.plot.filename = "gearbox_sim.mp4"
+
+        settings.random_seed = 1 # 1 for 100 sims no worst-case
+        result = Core(ha, settings).simulate(init_mode, box, [0, 100])
+        # seed 0, worst case sims: [84, 85] [18. 19]
 
         # plot -> segment -> sim_id -> list_of_points
         #print(f"sim_lines len: {len(result.sim_lines)}")
@@ -318,7 +329,7 @@ def run_hylaa(is_sim=False, tmax=0.1):
         #print(f"sim_lines[1][0][0][0]: {result.sim_lines[1][0][0][0]}")
 
 if __name__ == "__main__":
-    tmax = 0.35 # 0.35
+    tmax = 0.35
     
-    run_hylaa(is_sim=False, tmax=tmax)
-    #run_hylaa(is_sim=True, tmax=tmax)
+    #run_hylaa(is_sim=False, tmax=tmax)
+    run_hylaa(is_sim=True, tmax=tmax)
