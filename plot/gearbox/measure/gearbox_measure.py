@@ -273,6 +273,7 @@ def run_hylaa(tmax=0.1, step=0.001):
     # box agg: 10.2, 38 deaggs
     # chull-agg: timeout
     # full-agg: timeout
+    # spaceex: timeout
     #
     # unaggregated: 18 sec; a bit surprising it can finish
     # the comparison is more interesting with step=0.0001, for this, we'll want to enable re-aggregation...
