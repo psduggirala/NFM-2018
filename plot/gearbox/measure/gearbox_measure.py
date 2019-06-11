@@ -30,6 +30,7 @@ from hylaa.core import Core
 from hylaa.stateset import StateSet
 from hylaa import lputil, aggstrat, symbolic
 from hylaa.aggstrat import Aggregated, Unaggregated
+from hylaa.timerutil import Timers
 
 def make_automaton(theta_deg, maxi=20):
     'make the hybrid automaton'
@@ -242,7 +243,7 @@ def make_settings(theta_deg, box, tmax, step):
 
     return settings
 
-def run_hylaa(tmax=0.1, step=0.0001):
+def run_hylaa(tmax=0.1, step=0.001):
     'main entry point'
 
     theta_deg = 36
@@ -257,23 +258,30 @@ def run_hylaa(tmax=0.1, step=0.0001):
     # settings for tiem measurements
     settings.plot.plot_mode = PlotSettings.PLOT_NONE
     settings.plot.filename = "gearbox.png"
-    settings.stdout = HylaaSettings.STDOUT_VERBOSE
+    settings.stdout = HylaaSettings.STDOUT_NORMAL
     settings.skip_zero_dynamics_modes = True
     settings.aggstrat.deaggregate = True # use deaggregation
     settings.aggstrat.deagg_preference = Aggregated.DEAGG_ROOT_FIRST
+    settings.aggstrat.agg_type = Aggregated.AGG_BOX
 
     #settings.aggstrat = Unaggregated()
 
-    # leaves-first: 17.57
-    # root-first: 10.89
-    # most states: 15.14
+    # leaves-first: 17.6, 52 deaggs
+    # root-first: 11.2, 35 deaggs
+    # most states: 16.1, 49 deaggs
     #
-    # box agg: 10.18
+    # box agg: 10.2, 38 deaggs
     # chull-agg: timeout
     # full-agg: timeout
-    # unaggregated: 18 sec
+    #
+    # unaggregated: 18 sec; a bit surprising it can finish
+    # the comparison is more interesting with step=0.0001, for this, we'll want to enable re-aggregation...
+    # this requires more experimentation / implementation so we omit this result until we can investigate it further
 
     result = Core(ha, settings).run(make_init(ha, box))
+
+    # print stats
+    Timers.print_stats_recursive(result.top_level_timer, 0, None)
 
     if result.counterexample:
         print(f"counterexample start: {result.counterexample[0].start}")

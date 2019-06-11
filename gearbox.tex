@@ -104,6 +104,80 @@ simulation available at \url{https://gofile.io/?c=Gd5N2B}.}
 \label{fig:gearbox_reach}
 \end{figure}
 
-We analyze this system with different settings to explore the various parameters available with our approach.
+We perform a preliminary exploration of the effects of various parameters available with our approach.
 %
+The results are shown in Table~\ref{tab:gearbox_params}.
 
+\begin{table}%
+  \caption{Gearbox Parameter Evaluation} \label{tab:gearbox_params}%
+  \vspace{-1.0em}
+\begin{tabular}{@{}lll@{}}%
+\toprule%
+\bf{Parameter} & \bf{Runtime (s)} & \bf{Deaggregation Steps} \\%
+\midrule%
+Deagg Leaves First & 17.6 & 52 \\
+Deagg Root First & 11.2 & 35 \\
+Deagg Most States & 16.1 & 49 \\
+\hdashline[0.8pt/2pt]
+Box Agg & 10.2 & 38 \\
+Convex Hull Agg & \texttt{timeout} & - \\
+\hdashline[0.8pt/2pt]
+No Deaggregation & \texttt{timeout} & - \\
+SpaceEx & \texttt{timeout} & - \\
+\bottomrule
+\end{tabular}%
+\end{table}
+
+For the deaggregation order exploration, we use template-based aggregation based on the mode dynamics.
+%
+In this case, root-first deaggregation is more efficient, both in terms of runtime and the number of deaggregation operations needed.
+%
+We suspect this is because overapproximation error early on in the computation leads to error later on, so even if deeaggregation is performed first on the leaves,
+eventually the states closer to the root will need to be deaggregated as well.
+
+For evaluating the aggregation method, we used root-first deaggregation.
+%
+There were two interesting observations.
+%
+First, box aggregation takes slightly less time than the default template-based aggregation, even though there are more deaggregation steps needed.
+%
+We attribute this speedup to the simpler star sets with the box method being easier to optimize over using an LP solver.
+%
+Observing the output of the reachable set, we noticed that the box method did have more error during the continuous post operation
+(states to the left of the initial sets were reached when using box aggregation),
+although deaggregation ensured the sequences of discrete transitions
+was the same as with the more accurate template-based approach.
+%
+Essentially, in this case the box method was faster, but had more error.
+%
+Second, using the convex hull aggregation approach exceeded our one minute timeout.
+%
+This was because although the method from Section~\ref{sec:convexhullAgg} provide the exact convex hull, the number of variables and constraints
+in result of aggregating two stars is proportional to the sums of variables and constraints in the component stars.
+%
+This makes the LPs grow larger in size, thus slowing the method down.
+%
+In this case, the result will be more accurate, but the method is slower.
+
+Finally, we compared with existing approaches.
+%
+Using no deaggregation (complete aggregation), the method reached the timeout.
+%
+Observing the visualization we could see the suspected effect that aggregation error was growing across each jump, and
+the additional error caused the sleeve to appear to be able to bounce off the gear indefinitely, without meshing.
+%
+With SpaceEx, we used the same settings as was used in the ARCH hybrid systems tools competition~\cite{archcomp19},
+changing only the initial set of states.
+%
+By limiting the maximum number of discrete transitions and observing the output,
+we could observe the same effect; the reachable states was growing as more and more discrete transition were processed, which
+gave the appearance it was possible for the sleeve to bounce indefinitely without meshing.
+
+% leaves-first: 17.6, 52 deaggs
+% root-first: 11.2, 35 deaggs
+% most states: 16.1, 49 deaggs
+%
+% box agg: 10.2, 38 deaggs
+% chull-agg: timeout
+% full-agg: timeout
+% spaceex: timeout
