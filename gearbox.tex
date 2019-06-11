@@ -172,6 +172,9 @@ changing only the initial set of states.
 By limiting the maximum number of discrete transitions and observing the output,
 we could observe the same effect; the reachable states was growing as more and more discrete transition were processed, which
 gave the appearance it was possible for the sleeve to bounce indefinitely without meshing.
+%
+Aggregation error led to spurious discrete transitions being taken, which led to additional aggregation error and further
+spurious discrete transitions, and this cycle repeated indefinitely.
 
 % leaves-first: 17.6, 52 deaggs
 % root-first: 11.2, 35 deaggs
