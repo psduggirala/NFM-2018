@@ -77,6 +77,10 @@ Given a hybrid automaton $H$, initial set $\Theta$, bounded time $T$, and simula
 A hybrid automaton $H$ with initial set $\Theta$, time bound $T$, step size $h$, and unsafe set $U$ is said to be Simulation-equivalent safe, if all the simulations $\rho_{H}(q_0, h, k)$ with $q_0$ from $\Theta$ do not visit the unsafe set $U$.
 \end{definition}
 
+\new{\begin{remark}
+Note that simulation-equivalent safety does not ensure that all executions (Definition~\ref{def:hybridExecution}) of the hybrid automaton are safe. The execution might encounter an unsafe state in between the time instances for performing safety verification. To the authors' knowledge, none of the tools available can provide relative completeness guarantees for safety property of executions. We stick to the notion of simulation equivalent safety because of two reasons. First, we can provide soundness and relative-completeness guarantees and second, for every unsafe system, our approach can generate a counterexample simulation. These guarantees come at a cost: the user should select the appropriate step size for analyzing the system under. In the case studies analyzed in this paper, we highlight the different choices of this step size and present the results.
+\end{remark}}
+
 \subsection{Symbolic Representation: Generalized Stars}
 \label{sec:genStars}
 We include the basic details of the symbolic representation called generalized stars~\cite{duggirala2016parsimonious,bak2017tacas} with some syntactic modifications. \new{Operations such as linear transformation, intersection, and Minkowski sum can be performed very efficiently over generalized stars, making them very suitable for reachable set computation.}
@@ -119,6 +123,7 @@ Generalized star representation leverages the superposition property of the line
 %
 
 %\vspace{-0.7cm}
+\vspace{-0.4cm}
 \begin{algorithm}[h]
 \SetAlgoVlined
 \SetKwInOut{Input}{Input}\SetKwInOut{Output}{Output}\SetKw{Return}{return}
@@ -137,7 +142,7 @@ Generalized star representation leverages the superposition property of the line
 \caption{Algorithm that computes the reachable set for a linear dynamical system at time instances $i \cdot h$ from $n+1$ simulations.}
 \label{alg:algoFullInfo}
 \end{algorithm}
-%\vspace{-0.7cm}
+\vspace{-0.4cm}
 
 Given an initial set $\Theta \deq \tup{a, G, P}$ with $G = \{g_1, g_2, \ldots, g_n\}$, we compute the reachable set for a linear dynamical system $\dot{x} = Ax + B$ using simulations.
 %
@@ -171,7 +176,7 @@ When a discrete transition is performed, the reachable set in the new mode is co
 %
 Algorithm~\ref{alg:algoHybrid} is a pseudocode description of the algorithm. This reachable set computed is simulation equivalent reachable set, i.e., a state is in the reachable set if and only if there exists at least one simulation that visits the state.
 
-%\vspace{-0.6cm}
+\vspace{-0.4cm}
 \begin{algorithm}[h!]
 \SetAlgoVlined
 \SetKwInOut{Input}{Input}\SetKwInOut{Output}{Output}\SetKw{Return}{return}
@@ -192,7 +197,7 @@ ${\it ReachSet} \gets \emptyset$\;
 \caption{Algorithm that computes bounded time simulation equivalent reachable set.}
 \label{alg:algoHybrid}
 \end{algorithm}
-%\vspace{-0.8cm}
+\vspace{-0.4cm}
 
 We want to highlight that the reachable set is only computed at discrete instances of time.
 %
