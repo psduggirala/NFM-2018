@@ -36,15 +36,15 @@ Hybrid automata is a well suited framework for modeling such safety critical sys
 % The change in mode of operation is modelled as a transition among these modes.
 %
 
-In this paper, we perform safety analysis of a satellite rendezvous mission modeled as a hybrid automata.
+In this paper, we perform safety analysis of \new{two case studies, a satellite rendezvous mission and a gearbox meshing} modeled as a hybrid automata.
 %
-We adopt a widely used technique for establishing safety properties of hybrid systems is {\em reachable set computation}.
+We adopt a widely used technique for establishing safety properties of hybrid systems: {\em reachable set computation}.
 %
 %Our analysis relies on computing an artifact called {\em reachable set}. 
 %
 Given a set of initial configurations $\Theta$ (often uncountable), the reachable set is the set of all possible configurations encountered by the system trajectories starting from $\Theta$. 
 %
-Since the reachable set is also an uncountable set, we compute a symbolic representation of the reachable set.
+Since the reachable set is also uncountable, we compute its symbolic representation.
 %
 If the reachable set does not contain any unsafe configurations, then one can prove that the safety specification is satisfied.
 %
@@ -69,6 +69,7 @@ We present two aggregation strategies, first, template based, and second, convex
 For efficient de-aggregation, we introduce a data structure called Aggregated Directed Acyclic Graph (AGGDAG), and explain our de-aggregation strategy.
 %
 
+\new{The two case studies considered in this paper, satellite rendezvous and gearbox meshing, present significant challenge in handling the discrete transitions.}
 %These improvements in aggregation and de-aggregation strategies enable us to perform the safety analysis of a satellite rendezvous mission.
 %
 In a rendezvous mission, the satellite can operate in one of the two modes: approach or abort. 
@@ -77,11 +78,17 @@ In the approach mode, the trajectory of the satellite proceeds towards the rende
 %
 In the abort mode, the decision to rendezvous is aborted and hence the satellite should maintain a safe distance from the rendezvous point. 
 %
-Naturally, one cannot decide to abort the rendezvous when the satellite is too close to the rendezvous point.
+%Naturally, one cannot decide to abort the rendezvous when the satellite is too close to the rendezvous point.
 %
-In this paper, we establish that if the decision to abort is performed in a given interval of time, the safe distance from the rendezvous point is maintained.
+%In this paper, we establish that if the decision to abort is performed in a given interval of time, the safe distance from the rendezvous point is maintained.
 %
 The nondeterminism in the mode switch from approach to abort makes the safety analysis very challenging.
+%
+\new{Gear meshing system models the behavior of a sleeve switching gears.}
+%
+\new{Depending on the angular position at which the sleeve arrives at the next gear, the impact forces cause the sleeve to bounce off the gear and delay the meshing process.}
+%
+\new{The number of bounces the sleeve encounters increases the order of overapproximation due to aggregation.}
 %
 The aggregation and de-aggregation techniques proposed in this paper are crucial for combating the computational cost while improving the accuracy for performing safety analysis.
 %

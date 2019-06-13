@@ -3,7 +3,7 @@
 \label{sec:prelims}
 %\vspace{-0.2cm}
 
-States and vectors are elements in $\reals^n$ are denoted as $x$ and $v$. 
+States and vectors, elements in $\reals^n$, are denoted as $x$ and $v$. 
 %Given a sequence $seq = s_1, s_2, \ldots$, the $i^{th}$ element in the sequence is denoted as $seq[i]$. 
 In this work, we use the following mathematical notation of a linear hybrid automata.
 
@@ -11,19 +11,20 @@ In this work, we use the following mathematical notation of a linear hybrid auto
 \begin{definition}
 \label{def:hybridAutomata}
  A \emph{linear hybrid automaton} is defined to be a tuple
- $\tup{Loc, X, Flow, Inv, Trans, Guard}$ where:
+ $\tup{Loc, X, Flow, Inv, Trans, Guard, Reset}$ where:
 % \vspace{-0.2cm}
 \begin{description}
 \item[$Loc$] is a finite set of locations (also called modes).
 \item[$X$] $\subseteq \reals^n$ is the state space of the behaviors.
 \item[$Flow$] $: Loc \rightarrow \textit{AffineDeq}(X)$ assigns an affine differential equation $\dot{x} = A_l x + B_l$ for location $l$ of the hybrid automaton.
-\item[$Inv$] $: Loc \rightarrow 2^{\reals^n}$ assigns an invariant set for each location of the hybrid automaton.
+\item[$Inv$] $: Loc \rightarrow 2^{X}$ assigns an invariant set for each location of the hybrid automaton.
 \item[$Trans$] $\subseteq Loc \times Loc$ is the set of discrete transitions.
-\item[$Guard$] $: Trans \rightarrow 2^{\reals^n}$ defines the set of states where a discrete transition is enabled.
+\item[$Guard$] $: Trans \rightarrow 2^{X}$ defines the set of states where a discrete transition is enabled.
+\new{\item[$Reset$] $: Trans \times X \rightarrow X$ defines the reset function that determines the next state after the discrete transition.}
 \end{description}
 
 %\vspace{-0.2cm}
-For a linear hybrid automaton, the invariants and guards are given as a conjunction of linear constraints.
+For a linear hybrid automaton, the invariants and guards are given as a conjunction of linear constraints and the reset function is an affine function.
 \end{definition}
 %\vspace{-0.1cm}
 
@@ -60,7 +61,7 @@ A sequence $\rho_{H}(q_0,h) = q_0, q_1, q_2, \ldots$, where each $q_i = (Loc_i, 
 %
 (i) a continuous trajectory in location $Loc_i$ with $Loc_i=Loc_{i+1}$ such that a trajectory starting from $x_i$ would reach $x_{i+1}$ after exactly $h$ time units with $x_i \in Inv(Loc_i)$, or 
 %
-(ii) a discrete transition from $Loc_i$ to $Loc_{i+1}$ (with $Loc_{i-1} = Loc_i$) where  $\exists a \in Trans$ such that $x_i = x_{i+1}$, $x_i \in Guard(a)$ and $x_{i+1} \in
+(ii) a discrete transition from $Loc_i$ to $Loc_{i+1}$ (with $Loc_{i-1} = Loc_i$) where  $\exists a \in Trans$ such that $x_i = Reset(a, x_{i+1})$, $x_i \in Guard(a)$ and $x_{i+1} \in
 Inv(Loc_{i+1})$.
 %
 Bounded-time variants of these simulations, with time bound $k\times h$, are called $(q_0, h, k)$-simulations.
@@ -78,7 +79,7 @@ A hybrid automaton $H$ with initial set $\Theta$, time bound $T$, step size $h$,
 
 \subsection{Symbolic Representation: Generalized Stars}
 \label{sec:genStars}
-We include the basic details of the symbolic representation called generalized stars~\cite{duggirala2016parsimonious,bak2017tacas} with some syntactic modifications. 
+We include the basic details of the symbolic representation called generalized stars~\cite{duggirala2016parsimonious,bak2017tacas} with some syntactic modifications. \new{Operations such as linear transformation, intersection, and Minkowski sum can be performed very efficiently over generalized stars, making them very suitable for reachable set computation.}
 %For additional details, the readers can refer to~\cite{duggirala2016parsimonious,bak2017tacas}.
 
 \begin{definition}
@@ -126,7 +127,7 @@ Generalized star representation leverages the superposition property of the line
 \For{ each $i$ from $0$ to $k$}{
    $a_i \gets \rho(a, h, k)[i]$\; \label{ln:lineCenter}
    \For{ each $g_j \in V$ }{ \label{ln:begLoop}
-      $g_j' \gets \rho(c+g_j, h, k)[i] - a_i$\; \label{ln:simVec}
+      $g_j' \gets \rho(a+g_j, h, k)[i] - a_i$\; \label{ln:simVec}
    } \label{ln:endLoop}
    $G_i \gets \{ g_1', \ldots, g_m'\}$\;
    $Reach_i(\Theta) \gets \tup{a_i, G_i, P}$\; \label{ln:reachSeti1}
@@ -142,7 +143,7 @@ Given an initial set $\Theta \deq \tup{a, G, P}$ with $G = \{g_1, g_2, \ldots, g
 %
 We generate simulations starting from $a$ (denoted as $\rho(a, h, k)$), and $a+g_j$ $\forall 1\leq j \leq n$ (denoted as $\rho(a+g_j, h, k)$). 
 %
-For a given time instance $i\cdot h$, the reachable set denoted as $Reach_i(\Theta)$ is defined as $\tup{a_i, G_i, P}$ where $c_i = \rho(a, h, k)[i]$ and $G_i = \tup{g_1', g_2', \ldots, g_n'}$ where $\forall 1\leq j \leq n, g_j' = \rho(a+g_j, h, k)[i] - \rho(a, h, k)[i]$. 
+For a given time instance $i\cdot h$, the reachable set denoted as $Reach_i(\Theta)$ is defined as $\tup{a_i, G_i, P}$ where $a_i = \rho(a, h, k)[i]$ and $G_i = \tup{g_1', g_2', \ldots, g_n'}$ where $\forall 1\leq j \leq n, g_j' = \rho(a+g_j, h, k)[i] - \rho(a, h, k)[i]$. 
 %
 Readers can refer to~\cite{bak2017tacas} for the correctness of this algorithm.
 %
@@ -152,7 +153,7 @@ For ensuring that all trajectories starting from $\Theta$ satisfy the safety spe
 
 \begin{remark}
 \label{rem:predConst}
-Notice that the predicate in the reachable set remains same as that of the initial set $\Theta$. Hence, if one changes the initial set by changing the predicate, one need not generate additional simulations for computing the reachable set. One can just change the predicate in line~\ref{ln:reachSeti1} and compute the new reachable set. For checking the safety specification with the new initial set, we still have to perform the overlap of the unsafe set $U$ with reachable set.
+Notice that the predicate in the reachable set remains same as that of the initial set $\Theta$. Hence, if one changes the initial set by changing the predicate, one needs not generate additional simulations for computing the reachable set. One can just change the predicate in line~\ref{ln:reachSeti1} and compute the new reachable set. For checking the safety specification with the new initial set, we still have to perform the overlap of the unsafe set $U$ with reachable set.
 \end{remark}
 
 \subsection{Reachable Set Computation of Linear Hybrid Systems Using Generalized Stars}
@@ -164,7 +165,7 @@ First, it computes the reachable set of the dynamical system in the current mode
 %
 Second, it computes the overlap of the reachable set in the current mode with the mode invariant (line~\ref{ln:overlapInv}).
 %
-Third, it computes the overlap of the reachable sets with the guards of discrete transitions that cause a change in mode (line~\ref{ln:guardIntersection}).
+Third, it computes the overlap of the reachable sets with the guards of discrete transitions that cause a change in mode (line~\ref{ln:guardIntersection1}).
 %
 When a discrete transition is performed, the reachable set in the new mode is computed by invoking the Algorithm~\ref{alg:algoFullInfo} subroutine.
 %
@@ -181,10 +182,10 @@ append ($\Theta$, $loc_0$, $0$) to ${\it queueStars}$\;
 ${\it ReachSet} \gets \emptyset$\;
 \While{${\it queueStars}$ is not empty}{
     $S \gets {\sf dequeue}({\it queueStars})$\;
-    $R \gets {\sf ReachSetDynamicalSystem}(S, S.loc, h, k-S.time)$\; \label{ln:reachDyn}
+    $R \gets {\sf ReachSetDynSys}(S, S.loc, h, k-S.time)$\; \label{ln:reachDyn}
     $R' \gets {\sf InvariantOverlap}(R, R.Inv)$\; \label{ln:overlapInv}
     ${\it ReachSet} \gets {\it ReachSet} \cup R'$\; 
-    ${\it nextRegions} \gets {\sf discreteTrans}(R', H.Trans)$\; \label{ln:guardIntersection}
+    ${\it nextRegions} \gets {\sf discreteTrans}(R', H.Trans)$\; \label{ln:guardIntersection1}
     append ${\it nextRegions}$ to ${\it queueStars}$\; \label{ln:appendQueueStars}
 }
 {\bf return} ${\it ReachSet}$\;
@@ -201,9 +202,9 @@ Algorithm~\ref{alg:algoHybrid} terminates because of two reasons. First, the sim
 
 One of the primary drawbacks of Algorithm~\ref{alg:algoHybrid} is in handling the discrete transitions. 
 %
-Suppose that in a given location, the number of stars that overlap with the guard of a discrete transition (line~\ref{ln:guardIntersection} in Algorithm~\ref{alg:algoHybrid}) is $m$.
+Suppose that in a given location, the number of stars that overlap with the guard of a discrete transition (line~\ref{ln:guardIntersection1} in Algorithm~\ref{alg:algoHybrid}) is $m$.
 %
-As a result, the number of stars in the $queueStars$ will become $O(m^2)$ after 2 discrete transitions. After $t$ number of discrete transitions, the number of states in $queueStars$ grows to $O(m^t)$.
+As a result, the number of stars in the $queueStars$ will become $O(m^2)$ after 2 discrete transitions. After $\eta$ number of discrete transitions, the number of states in $queueStars$ grows to $O(m^{\eta})$.
 %
 To avoid the exponential blow up of the number of sets in $queueStars$, reachable set computation tools often use aggregation.
 

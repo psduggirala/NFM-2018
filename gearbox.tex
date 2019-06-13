@@ -1,3 +1,24 @@
+\begin{figure*}[t]
+\begin{subfigure}{0.3\textwidth}
+\centering
+    \includegraphics[width=1.0\textwidth]{images/gb_overview1.png}
+    \caption{System Overview}\label{fig:gbo_1}
+\end{subfigure}
+\begin{subfigure}{0.3\textwidth}
+\centering
+    \includegraphics[width=0.7\textwidth]{images/gb_overview2.png}
+    \caption{Hybrid Automaton}\label{fig:gbo_2}
+\end{subfigure}
+\begin{subfigure}{0.3\textwidth}
+\centering
+    \includegraphics[width=1.0\textwidth]{images/gb_overview3.png}
+    \caption{Meshing Simulation}\label{fig:gbo_3}
+\end{subfigure}
+\vspace{-0.15cm}
+\caption{Gearbox benchmark overview (images from~\cite{chen2014motor}).}\label{fig:gb_overview}
+\vspace{-0.15cm}
+\end{figure*}
+
 The gearbox meshing system~\cite{chen2014motor} analyses the impact force and meshing time in a motor-transmission drive system,
 where a shift actuator is used to switch a sleeve between gears.
 %
@@ -19,25 +40,6 @@ The analysis goal is to find the worst-case accumulated impact impulse, as well 
 An overview of the system is shown in Figure~\ref{fig:gb_overview}, where Figure~\ref{fig:gbo_1} shows the sleeve moving between two gears,
 Figure~\ref{fig:gbo_2} shows the hybrid automaton model of the system, and Figure~\ref{fig:gbo_3} shows a simulation where the sleeve bounces off
 the gear three times before meshing.
-
-\begin{figure*}[t]
-\begin{subfigure}{0.3\textwidth}
-\centering
-    \includegraphics[width=1.0\textwidth]{images/gb_overview1.png}
-    \caption{System Overview}\label{fig:gbo_1}
-\end{subfigure}
-\begin{subfigure}{0.3\textwidth}
-\centering
-    \includegraphics[width=0.7\textwidth]{images/gb_overview2.png}
-    \caption{Hybrid Automaton}\label{fig:gbo_2}
-\end{subfigure}
-\begin{subfigure}{0.3\textwidth}
-\centering
-    \includegraphics[width=1.0\textwidth]{images/gb_overview3.png}
-    \caption{Meshing Simulation}\label{fig:gbo_3}
-\end{subfigure}
-\caption{Gearbox benchmark overview (images from~\cite{chen2014motor}).}\label{fig:gb_overview}
-\end{figure*}
 
 This model was also used as part of the ARCH hybrid systems verification tools competition~\cite{archcomp19}.
 %
@@ -71,6 +73,7 @@ demonstrating that simulations can miss important system behaviors.
 %
 A video of the simulations is online at \url{https://gofile.io/?c=ypzXbv}.}
 \label{fig:gearbox_sim}
+\vspace{-0.3cm}
 \end{figure}
 
 Since we do not have an unsafe set of states in this system, we instead drive the deaggregation process based on splits in the discrete state
@@ -102,6 +105,7 @@ The red line shows a worst-case witness which bounces seven times and reaches th
 A video of the reachability computation is online at \url{https://gofile.io/?c=haaCmh}, and a video of the worst-case witness
 simulation available at \url{https://gofile.io/?c=Gd5N2B}.}
 \label{fig:gearbox_reach}
+\vspace{-0.5cm}
 \end{figure}
 
 We perform a preliminary exploration of the effects of various parameters available with our approach.
@@ -175,6 +179,7 @@ gave the appearance it was possible for the sleeve to bounce indefinitely withou
 %
 Aggregation error led to spurious discrete transitions being taken, which led to additional aggregation error and further
 spurious discrete transitions, and this cycle repeated indefinitely.
+\vspace{-0.1cm}
 
 % leaves-first: 17.6, 52 deaggs
 % root-first: 11.2, 35 deaggs

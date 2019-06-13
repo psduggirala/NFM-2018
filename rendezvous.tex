@@ -27,7 +27,7 @@ The hybrid automaton consists of three modes, two for different navigation strat
 %
 This system is a six-dimensional linear system, with nondeterministic transitions to the passive mode.
 %
-In our analysis, we check for passive safety from $t_1=0$ to $t_2=250$.
+In our analysis, we check for passive safety from $t_1=0$ to $t_2=140$.
 %
 The dynamics and controller in each mode are as described in the benchmark paper~\cite{chan2017verifying}.
 %
@@ -41,12 +41,12 @@ Although several tools have successfully analyzed a version of this model in the
 %
 In particular, the competition model used a \emph{fixed} time to transition to the passive mode.
 %
-This is an unrealistic simplification, since the time of failure cannot not be known in advance.
+This is an unrealistic simplification, since the time of failure cannot be known in advance.
 
 
 The analysis done in the original work~\cite{chan2017verifying} is slightly better, in that it checks for passive safety for a known 5 minute failure interval.
 %
-In~\cite{chan2017verifying}, the author that, if larger time intervals are used,
+In~\cite{chan2017verifying}, the authors comment that, if larger time intervals are used,
 ``the initial set of states under the Passive mode is large, making it very difficult to prove safety.''
 %
 The suggestion is then to create subintervals that cover the full time range of transitions to the passive mode, and then successively
@@ -95,8 +95,8 @@ Tunneling is possible with discrete-time analysis methods, so the choice of time
 Another difference is that discrete-time methods permit the generation of counter-examples when specification violations occur, but continuous-time methods
 like SpaceEx do not generate these, as the detected violation may be due to overapproximation needed to handle continuous time.
 %
-We expect the reach set to be the qualitatively the same when comparing discrete-time analysis with small time steps and for continuous-time analysis
-with sufficient accuracy
+We expect the reach set to be qualitatively the same when comparing discrete-time analysis with small time steps and continuous-time analysis
+with sufficient accuracy.
 %
 This is indeed the case, as shown in the plot of the reach set output from SpaceEx and our implementation in Figure~\ref{fig:qualitative}.
 
@@ -129,7 +129,7 @@ both \texttt{box} and \texttt{oct}.
 %
 By fixing the parameters, we can analyze the system as the passive-mode switch time parameter $r$ is increased from $0$ to $70$.
 %
-Since several options which trade off accuracy for computation time are available to the user, a fair comparison difficult.
+Since several options which trade off accuracy for computation time are available to the user, a fair comparison is difficult.
 %
 We thus consider many permutations of these parameters, to try to find the best ones for each value of $r$.
 %
@@ -268,5 +268,6 @@ Prior to our analysis, we were unaware of any tool which could successfully anal
   Reachable states near the unsafe set (red square near origin) are deaggregated using the proposed approach until no unsafe states are reachable.
 A video of the computation is online at \url{https://gofile.io/?c=P0pKla}.}}
 \label{fig:rendezvous}
+\vspace{-0.5cm}
 \end{figure}
 

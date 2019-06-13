@@ -114,8 +114,8 @@
   Directly doing this leads to a combinatorial explosion problem, though, as with each discrete successor there may be an interval of time
   where the transition can occur, so that the number of paths becomes exponential in the number of discrete transitions.
   %
-  For this reason, most reachable set computation tools implement some form of set aggregation for discrete transitions, such as performing a
-  template polyhedron or convex hull aggregation.
+  For this reason, most reachable set computation tools implement some form of set aggregation for discrete transitions, such as, performing a
+  template-based overapproximation or convex hull aggregation.
   %
   These aggregation methods, however, in theory can lead to unbounded error, and in practice are often
   the root cause of why a safety specification cannot be proven.
@@ -164,7 +164,7 @@
 
 \section{Conclusions}
 %\vspace{-0.4cm}
-In this paper we have focused on computing accurate reachable set computation of hybrid automata where there is high nondeterminism in the discrete transitions. We presented two common techniques used for aggregation and highlighted the relative merits and demerits of each technique. We also presented aggdag data structure and outlined the deaggregation strategies that were implemented. Using the techniques we were able to handle a challenging case study of satellite rendezvous mission and prove the passive safety property.
+In this paper we have focused on computing accurate reachable set computation of hybrid automata where there is high nondeterminism in the discrete transitions. We presented two common techniques used for aggregation and highlighted the relative merits and demerits of each technique. We also presented AGGDAG data structure and outlined the deaggregation strategies that were implemented. Using the techniques we were able to handle the challenging case studies of satellite rendezvous mission and gearbox meshing.
 
 Handling discrete transitions is still a major hurdle in scalable and accurate computation of reachable set for linear hybrid systems. As a part of future work, we intend to explore intelligent aggregation and deaggregation strategies that adapt based on the dynamics to provide an accurate reachable set.
 
