@@ -77,7 +77,9 @@ Given a hybrid automaton $H$, initial set $\Theta$, bounded time $T$, and simula
 A hybrid automaton $H$ with initial set $\Theta$, time bound $T$, step size $h$, and unsafe set $U$ is said to be Simulation-equivalent safe, if all the simulations $\rho_{H}(q_0, h, k)$ with $q_0$ from $\Theta$ do not visit the unsafe set $U$.
 \end{definition}
 
-\new{\begin{remark}
+\vspace{-0.6cm}
+\new{
+\begin{remark}
 Note that simulation-equivalent safety does not ensure that all executions (Definition~\ref{def:hybridExecution}) of the hybrid automaton are safe. The execution might encounter an unsafe state in between the time instances for performing safety verification. To the authors' knowledge, none of the tools available can provide relative completeness guarantees for safety property of executions. We stick to the notion of simulation equivalent safety because of two reasons. First, we can provide soundness and relative-completeness guarantees and second, for every unsafe system, our approach can generate a counterexample simulation. These guarantees come at a cost: the user should select the appropriate step size for analyzing the system under. In the case studies analyzed in this paper, we highlight the different choices of this step size and present the results.
 \end{remark}}
 

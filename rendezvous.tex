@@ -103,14 +103,14 @@ This is indeed the case, as shown in the plot of the reach set output from Space
 \begin{figure}
 \begin{minipage}[b]{\linewidth}
   \centering
-    \includegraphics[width=0.9\columnwidth,trim=-7em 1em 7em 0, clip]{images/spaceex.png}
+    \includegraphics[width=0.8\columnwidth,trim=-7em 1em 7em 0, clip]{images/spaceex.png}
 \subcaption{SpaceEx (continuous time)}%\label{fig:1c}
 \end{minipage}
 \\
 \vspace{1em}
 \begin{minipage}[b]{\linewidth}
   \centering
-    \includegraphics[width=0.9\columnwidth,trim=0 1.5em 0 0, clip]{images/step_d_0_25.png}
+    \includegraphics[width=0.8\columnwidth,trim=0 1.5em 0 0, clip]{images/step_d_0_25.png}
 \subcaption{Our implementation (discrete time)}\label{fig:hylaa_qualitative}
 \end{minipage}
 \caption{{\footnotesize The reachability plots using SpaceEx (top) in continuous time and our implementation based off Hylaa (bottom) in discrete time are qualitatively similar.
@@ -147,7 +147,7 @@ This demonstrates the inherent overapproximation due to aggregation, where even 
 prevents verification.
 
 \begin{figure}[t]
-\centerline{\includegraphics[width=0.9\columnwidth]{images/chull.pdf}}
+\centerline{\includegraphics[width=0.8\columnwidth]{images/chull.pdf}}
 \caption{SpaceEx with convex hull aggregation can analyze the system up to around $r=30$.}
 \label{fig:spaceex_chull}
 \end{figure}
@@ -162,7 +162,7 @@ We did not find parameter values where we could analyze for much larger values o
 although analysis should theoretically be possible by sufficiently increasing the accuracy settings and waiting long enough.
 
 \begin{figure}[t]
-\centerline{\includegraphics[width=0.9\columnwidth]{images/unagg.pdf}}
+\centerline{\includegraphics[width=0.8\columnwidth]{images/unagg.pdf}}
 \caption{SpaceEx with error-guided partial aggregation can analyze the system up to around $r=55$.}
 \label{fig:spaceex_unagg}
 \end{figure}
@@ -201,28 +201,28 @@ reach set is a continuous set of state (the sets overlap between time steps).
 \begin{figure}
 \begin{minipage}[b]{\linewidth}
   \centering
-  \includegraphics[width=0.9\columnwidth,trim=0 1.3em 0 0, clip]{images/step_a_1_0.png}
+  \includegraphics[width=0.8\columnwidth,trim=0 1.3em 0 0, clip]{images/step_a_1_0.png}
 \subcaption{Step Size 1.0}%\label{fig:1a}
 \end{minipage}%
 \\
-\vspace{1em}
+\vspace{0.5em}
 \begin{minipage}[b]{\linewidth}
   \centering
-    \includegraphics[width=0.9\columnwidth,trim=0 1.3em 0 0, clip]{images/step_b_0_5.png}
+    \includegraphics[width=0.8\columnwidth,trim=0 1.3em 0 0, clip]{images/step_b_0_5.png}
 \subcaption{Step Size 0.5}%\label{fig:1b}
 \end{minipage}
 \\
-\vspace{1em}
+\vspace{0.5em}
 \begin{minipage}[b]{\linewidth}
   \centering
-    \includegraphics[width=0.9\columnwidth,trim=0 1.3em 0 0, clip]{images/step_c_0_25.png}
+    \includegraphics[width=0.8\columnwidth,trim=0 1.3em 0 0, clip]{images/step_c_0_25.png}
 \subcaption{Step Size 0.25}%\label{fig:1c}
 \end{minipage}
 \\
-\vspace{1em}
+\vspace{0.5em}
 \begin{minipage}[b]{\linewidth}
   \centering
-    \includegraphics[width=0.9\columnwidth,trim=0 1.3em 0 0, clip]{images/deagg_1_0.png}
+    \includegraphics[width=0.8\columnwidth,trim=0 1.3em 0 0, clip]{images/deagg_1_0.png}
 \subcaption{Deaggregation with Step Size 1.0}%\label{fig:1c}
 \end{minipage}
 \caption{{\footnotesize Plots of the discrete-time reach set near the unsafe state are shown with aggregation disabled (top three plots).

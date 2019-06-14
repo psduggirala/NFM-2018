@@ -13,9 +13,9 @@ However, such extensive testing is not always possible.
 %
 %For systems such as air-traffic control protocols, testing the protocols under various scenarios is an expensive endeavour.
 %
-In the case of satellite maneuver protocols, it is impossible to create a controlled test bed on earth to test such systems.
+%In the case of satellite maneuver protocols, it is impossible to create a controlled test bed on earth to test such systems.
 %
-Moreover, once deployed, updating the control algorithms on satellite maneuver protocols is very difficult, if not impossible.
+%Moreover, once deployed, updating the control algorithms on satellite maneuver protocols is very difficult, if not impossible.
 %
 %
 One of the widely used method for ensuring that the system does not encounter any unsafe scenarios in such cases is model-based analysis.
@@ -60,7 +60,14 @@ This operation is called aggregation.
 %
 Often, this overapproximation is very conservative and might overlap with the unsafe set of configurations.
 %
-If one does not perform aggregation, then one has to keep track of exponential number of symbolic representation after a finite number of mode switches.
+\new{Algorithmically selecting the sets for performing aggregation to improve accuracy involves combinatorial search and is a challenging task.}
+%
+%\new{It is possible to reduce this overapproximation by aggregating only a select few sets.} 
+%
+%\new{Performing this task algorithmically is challenging because it involves checking all possible sets to be aggregated and selecting the most appropriate aggregation that yields the best accuracy.}
+%
+However, if one does not perform aggregation, then one has to keep track of exponential number of symbolic representation after a finite number of mode switches.
+
 
 This paper exclusively focuses on aggregation and de-aggregation strategies in reachable set computation. 
 %
@@ -68,8 +75,10 @@ We present two aggregation strategies, first, template based, and second, convex
 %
 For efficient de-aggregation, we introduce a data structure called Aggregated Directed Acyclic Graph (AGGDAG), and explain our de-aggregation strategy.
 %
+\new{We demonstrate that goal driven aggregation mechanisms along with template based aggregation and deaggregation can handle challenging case studies of satellite rendezvous and gerbox meshing involving challenging discrete transitions.}
 
-\new{The two case studies considered in this paper, satellite rendezvous and gearbox meshing, present significant challenge in handling the discrete transitions.}
+%\new{The two case studies considered in this paper are satellite rendezvous mission and gearbox meshing system.}
+%, present significant challenge in handling the discrete transitions.}
 %These improvements in aggregation and de-aggregation strategies enable us to perform the safety analysis of a satellite rendezvous mission.
 %
 In a rendezvous mission, the satellite can operate in one of the two modes: approach or abort. 

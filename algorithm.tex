@@ -13,7 +13,7 @@ Then, an overapproximation of these $S'$ is computed such that $S_1 \cup S_2 \cu
 %
 Instead of computing the reachable set for each of $S_1, S_2, \ldots, S_m$, the reachable set of $S_{over}$ is computed in the future modes.
 
-\vspace{-0.4cm}
+\vspace{-0.3cm}
 \begin{algorithm}[h!]
 \SetKwInOut{Input}{Input}\SetKwInOut{Output}{Output}\SetKw{Return}{return}
 \SetAlgoVlined
@@ -55,7 +55,7 @@ ${\it ReachSet} \gets \emptyset$\;
 \caption{Algorithm that performs aggregation and deaggregation for checking safety of the trajectories originating from $\Theta$.}
 \label{alg:aggdeagg}
 \end{algorithm}
-\vspace{-0.4cm}
+\vspace{-0.3cm}
 
 
 
@@ -161,9 +161,11 @@ One of the advantages of generalized stars is that it allows for easy aggregatio
 %
 Additionally, we avoid computing the entire reachable set, but only compute the specific sections of the reachable set that are important for safety verification.
 %
-\new{More specifically, we recompute the reachable set at discrete transitions and overlap with unsafe set.}
+\new{More specifically, we recompute the reachable set \emph{only for the time intervals at discrete transitions or overlap with unsafe set.}}
 %
-To keep track of the aggregations and deaggregations, we maintain a data structure called Aggregated Directed Acyclic Graph (AGGDAG).
+\new{This selective recomputation is the main difference between this work and~\cite{schupp2018efficient}, where, SpaceEx is invoked with various configuration parameters for reducing the error in reachable set computation.} 
+%
+\new{To keep track of the aggregation, deaggregation, and time instances for selective recomputation, we maintain a data structure called Aggregated Directed Acyclic Graph (AGGDAG).}
 %
 %The algorithm corresponding to the aggregation and deaggregation is given in Algorithm~\ref{alg:aggdeagg}. 
 %%
@@ -204,11 +206,11 @@ For each location, a set of template directions $c_1^{T}, c_2^{T}, \ldots, c_{l}
 
 For computing $d_j$, $1 \leq j \leq l$, we solve $m$ linear programming problems. $d_j^i$ is the maximum value of $c_j^T \alpha$ in $P_i$. That is, $d_j^1 = \mathsf{max}~ c_j^T \alpha~ \mathsf{given} P_1(\alpha) = \top$. Similarly, $d_j^2 = ~~\mathsf{max}~~ c_j^T \alpha~~ \mathsf{given} P_2(\alpha) = \top$. We also compute $d_j^3, \ldots, d_j^l$. The value of $d_j = \mathsf{max} \{d_j^1, d_j^2, \ldots, d_j^l\}$.
 
-\vspace{-0.4cm}
+\vspace{-0.3cm}
 \begin{algorithm}[h!]
 \SetAlgoVlined
 \SetKwInOut{Input}{Input}\SetKwInOut{Output}{Output}\SetKw{Return}{return}
-\Input{Predicates $P_1, P_2, \ldots, P_m$, template directions $c_1^{T}, c_2^{T}, \ldots, c_l^{T}$.}
+\Input{Predicates $P_1, P_2, \ldots, P_m$, Template directions $c_1^{T}, c_2^{T}, \ldots, c_l^{T}$.}
 \Output{Predicate $P'$ such that $(P_1 \vee \ldots \vee P_m)\Rightarrow P'$.}
 \For{each template direction $c_j^{T}$}{
     \For{each star $S_i$}{
@@ -221,7 +223,7 @@ For computing $d_j$, $1 \leq j \leq l$, we solve $m$ linear programming problems
 \caption{Algorithm that performs template based aggregate of stars.}
 \label{alg:aggTemplate}
 \end{algorithm}
-\vspace{-0.4cm}
+\vspace{-0.3cm}
 
 \begin{lemma}
 The predicate $P'$ returned by Algorithm~\ref{alg:aggTemplate} is such that $(P_1 \vee \ldots \vee P_l) \Rightarrow P'$.
@@ -367,7 +369,7 @@ Notice that the two Abort($199$) nodes do not have any outgoing edges. This impl
 
 To check if the safety property is violated, we first inspect the AGGDAG in Figure~\ref{fig:aggdagex1} to see if any Error node is present in it. Since reachable set in Abort mode overlap with unsafe set, we need to inspect whether this overlap is caused due to overapproximation induced in the aggregation of the reachable set in the path from the root node (Far node) to the Abort node or if it corresponds to an real behavior for safety violation. 
 
-The overapproximation of reachable set can be at two instances, first, the aggregation of stars in the Approaching modes in the interval $[109, 112]$ or second, in the Abort mode in the interval $[1,91]$.  If both these reachable set do not have any aggregation, then we have proof that the overlap with the unsafe set is indeed a safety violation. After performing deaggregation, we recompute the reachable sets \emph{only for the time intervals on these edges}. This reduces the total number of reachable sets to be computed. The two Abort(199) in the AGGDAG are a result of one such deaggregation of the reachable sets performing the discrete transition.
+The overapproximation of reachable set can be at two instances, first, the aggregation of stars in the Approaching modes in the interval $[109, 112]$ or second, in the Abort mode in the interval $[1,91]$.  If both these reachable set do not have any aggregation, then we have proof that the overlap with the unsafe set is indeed a safety violation. \new{If one of the discrete transitions has an aggregation, we perform deaggregation and compute the new reachable set. The AGGDAG in Figure~\ref{fig:aggdagex1} is a result of one such deaggregation. In the previous iteration, the AGGDAG had only one transition to Abort(199) mode. The resulting reachable set of the aggregation had overlap with the Error state. After deaggregation, we updated the AGGDAG to represent two Abort(199) nodes with different time intervals for  discrete transition, corresponding to the different sets that were aggregated. State of the art reachable set computation tools either perform full aggregation or no aggregation at all. In the case studies we show that this goal driven deaggregation along with template based aggregation can handle challenging hybrid automata with multiple discrete transitions.}
 %  Hence, refining only the aggregation associated with the reachable sets in the specific interval of time suffices.
 \end{example}
 
