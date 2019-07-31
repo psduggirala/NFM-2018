@@ -92,8 +92,7 @@ We include the basic details of the symbolic representation called generalized s
 \label{def:genStar}
 A \emph{generalized star} (or simply star) $\Theta$ is a tuple $\tup{a,G,P}$ where $a \in \reals^n$ is called the \emph{anchor}, $G = \{g_1,g_2,\ldots, g_n\}$ is a set of vectors in $\reals^n$ called the \emph{generators}, and $P: \reals^n \rightarrow \{\top, \bot\}$ is a predicate. A generalized star $\Theta$ defines a subset of $\reals^n$ as follows.
 \begin{eqnarray*}
-\means{\Theta} = \{ x\: |\: \exists \bar{\alpha} = [\alpha_1, \ldots, \alpha_n]^T \mbox{ such that }\\
- x = a + \Sigma_{i=1}^n \alpha_i g_i \mbox{ and } P(\bar{\alpha}) = \top \}
+\means{\Theta} = \{ x\: |\: \exists \bar{\alpha} = [\alpha_1, \ldots, \alpha_n]^T \mbox{ such that } x = a + \Sigma_{i=1}^n \alpha_i g_i \mbox{ and } P(\bar{\alpha}) = \top \}
 \end{eqnarray*}
 Sometimes we will refer to both $\Theta$ and $\means{\Theta}$ as $\Theta$.
 \end{definition}
@@ -154,7 +153,8 @@ For a given time instance $i\cdot h$, the reachable set denoted as $Reach_i(\The
 %
 Readers can refer to~\cite{bak2017tacas} for the correctness of this algorithm.
 %
-For ensuring that all trajectories starting from $\Theta$ satisfy the safety specification, one can check if there exists a set in $Reach(\Theta)$ overlapping with the unsafe set $U$.
+%For ensuring that a
+All the trajectories starting from $\Theta$ satisfy the safety specification if  $Reach(\Theta)$ does not overlap with the unsafe set $U$.
 %Notice that the predicate does not change for the reachable set, but only the center and the basis vectors are changed.
 %
 

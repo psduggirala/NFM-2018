@@ -13,7 +13,7 @@ Then, an overapproximation of these $S'$ is computed such that $S_1 \cup S_2 \cu
 %
 Instead of computing the reachable set for each of $S_1, S_2, \ldots, S_m$, the reachable set of $S_{over}$ is computed in the future modes.
 
-\vspace{-0.3cm}
+%\vspace{-0.3cm}
 \begin{algorithm}[h!]
 \SetKwInOut{Input}{Input}\SetKwInOut{Output}{Output}\SetKw{Return}{return}
 \SetAlgoVlined
@@ -55,7 +55,7 @@ ${\it ReachSet} \gets \emptyset$\;
 \caption{Algorithm that performs aggregation and deaggregation for checking safety of the trajectories originating from $\Theta$.}
 \label{alg:aggdeagg}
 \end{algorithm}
-\vspace{-0.3cm}
+%\vspace{-0.3cm}
 
 
 
@@ -73,6 +73,15 @@ Such discrete transitions are artifacts of the conservative overapproximation du
 
 
 
+%\vspace{-0.4cm}
+\begin{wrapfigure}{r}{0.45\textwidth}
+\centerline{\includegraphics[width=0.42\textwidth]{images/deagg.png}}
+%\vspace{-0.4cm}
+\caption{The deaggregation process is shown for a two-mode system. Upon reaching an error mode (red dotted region), the fully aggregated set of states (gray large region), is split in half (two black regions), which no longer contain error states. A video of the complete computation is available online at \url{https://gofile.io/?c=70txGD}.}
+\label{fig:deaggexample}
+\end{wrapfigure}
+%\vspace{-0.4cm}
+%
 To overcome the two main challenges, we make the following modifications to the reachable set computation algorithm.
 % to perform aggregation and deaggregation. 
 %develop new aggregation and deaggregation techniques. Our technique works the following way. 
@@ -94,8 +103,7 @@ Our algorithm (Algorithm~\ref{alg:aggdeagg}) terminates after we find either a c
 
 
 
-%
-A working example of the aggregation and deaggregation is provided in Figure~\ref{fig:deagg}.
+A working example of the aggregation and deaggregation is provided in Figure~\ref{fig:deaggexample}.
 %
 In Algorithm~\ref{alg:aggdeagg}, the main loop (from lines~\ref{ln:begLoop}-~\ref{ln:endLoop}) continues until $queueStars$ is empty. 
 %
@@ -109,13 +117,6 @@ These deaggregated stars are added to $queueStars$, tagged as $unaggregated$, an
 %
 If the reachable set of an $unaggregated$ star overlaps with the unsafe set, then the algorithm returns that the safety specification is violated.
 
-\vspace{-0.4cm}
-\begin{figure}[h!]
-\centerline{\includegraphics[width=0.7\columnwidth]{images/deagg.png}}
-\vspace{-0.4cm}
-\caption{The deaggregation process is shown for a two-mode system. Upon reaching an error mode (red dotted region), the fully aggregated set of states (gray large region), is split in half (two black regions), which no longer contain error states. A video of the complete computation is available online at \url{https://gofile.io/?c=70txGD}.}
-\end{figure}
-\vspace{-0.4cm}
 
 
 \begin{lemma}
@@ -340,6 +341,17 @@ Observe that after deaggregation, there are only two instances where recomputing
 
 %While recomputing the new center and basis vectors can be avoided, we also reduce our effort by checking intersection with guards and overlap with unsafe set after deaggregation. That is, when an aggregation is performed and the reachable set is computed, we only keep track of the stars that either overlap with the unsafe set or encounter a discrete transition. We keep track of the relationship between the reachable sets called as Aggregated Directed Acyclic Graph (AGGDAG).
 
+%\vspace{-0.4cm}
+\begin{wrapfigure}{r}{0.60\textwidth}
+%\centering
+\includegraphics[width=0.59\textwidth]{images/viz2}
+\caption{Example of an AGGDAG.}
+\label{fig:aggdagex1}
+\end{wrapfigure}
+%\vspace{-0.4cm}
+%
+%
+%\vspace{-0.3cm}
 The nodes in AGGDAG correspond to the modes visited during the reachable set computation. Each mode is tagged with the maximum time a star remains in that mode. Each transition in AGGDAG corresponds to a discrete transition from one mode to another. The transition is also labelled with the time steps when the reachable set has overlap with the guard condition for the transition. Finally, if stars that experience different sequence of mode switches are aggregated, the corresponding node in AGGDAG has two incoming edges from different nodes. Each of these discrete transitions would be labelled by the time interval for the corresponding discrete transition.
 % discrete transitions are merged, 
 
@@ -350,17 +362,8 @@ An AGGDAG is a directed graph $(G, E)$ where, the set of nodes $G$ corresponds t
 \end{definition}
 %\vspace{-0.4cm}
 
-%\vspace{-0.4cm}
-\begin{figure}[t]
-\centering
-\includegraphics[width=0.49\textwidth]{images/viz2}
-\caption{Example of an AGGDAG.}
-\label{fig:aggdagex1}
-\end{figure}
-%\vspace{-0.4cm}
 
 
-%\vspace{-0.3cm}
 \begin{example}
 Figure~\ref{fig:aggdagex1} is an example of AGGDAG where the hybrid automata has 3 modes of operation, namely, {\em Far}, {\em Approaching}, and {\em Abort}. The initial set starting from the Far mode takes the discrete transitions to Abort in the time duration $[1,56]$ and $[57,112]$, it also takes a discrete transition to Approaching mode in $[109,112]$ steps. Notice that Far mode is tagged with $112$, which means that after $112$ steps, all of the stars leave the Far mode. 
 
