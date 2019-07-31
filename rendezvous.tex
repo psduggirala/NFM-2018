@@ -2,13 +2,7 @@
 %We evaluate our method on a spacecraft rendezvous passive safety case study.
 %
 
-\begin{wrapfigure}{r}{0.35\textwidth}
-%\centerline{
-\includegraphics[width=0.34\textwidth]{images/chaser.png}
-%}
-\caption{Collisions are checked between spacecraft in orbit in relative coordinates (image from~\cite{chan2017verifying}).}
-\label{fig:chaser}
-\end{wrapfigure}
+
 The spacecraft rendezvous system consists of a primary chaser spacecraft moving towards a secondary, free-flying object (such as a satellite) and
 performing close-proximity maneuvers.
 %
@@ -19,6 +13,13 @@ The verification goal is to ensure \emph{passive safety}: at any time in the man
 This requirement comes from real-world failures. In 2005, NASA's DART spacecraft was intended to rendezvous with the MUBLCOM satellite, but due to depleted propellant instead collided with the target satellite (a loss of a
 \$110 million project)~\cite{croomes2006overview}.
 
+\begin{wrapfigure}{r}{0.35\textwidth}
+%\centerline{
+\includegraphics[width=0.34\textwidth]{images/chaser.png}
+%}
+\caption{Collisions are checked between spacecraft in orbit in relative coordinates (image from~\cite{chan2017verifying}).}
+\label{fig:chaser}
+\end{wrapfigure}
 
 Our model is based on a published spacecraft rendezvous benchmark~\cite{chan2017verifying,jewison2016spacecraft}.
 %
@@ -87,7 +88,7 @@ Hyst tool~\cite{bak2015hscc}.
 As a comparison, we also run the benchmark on the SpaceEx~\cite{spaceex} verification tool.
 %
 Our proposed aggregation and deaggregation enhancements are implemented as modifications to the publicly available
-Hylaa tool~\cite{bak2017hscc}\footnote{We did not have anonymized code available for review, although we plan to release our source with the paper.}.
+Hylaa tool~\cite{bak2017hscc}\footnote{Our changes are in the public Hylaa repository at \url{https://github.com/stanleybak/hylaa}.}.
 
 Note that SpaceEx analyzes the system using continuous time, whereas our approach builds off Hylaa, a discrete time (simulation equivalent) tool.
 %
@@ -145,7 +146,7 @@ The initial states are in the lower left of the plots, the unsafe states are nea
 %\end{figure}
 
 
-\subsection{SpaceEx}
+\subsubsection{SpaceEx}
 
 We use the latest space-time clustering (STC) reachability method implemented in SpaceEx~\cite{frehse2013flowpipe} version \texttt{v0.9.8f}.
 %
@@ -173,53 +174,6 @@ Different accuracy settings can slightly go beyond this, with $r=30$ being possi
 %
 This demonstrates the inherent overapproximation due to aggregation, where even modest uncertainty in the switch to the passive mode
 prevents verification.
-
-
-\new{With error-guided partial aggregation (Figure~\ref{fig:spaceex_unagg}), SpaceEx can analyze
-  the system up to around $r=55$}.
-%
-It can still not do full uncertainty (up to $r=70$) since there is still some overapproximation from aggregation, the choice of \text{flowpipe-tolerance} and the
-choice of support function directions.
-%
-We did not find parameter values where we could analyze for much larger values of $r$,
-although analysis should theoretically be possible by sufficiently increasing the accuracy settings and waiting long enough.
-
-%\begin{figure}[t]
-%\centerline{\includegraphics[width=0.8\columnwidth]{images/unagg.pdf}}
-%\caption{SpaceEx with error-guided partial aggregation can analyze the system up to around $r=55$.}
-%\label{fig:spaceex_unagg}
-%\end{figure}
-
-One final note is that parameter selection is difficult for SpaceEx, and it would be unreasonable to perform an exhaustive search for every model
-that needs analysis.
-%
-Although we have presented several reasonable options (and experimented with many others that were not presented), we have no guarantee that
-the combinations of options we tried were the fastest or most accurate.
-%
-Further, there are other parameters we could have explored, such as the \texttt{lgg} reachability mode instead of \texttt{stc}, where a \texttt{clustering}
-parameter is available to more finely control the aggregation process.
-%
-The SpaceEx help lists about 50 parameters, not all linked to method accuracy, that can affect the results of the computation,
-and it can be difficult to select the correct ones to explore, even for people familiar with the verification algorithms.
-
-\subsection{Proposed AGGDAG Approach}
-
-Since the proposed aggdag method was implemented on top of the discrete-time Hylaa tool, care must be taken to ensure that a proper time step is chosen.
-%
-If the time step is too small, too many steps will be necessary and the analysis time can become excessive.
-%
-On the other hand, if the time step is too large, the unsafe states may be missed if they are reached between time steps
-(this is called tunneling in collision detection methods).
-%
-We examine the reach set with switching time 140, which goes close to the unsafe states.
-
-The analysis is shown in Figure~\ref{fig:step_size}.
-%
-This is zoomed-in plot of the system shown before from Figure~\ref{fig:hylaa_qualitative} near the unsafe states.
-%
-For the plot, it is clear that using a step size of 1.0 is unlikely to tunnel through the unsafe states,
-although the smaller step size 0.25 may be preferred as the
-reach set is a continuous set of state (the sets overlap between time steps).
 
 \begin{figure}
 \begin{minipage}{0.48\textwidth}
@@ -267,12 +221,58 @@ reach set is a continuous set of state (the sets overlap between time steps).
 \centerline{\includegraphics[width=\columnwidth]{images/rendezvous.png}}
 \subcaption{{The reachable set for the spacecraft rendezvous system at three different zoom levels is shown.
   Reachable states near the unsafe set (red square near origin) are deaggregated using the proposed approach until no unsafe states are reachable.
-A video of the computation is online at \url{https://gofile.io/?c=P0pKla}.}}
+A video of the computation is online at \url{https://www.youtube.com/watch?v=iXJlJnsxeN0}.}}
 \label{fig:rendezvous}
 \end{minipage}
 \caption{Reachability analysis of satellite rendezvous using our method.}
 \end{minipage}
 \end{figure}
+
+\new{With error-guided partial aggregation (Figure~\ref{fig:spaceex_unagg}), SpaceEx can analyze
+  the system up to around $r=55$}.
+%
+It can still not do full uncertainty (up to $r=70$) since there is still some overapproximation from aggregation, the choice of \text{flowpipe-tolerance} and the
+choice of support function directions.
+%
+We did not find parameter values where we could analyze for much larger values of $r$,
+although analysis should theoretically be possible by sufficiently increasing the accuracy settings and waiting long enough.
+
+%\begin{figure}[t]
+%\centerline{\includegraphics[width=0.8\columnwidth]{images/unagg.pdf}}
+%\caption{SpaceEx with error-guided partial aggregation can analyze the system up to around $r=55$.}
+%\label{fig:spaceex_unagg}
+%\end{figure}
+
+One final note is that parameter selection is difficult for SpaceEx, and it would be unreasonable to perform an exhaustive search for every model
+that needs analysis.
+%
+Although we have presented several reasonable options (and experimented with many others that were not presented), we have no guarantee that
+the combinations of options we tried were the fastest or most accurate.
+%
+Further, there are other parameters we could have explored, such as the \texttt{lgg} reachability mode instead of \texttt{stc}, where a \texttt{clustering}
+parameter is available to more finely control the aggregation process.
+%
+The SpaceEx help lists about 50 parameters, not all linked to method accuracy, that can affect the results of the computation,
+and it can be difficult to select the correct ones to explore, even for people familiar with the verification algorithms.
+
+\subsubsection{Proposed AGGDAG Approach}
+
+Since the proposed aggdag method was implemented on top of the discrete-time Hylaa tool, care must be taken to ensure that a proper time step is chosen.
+%
+If the time step is too small, too many steps will be necessary and the analysis time can become excessive.
+%
+On the other hand, if the time step is too large, the unsafe states may be missed if they are reached between time steps
+(this is called tunneling in collision detection methods).
+%
+We examine the reach set with switching time 140, which goes close to the unsafe states.
+
+The analysis is shown in Figure~\ref{fig:step_size}.
+%
+This is zoomed-in plot of the system shown before from Figure~\ref{fig:hylaa_qualitative} near the unsafe states.
+%
+For the plot, it is clear that using a step size of 1.0 is unlikely to tunnel through the unsafe states,
+although the smaller step size 0.25 may be preferred as the
+reach set is a continuous set of state (the sets overlap between time steps).
 
 
 We measure the performance of our method using all three step sizes.
@@ -290,27 +290,9 @@ In this case, all three step sizes verify the system before the one minute timeo
 Furthermore, parameter tuning with our approach is a bit more straightforward, as the main parameter is just the step size, and initial
 analysis using simulations can be used to guide selecting a value for this.
 
-%\begin{figure}[t]
-%\centerline{\includegraphics[width=0.9\columnwidth]{images/deagg.pdf}}
-%\caption{The proposed aggdag approach can analyze up to the full $r=70$, even for the smallest time step.}
-%\label{fig:deagg}
-%\end{figure}
-
 
 A plot of the reachable state for the $r=70$ case is shown in Figure~\ref{fig:rendezvous}.
 %
-A video of the computation and refinement process is available at \url{https://gofile.io/?c=P0pKla}\footnote{We plan to replace
-  anonymous links with youtube videos in the final version.}.
-%
 Prior to our analysis, we were unaware of any tool which could successfully analyzed this model in the complete passivity settings ($r=70$).
 
-%\begin{figure}[t]
-%\centerline{\includegraphics[width=0.8\columnwidth]{images/rendezvous.png}}
-%\vspace{-0.2cm}
-%\caption{{\footnotesize The reachable set for the spacecraft rendezvous system at three different zoom levels is shown.
-%  Reachable states near the unsafe set (red square near origin) are deaggregated using the proposed approach until no unsafe states are reachable.
-%A video of the computation is online at \url{https://gofile.io/?c=P0pKla}.}}
-%\label{fig:rendezvous}
-%\vspace{-0.5cm}
-%\end{figure}
 

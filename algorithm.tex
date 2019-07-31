@@ -77,7 +77,7 @@ Such discrete transitions are artifacts of the conservative overapproximation du
 \begin{wrapfigure}{r}{0.45\textwidth}
 \centerline{\includegraphics[width=0.42\textwidth]{images/deagg.png}}
 %\vspace{-0.4cm}
-\caption{The deaggregation process is shown for a two-mode system. Upon reaching an error mode (red dotted region), the fully aggregated set of states (gray large region), is split in half (two black regions), which no longer contain error states. A video of the complete computation is available online at \url{https://gofile.io/?c=70txGD}.}
+\caption{The deaggregation process is shown for a two-mode system. Upon reaching an error mode (red dotted region), the fully aggregated set of states (gray large region), is split in half (two black regions), which no longer contain error states. A video of the complete computation is available online at \url{https://www.youtube.com/watch?v=SDzGKDBq5tM}.}
 \label{fig:deaggexample}
 \end{wrapfigure}
 %\vspace{-0.4cm}
@@ -207,7 +207,7 @@ For each location, a set of template directions $c_1^{T}, c_2^{T}, \ldots, c_{l}
 
 For computing $d_j$, $1 \leq j \leq l$, we solve $m$ linear programming problems. $d_j^i$ is the maximum value of $c_j^T \alpha$ in $P_i$. That is, $d_j^1 = \mathsf{max}~ c_j^T \alpha~ \mathsf{given} P_1(\alpha) = \top$. Similarly, $d_j^2 = ~~\mathsf{max}~~ c_j^T \alpha~~ \mathsf{given} P_2(\alpha) = \top$. We also compute $d_j^3, \ldots, d_j^l$. The value of $d_j = \mathsf{max} \{d_j^1, d_j^2, \ldots, d_j^l\}$.
 
-\vspace{-0.3cm}
+%\vspace{-0.3cm}
 \begin{algorithm}[h!]
 \SetAlgoVlined
 \SetKwInOut{Input}{Input}\SetKwInOut{Output}{Output}\SetKw{Return}{return}
@@ -224,7 +224,7 @@ For computing $d_j$, $1 \leq j \leq l$, we solve $m$ linear programming problems
 \caption{Algorithm that performs template based aggregate of stars.}
 \label{alg:aggTemplate}
 \end{algorithm}
-\vspace{-0.3cm}
+%\vspace{-0.3cm}
 
 \begin{lemma}
 The predicate $P'$ returned by Algorithm~\ref{alg:aggTemplate} is such that $(P_1 \vee \ldots \vee P_l) \Rightarrow P'$.
