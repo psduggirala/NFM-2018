@@ -7,7 +7,7 @@
 
 In aggregation, the set of all stars in $queueStars$ that are making a discrete transition to the same mode are collected together. 
 %
-Say, these states are $S_1, S_2, \ldots, S_m$.
+Say, these are $S_1, S_2, \ldots, S_m$.
 %
 Then, an overapproximation of these $S'$ is computed such that $S_1 \cup S_2 \cup S_3 \ldots \cup S_m \subseteq S_{over}$. 
 %
@@ -205,7 +205,7 @@ A star $S' \deq \tup{a, G, P'}$ is an overapproximation of the union, i.e., $S_1
 %
 For each location, a set of template directions $c_1^{T}, c_2^{T}, \ldots, c_{l}^{T}$ are provided by the user and the predicate $P'$ is determined by selecting the appropriate values of $d_1, d_2, \ldots, d_l$ such that the condition $(P_1 \vee P_2 \vee \ldots \vee P_k) \Rightarrow P'$ is satisfied where $P' \deq (c_1^{T}\alpha \leq d_1) \wedge (c_2^{T}\alpha \leq d_2) \wedge \ldots \wedge (c_l^{T}\alpha \leq d_l)$. 
 
-For computing $d_j$, $1 \leq j \leq l$, we solve $m$ linear programming problems. $d_j^i$ is the maximum value of $c_j^T \alpha$ in $P_i$. That is, $d_j^1 = \mathsf{max}~ c_j^T \alpha~ \mathsf{given} P_1(\alpha) = \top$. Similarly, $d_j^2 = ~~\mathsf{max}~~ c_j^T \alpha~~ \mathsf{given} P_2(\alpha) = \top$. We also compute $d_j^3, \ldots, d_j^l$. The value of $d_j = \mathsf{max} \{d_j^1, d_j^2, \ldots, d_j^l\}$.
+For computing $d_j$, $1 \leq j \leq l$, we solve $m$ linear programming problems. $d_j^i$ is the maximum value of $c_j^T \alpha$ in $P_i$. That is, $d_j^1 = \mathsf{max}~ c_j^T \alpha~ \mathsf{given} ~P_1(\alpha) = \top$. Similarly, $d_j^2 = ~~\mathsf{max}~~ c_j^T \alpha~~ \mathsf{given} ~P_2(\alpha) = \top$. We also compute $d_j^3, \ldots, d_j^l$. The value of $d_j = \mathsf{max} \{d_j^1, d_j^2, \ldots, d_j^l\}$.
 
 %\vspace{-0.3cm}
 \begin{algorithm}[h!]
@@ -372,7 +372,7 @@ Notice that the two Abort($199$) nodes do not have any outgoing edges. This impl
 
 To check if the safety property is violated, we first inspect the AGGDAG in Figure~\ref{fig:aggdagex1} to see if any Error node is present in it. Since reachable set in Abort mode overlap with unsafe set, we need to inspect whether this overlap is caused due to overapproximation induced in the aggregation of the reachable set in the path from the root node (Far node) to the Abort node or if it corresponds to an real behavior for safety violation. 
 
-The overapproximation of reachable set can be at two instances, first, the aggregation of stars in the Approaching modes in the interval $[109, 112]$ or second, in the Abort mode in the interval $[1,91]$.  If both these reachable set do not have any aggregation, then we have proof that the overlap with the unsafe set is indeed a safety violation. \new{If one of the discrete transitions has an aggregation, we perform deaggregation and compute the new reachable set. The AGGDAG in Figure~\ref{fig:aggdagex1} is a result of one such deaggregation. In the previous iteration, the AGGDAG had only one transition to Abort(199) mode. The resulting reachable set of the aggregation had overlap with the Error state. After deaggregation, we updated the AGGDAG to represent two Abort(199) nodes with different time intervals for  discrete transition, corresponding to the different sets that were aggregated. State of the art reachable set computation tools either perform full aggregation or no aggregation at all. In the case studies we show that this goal driven deaggregation along with template based aggregation can handle challenging hybrid automata with multiple discrete transitions.}
+The overapproximation of reachable set can be at two instances, first, the aggregation of stars in the Approaching mode in the interval $[109, 112]$ or second, in the Abort mode in the interval $[1,91]$.  If both these reachable set do not have any aggregation, then we have proof that the overlap with the unsafe set is indeed a safety violation. \new{If one of the discrete transitions has an aggregation, we perform deaggregation and compute the new reachable set. The AGGDAG in Figure~\ref{fig:aggdagex1} is a result of one such deaggregation. In the previous iteration, the AGGDAG had only one transition to Abort(199) mode. The resulting reachable set of the aggregation had overlap with the Error state. After deaggregation, we updated the AGGDAG to represent two Abort(199) nodes with different time intervals for  discrete transition, corresponding to the different sets that were aggregated. State of the art reachable set computation tools either perform full aggregation or no aggregation at all. In the case studies we show that this goal driven deaggregation along with template based aggregation can handle challenging hybrid automata with multiple discrete transitions.}
 %  Hence, refining only the aggregation associated with the reachable sets in the specific interval of time suffices.
 \end{example}
 

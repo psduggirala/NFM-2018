@@ -88,7 +88,7 @@ Hyst tool~\cite{bak2015hscc}.
 As a comparison, we also run the benchmark on the SpaceEx~\cite{spaceex} verification tool.
 %
 Our proposed aggregation and deaggregation enhancements are implemented as modifications to the publicly available
-Hylaa tool~\cite{bak2017hscc}\footnote{Our changes are in the public Hylaa repository at \url{https://github.com/stanleybak/hylaa}.}.
+Hylaa tool~\cite{bak2017hscc}\footnote{Our changes are in the public Hylaa repository at \url{https://github.com/stanleybak/hylaa/releases/tag/EMSOFT2019-version}.}.
 
 Note that SpaceEx analyzes the system using continuous time, whereas our approach builds off Hylaa, a discrete time (simulation equivalent) tool.
 %
@@ -153,7 +153,7 @@ We use the latest space-time clustering (STC) reachability method implemented in
 Two aggregation methods are available, \new{convex hull aggregation (\texttt{chull}) and error-guided partial
 aggregation (\texttt{none}}\footnote{\new{This was confirmed through discussions with the SpaceEx developers. The name is confusing.}}\new{)}.
 %
-We tune accuracy with the \texttt{flowpipe-tolerance} parameter as well as the number of support function directions to use, for which we consider
+We tune accuracy of the reachable set with the \texttt{flowpipe-tolerance} parameter as well as the number of support function directions to use, for which we consider
 both \texttt{box} and \texttt{oct}.
 %
 By fixing the parameters, we can analyze the system as the passive-mode switch time parameter $r$ is increased from $0$ to $70$.
