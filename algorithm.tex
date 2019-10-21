@@ -157,16 +157,16 @@ In Algorithm~\ref{alg:aggdeagg}, by default, we perform aggregation of all the s
 The algorithm we implement is different from Algorithm~\ref{alg:aggdeagg} in two ways. First, we take into account the sequence of modes visited by the star for performing aggregation. That is, if two stars have encountered a different sequence of mode switches, they might be aggregated into different stars. Second, the deaggregation need not be performed at the first aggregated star in the path from leaf to root. We perform the deaggregation of one of the aggregated stars in the path. However, we ensure that we do not re-aggregate the children of deaggregated star. As a result, the line~\ref{ln:unsafereturn} would be invoked only if all the stars in the path from unsafe set to the initial set were unaggregated.
 \end{remark}
 
-One of the advantages of generalized stars is that it allows for easy aggregation and deaggregation. 
+One of the advantages of generalized stars is that it allows for easy and efficient aggregation and deaggregation. 
 %In the remainder of this section, we demonstrate the advantages of performing aggregation 
 %
 Additionally, we avoid computing the entire reachable set, but only compute the specific sections of the reachable set that are important for safety verification.
 %
-\new{More specifically, we recompute the reachable set \emph{only for the time intervals at discrete transitions or overlap with unsafe set.}}
+\new{More specifically, we recompute the reachable set \emph{only at times where discrete transitions are enabled or the unsafe set is reached.}}
 %
-\new{This selective recomputation is the main difference between this work and~\cite{schupp2018efficient}, where, SpaceEx is invoked with various configuration parameters for reducing the error in reachable set computation.} 
+\new{This targeted recomputation is the main difference between this work and~\cite{schupp2018efficient}, where HyPro~\cite{schupp2017h} is invoked with increasingly accurate configuration parameters to reduce the error in reachable set computation on a per-mode basis in the search tree.} 
 %
-\new{To keep track of the aggregation, deaggregation, and time instances for selective recomputation, we maintain a data structure called Aggregated Directed Acyclic Graph (AGGDAG).}
+\new{To keep track of the aggregation, deaggregation, and time instants for selective recomputation, we maintain a data structure called Aggregated Directed Acyclic Graph (AGGDAG).}
 %
 %The algorithm corresponding to the aggregation and deaggregation is given in Algorithm~\ref{alg:aggdeagg}. 
 %%
